@@ -345,15 +345,6 @@
       margin-top: 4px;
     }
 
-    .info-footer {
-      font-size: 0.8rem;
-      color: var(--text-main);
-      text-align: center;
-      margin-top: 8px;
-      line-height: 1.4;
-      opacity: 0.8;
-    }
-
     .clone-card {
       display: flex;
       flex-direction: column;
@@ -640,6 +631,20 @@
       font-size: 0.85rem;
       width: 100%;
     }
+
+    .site-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-main);
+      opacity: 0.75;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -686,12 +691,7 @@
         </div>
 
         <div id="capital-help" class="help-box">
-          <span id="lbl-capital-help-text">
-            <strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>
-            Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>
-            La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br>
-            <em>Note : Cela ne constitue pas un conseil en investissement. Chacun reste libre et responsable de la composition de son portefeuille.</em>
-          </span>
+          <span id="lbl-capital-help-text"></span>
         </div>
 
         <div class="capital-inputs-grid">
@@ -741,10 +741,6 @@
           </label>
           <button class="btn-reset" style="flex: 1; min-width: 110px;" id="btn-reset" onclick="resetAllData()">🗑️ Réinitialiser</button>
         </div>
-      </div>
-
-      <div class="info-footer" id="lbl-privacy-footer">
-        🛡️ Vos données restent 100 % privées. L'application ne collecte aucune information et n'accède pas à votre appareil : les images que vous sélectionnez sont sauvegardées uniquement dans la mémoire locale de votre navigateur.
       </div>
     </div>
 
@@ -854,13 +850,26 @@
       <div class="card">
         <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
-          L'application est 100 % gratuite, sans publicité et totalement confidentielle (aucune collecte de données). Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
+         Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
         </p>
         <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: var(--accent-green); color: white;" id="lbl-eco-paypal">
           Faire un don via PayPal
         </a>
       </div>
     </div>
+
+    <!-- FOOTER LÉGAL ET CONFIDENTIALITÉ -->
+    <footer class="site-footer">
+      <div id="lbl-footer-app-info">
+        <strong>KLON App</strong> — Application gratuite & Open Source hébergée sur GitHub Pages.
+      </div>
+      <div id="lbl-footer-privacy-info">
+        🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.
+      </div>
+      <div id="lbl-footer-disclaimer-info">
+        ⚠️ <strong>Avertissement :</strong> Cet outil est fourni à titre éducatif et de simulation personnelle. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.
+      </div>
+    </footer>
   </div>
 
   <!-- MODAL CONFIGURATION DES VISUELS GLOBAUX -->
@@ -901,6 +910,7 @@
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Capital Global Liquide",
         placeholderCapital: "Montant du capital",
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br><em>Note : Cela ne constitue pas un conseil en investissement. Chacun reste libre et responsable de la composition de son portefeuille.</em>`,
         lblAnnuityCapacity: "Rente théorique (4% / an) :",
         lblTotalExpenses: "Total Charges Mensuelles",
         lblAddExpenseTitle: "💸 Ajouter une charge mensuelle",
@@ -911,7 +921,6 @@
         btnExport: "💾 Exporter",
         lblImport: "📂 Importer",
         btnReset: "🗑️ Réinitialiser",
-        lblPrivacyFooter: "🛡️ Vos données restent 100 % privées. L'application ne collecte aucune information et n'accède pas à votre appareil : les images que vous sélectionnez sont sauvegardées uniquement dans la mémoire locale de votre navigateur.",
         lblGlobalProgress: "🎯 Progression Autonomie Globale",
         lblAllocationTitle: "Allocation de la Rente",
         btnModalOpen: "⚙️ Avatars par Palier",
@@ -930,8 +939,11 @@
         lblEcoAnalysisTitle: "Analyses & Thèses",
         lblEcoSubstack: "Suivre le Substack Alpha Picker",
         lblEcoSupportTitle: "Soutenir le Projet",
-        lblEcoSupportDesc: "L'application est 100 % gratuite et totalement confidentielle (aucune collecte de données, aucun accès externe). Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
+        lblEcoSupportDesc: "Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
         lblEcoPaypal: "Faire un don via PayPal",
+        lblFooterAppInfo: "<strong>KLON App</strong> — Application gratuite & Open Source hébergée sur GitHub Pages.",
+        lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil est fourni à titre éducatif et de simulation personnelle. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.",
         modalTitleDefault: "Avatars par Palier d'Avancement",
         modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.",
         lblCropTitle: "Ajuster la photo (Glisse pour déplacer)",
@@ -979,6 +991,7 @@
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Total Liquid Capital",
         placeholderCapital: "Capital amount",
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Liquid Capital & The 4% Rule:</strong><br>Enter the total amount of your capital available or invested in financial markets (stock portfolios, ETFs, cash equivalents). <em>Do not include real estate assets.</em><br><br>The <strong>4% rule</strong> is a widely recognized financial independence benchmark originating from historic financial research (Trinity Study). It relies on the long-term historical performance of major global stock indices like the <strong>S&P 500</strong>, which has delivered an average gross annual return of ~10% over the last 20 years (~7% net of inflation).<br><br><em>Note: This tool is provided for educational purposes only and does not constitute investment advice.</em>`,
         lblAnnuityCapacity: "Estimated Income (4% / yr):",
         lblTotalExpenses: "Total Monthly Expenses",
         lblAddExpenseTitle: "💸 Add a Monthly Expense",
@@ -989,7 +1002,6 @@
         btnExport: "💾 Export",
         lblImport: "📂 Import",
         btnReset: "🗑️ Reset",
-        lblPrivacyFooter: "🛡️ Your data remains 100% private. The app collects no information and does not access your device: uploaded images are saved strictly in your browser local storage.",
         lblGlobalProgress: "🎯 Global Freedom Progress",
         lblAllocationTitle: "Income Allocation",
         btnModalOpen: "⚙️ Tier Avatars",
@@ -1008,8 +1020,11 @@
         lblEcoAnalysisTitle: "Analysis & Investment Thesis",
         lblEcoSubstack: "Follow Substack Alpha Picker",
         lblEcoSupportTitle: "Support the Project",
-        lblEcoSupportDesc: "This app is 100% free and completely private (no data collection). If this tool helps you on your path to financial independence, you can support the project.",
+        lblEcoSupportDesc: "If this tool helps you on your path to financial independence, you can support the project.",
         lblEcoPaypal: "Donate via PayPal",
+        lblFooterAppInfo: "<strong>KLON App</strong> — Free & Open Source app hosted on GitHub Pages.",
+        lblFooterPrivacyInfo: "🛡️ <strong>Privacy:</strong> No tracking cookies, no data collection. All inputs are strictly saved locally within your browser.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Disclaimer:</strong> This tool is provided for educational purposes and personal simulation only. It does not constitute investment advice or financial solicitation.",
         modalTitleDefault: "Avatars by Progress Tier",
         modalDescDefault: "Configure photos for all 6 tiers. They will apply to <strong>all your Klons</strong>.",
         lblCropTitle: "Adjust Photo (Drag to move)",
@@ -1100,6 +1115,7 @@
       document.getElementById('nav-tab3').innerText = t.navTab3;
       document.getElementById('user-firstname-input').placeholder = t.placeholderFirstname;
       document.getElementById('lbl-capital-title').innerText = t.lblCapitalTitle;
+      document.getElementById('lbl-capital-help-text').innerHTML = t.lblCapitalHelpText;
       document.getElementById('capital-input').placeholder = t.placeholderCapital;
       document.getElementById('lbl-annuity-capacity').innerText = t.lblAnnuityCapacity;
       document.getElementById('lbl-total-expenses').innerText = t.lblTotalExpenses;
@@ -1111,7 +1127,6 @@
       document.getElementById('btn-export').innerText = t.btnExport;
       document.getElementById('lbl-import').querySelector('span').innerText = t.lblImport;
       document.getElementById('btn-reset').innerText = t.btnReset;
-      document.getElementById('lbl-privacy-footer').innerText = t.lblPrivacyFooter;
       document.getElementById('lbl-global-progress').innerText = t.lblGlobalProgress;
       document.getElementById('lbl-allocation-title').innerText = t.lblAllocationTitle;
       document.getElementById('btn-modal-open').innerText = t.btnModalOpen;
@@ -1132,6 +1147,9 @@
       document.getElementById('lbl-eco-support-title').innerText = t.lblEcoSupportTitle;
       document.getElementById('lbl-eco-support-desc').innerText = t.lblEcoSupportDesc;
       document.getElementById('lbl-eco-paypal').innerText = t.lblEcoPaypal;
+      document.getElementById('lbl-footer-app-info').innerHTML = t.lblFooterAppInfo;
+      document.getElementById('lbl-footer-privacy-info').innerHTML = t.lblFooterPrivacyInfo;
+      document.getElementById('lbl-footer-disclaimer-info').innerHTML = t.lblFooterDisclaimerInfo;
       document.getElementById('lbl-crop-title').innerText = t.lblCropTitle;
       document.getElementById('lbl-crop-zoom').innerText = t.lblCropZoom;
       document.getElementById('btn-crop-confirm').innerText = t.btnCropConfirm;
