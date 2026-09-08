@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KLON App — Libère ton capital</title>
+  <title>KLON — Simulateur de Liberté Financière</title>
   <style>
     :root[data-theme="dark"] {
       --bg-color: #0d1117;
@@ -73,6 +73,33 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+    }
+
+    .app-header {
+      text-align: center;
+      padding: 12px 8px 4px 8px;
+    }
+
+    .app-header h1 {
+      font-size: 1.6rem;
+      color: var(--text-bright);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .app-header .subtitle {
+      font-size: 0.95rem;
+      color: var(--accent-blue);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .app-header .description {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      opacity: 0.8;
+      margin-top: 6px;
+      line-height: 1.35;
     }
 
     nav {
@@ -652,6 +679,16 @@
   <canvas id="confetti-canvas"></canvas>
 
   <div class="app-container">
+    
+    <!-- EN-TÊTE DE L'APPLICATION -->
+    <header class="app-header">
+      <h1>KLON</h1>
+      <div class="subtitle" id="app-header-subtitle">Simulateur de Liberté Financière</div>
+      <p class="description" id="app-header-desc">
+        Renseigne ton capital et tes charges mensuelles pour calculer ton indépendance financière et débloquer tes Klons de autonomie.
+      </p>
+    </header>
+
     <nav>
       <button class="nav-btn active" id="nav-tab1" onclick="switchTab('tab1', event)">📊 1. Charges & Capital</button>
       <button class="nav-btn" id="nav-tab2" onclick="switchTab('tab2', event)">👤 2. Klons</button>
@@ -861,7 +898,7 @@
     <!-- FOOTER LÉGAL ET CONFIDENTIALITÉ -->
     <footer class="site-footer">
       <div id="lbl-footer-app-info">
-        <strong>KLON App</strong> — Application gratuite & Open Source hébergée sur GitHub Pages.
+        <strong>KLON</strong> — Application gratuite & Open Source hébergée sur GitHub Pages.
       </div>
       <div id="lbl-footer-privacy-info">
         🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.
@@ -904,6 +941,8 @@
   <script>
     const I18N = {
       fr: {
+        appSubtitle: "Simulateur de Liberté Financière",
+        appDesc: "Renseigne ton capital et tes charges mensuelles pour calculer ton indépendance financière et débloquer tes Klons d'autonomie.",
         navTab1: "📊 1. Charges & Capital",
         navTab2: "👤 2. Klons",
         navTab3: "🌐 3. Écosystème",
@@ -941,7 +980,7 @@
         lblEcoSupportTitle: "Soutenir le Projet",
         lblEcoSupportDesc: "Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
         lblEcoPaypal: "Faire un don via PayPal",
-        lblFooterAppInfo: "<strong>KLON App</strong> — Application gratuite & Open Source hébergée sur GitHub Pages.",
+        lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source hébergée sur GitHub Pages.",
         lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.",
         lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil est fourni à titre éducatif et de simulation personnelle. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.",
         modalTitleDefault: "Avatars par Palier d'Avancement",
@@ -985,6 +1024,8 @@
         superCompletedCounter: "⭐ {0} Super Klon{1} au max"
       },
       en: {
+        appSubtitle: "Financial Freedom Simulator",
+        appDesc: "Enter your capital and monthly expenses to calculate your financial independence and unlock your autonomy Klons.",
         navTab1: "📊 1. Expenses & Capital",
         navTab2: "👤 2. Klons",
         navTab3: "🌐 3. Ecosystem",
@@ -1022,7 +1063,7 @@
         lblEcoSupportTitle: "Support the Project",
         lblEcoSupportDesc: "If this tool helps you on your path to financial independence, you can support the project.",
         lblEcoPaypal: "Donate via PayPal",
-        lblFooterAppInfo: "<strong>KLON App</strong> — Free & Open Source app hosted on GitHub Pages.",
+        lblFooterAppInfo: "<strong>KLON</strong> — Free & Open Source app hosted on GitHub Pages.",
         lblFooterPrivacyInfo: "🛡️ <strong>Privacy:</strong> No tracking cookies, no data collection. All inputs are strictly saved locally within your browser.",
         lblFooterDisclaimerInfo: "⚠️ <strong>Disclaimer:</strong> This tool is provided for educational purposes and personal simulation only. It does not constitute investment advice or financial solicitation.",
         modalTitleDefault: "Avatars by Progress Tier",
@@ -1110,6 +1151,8 @@
 
     function applyTranslations() {
       const t = getT();
+      document.getElementById('app-header-subtitle').innerText = t.appSubtitle;
+      document.getElementById('app-header-desc').innerText = t.appDesc;
       document.getElementById('nav-tab1').innerText = t.navTab1;
       document.getElementById('nav-tab2').innerText = t.navTab2;
       document.getElementById('nav-tab3').innerText = t.navTab3;
