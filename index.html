@@ -188,21 +188,19 @@
     .firstname-inline-box {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 0.95rem;
-      width: 100%;
+      flex: 1;
+      min-width: 0;
     }
 
     .inline-firstname-input {
       background-color: var(--bg-color);
       border: 1px solid var(--border-color);
       color: var(--accent-blue);
-      padding: 6px 12px;
+      padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.95rem;
       font-weight: bold;
-      flex: 1;
-      max-width: 160px;
+      width: 100%;
     }
 
     .capital-dashboard-card {
@@ -657,20 +655,19 @@
 
     <!-- ONGLET 1 : SAISIE DES DONNÉES -->
     <div id="tab1" class="tab-content active">
-      <div class="card" style="padding: 14px 16px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <div class="firstname-inline-box" style="flex: 1; min-width: 220px;">
-            <span id="lbl-firstname">Prénom :</span>
-            <input type="text" id="user-firstname-input" class="inline-firstname-input" placeholder="Alpha Picker" onblur="saveUserFirstname()" onkeydown="if(event.key==='Enter') this.blur()">
+      <div class="card" style="padding: 12px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <div class="firstname-inline-box">
+            <input type="text" id="user-firstname-input" class="inline-firstname-input" placeholder="Ex: Alpha Picker" onblur="saveUserFirstname()" onkeydown="if(event.key==='Enter') this.blur()">
           </div>
           
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <select id="lang-select" class="currency-select" onchange="changeLanguage(this.value)" style="padding: 6px 10px; font-size: 0.85rem;">
+          <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+            <select id="lang-select" class="currency-select" onchange="changeLanguage(this.value)" style="padding: 6px 8px; font-size: 0.85rem;">
               <option value="fr">FR</option>
               <option value="en">EN</option>
             </select>
 
-            <select id="theme-select" class="currency-select" onchange="changeTheme(this.value)" style="padding: 6px 10px; font-size: 0.85rem;">
+            <select id="theme-select" class="currency-select" onchange="changeTheme(this.value)" style="padding: 6px 8px; font-size: 0.85rem;">
               <option value="dark" id="opt-theme-dark">🌙 Sombre</option>
               <option value="light" id="opt-theme-light">☀️ Clair</option>
               <option value="colorblind" id="opt-theme-colorblind">👁️ Daltonien</option>
@@ -901,7 +898,7 @@
         navTab1: "📊 1. Charges & Capital",
         navTab2: "👤 2. Klons",
         navTab3: "🌐 3. Écosystème",
-        lblFirstname: "Prénom :",
+        placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Capital Global Liquide",
         placeholderCapital: "Montant du capital",
         lblAnnuityCapacity: "Rente théorique (4% / an) :",
@@ -979,7 +976,7 @@
         navTab1: "📊 1. Expenses & Capital",
         navTab2: "👤 2. Klons",
         navTab3: "🌐 3. Ecosystem",
-        lblFirstname: "First Name:",
+        placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Total Liquid Capital",
         placeholderCapital: "Capital amount",
         lblAnnuityCapacity: "Estimated Income (4% / yr):",
@@ -1101,7 +1098,7 @@
       document.getElementById('nav-tab1').innerText = t.navTab1;
       document.getElementById('nav-tab2').innerText = t.navTab2;
       document.getElementById('nav-tab3').innerText = t.navTab3;
-      document.getElementById('lbl-firstname').innerText = t.lblFirstname;
+      document.getElementById('user-firstname-input').placeholder = t.placeholderFirstname;
       document.getElementById('lbl-capital-title').innerText = t.lblCapitalTitle;
       document.getElementById('capital-input').placeholder = t.placeholderCapital;
       document.getElementById('lbl-annuity-capacity').innerText = t.lblAnnuityCapacity;
