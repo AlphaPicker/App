@@ -398,7 +398,7 @@
 
     .clone-avatar.emoji-avatar span {
       display: inline-block;
-      transform: translate(1px, -2px); /* Correctif de centrage optique pour la couronne et les emojis */
+      transform: translate(1px, -2px);
     }
 
     .clone-avatar.locked {
@@ -798,14 +798,14 @@
     <div id="tab3" class="tab-content">
       <!-- Note de transparence -->
       <div class="card" style="border-left: 4px solid var(--accent-blue);">
-        <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
+        <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);" id="lbl-eco-transparency">
           <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.
         </div>
       </div>
 
       <!-- Banques & Courtiers -->
       <div class="card">
-        <div class="card-title">📈 Banques & Courtiers</div>
+        <div class="card-title" id="lbl-eco-brokers-title">📈 Banques & Courtiers</div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <a href="https://refnocode.trade.re/48z435t2" target="_blank" rel="noopener noreferrer" class="link-btn">
             Trade Republic
@@ -824,7 +824,7 @@
 
       <!-- Crypto & Rendement Alternatif -->
       <div class="card">
-        <div class="card-title">🪙 Crypto & Rendement Alternatif</div>
+        <div class="card-title" id="lbl-eco-crypto-title">🪙 Crypto & Rendement Alternatif</div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <a href="https://coinbase.com/join/BBE6P47?src=android-link" target="_blank" rel="noopener noreferrer" class="link-btn">
             Coinbase
@@ -833,7 +833,7 @@
             Crypto.com
           </a>
           <a href="https://mintos.com/ref/CKKUD1" target="_blank" rel="noopener noreferrer" class="link-btn">
-            Mintos — Plateforme multi-actifs
+            Mintos
           </a>
         </div>
       </div>
@@ -925,6 +925,9 @@
         optSortAmountDesc: "Montant le plus élevé",
         optSortAmountAsc: "Montant le plus faible",
         optSortCreation: "Ordre d'ajout",
+        lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.",
+        lblEcoBrokersTitle: "📈 Banques & Courtiers",
+        lblEcoCryptoTitle: "🪙 Crypto & Rendement Alternatif",
         lblEcoPortfolioTitle: "Portefeuille & Performances",
         lblEcoWikifolio: "Suivre le Wikifolio Alpha Picker",
         lblEcoAnalysisTitle: "Analyses & Thèses",
@@ -979,7 +982,7 @@
         lblFirstname: "First Name:",
         lblCapitalTitle: "Total Liquid Capital",
         placeholderCapital: "Capital amount",
-        lblAnnuityCapacity: "Theoretical Annuity (4% / yr):",
+        lblAnnuityCapacity: "Estimated Income (4% / yr):",
         lblTotalExpenses: "Total Monthly Expenses",
         lblAddExpenseTitle: "💸 Add a Monthly Expense",
         placeholderExpenseName: "Ex: Rent, Electricity, Groceries...",
@@ -991,7 +994,7 @@
         btnReset: "🗑️ Reset",
         lblPrivacyFooter: "🛡️ Your data remains 100% private. The app collects no information and does not access your device: uploaded images are saved strictly in your browser local storage.",
         lblGlobalProgress: "🎯 Global Freedom Progress",
-        lblAllocationTitle: "Annuity Allocation",
+        lblAllocationTitle: "Income Allocation",
         btnModalOpen: "⚙️ Tier Avatars",
         lblRemainingCapacity: "Remaining available:",
         lblSortBy: "Sort cards:",
@@ -1000,9 +1003,12 @@
         optSortAmountDesc: "Highest amount",
         optSortAmountAsc: "Lowest amount",
         optSortCreation: "Order added",
-        lblEcoPortfolioTitle: "Portfolio & Performance",
+        lblEcoTransparency: "<strong>🤝 Transparency & Referral:</strong> The links below are affiliate and referral links. By opening an account through these links, you can receive welcome bonuses offered by platforms while supporting the free development of this app.",
+        lblEcoBrokersTitle: "📈 Banks & Brokers",
+        lblEcoCryptoTitle: "🪙 Crypto & Alternative Yield",
+        lblEcoPortfolioTitle: "Portfolio & Track Record",
         lblEcoWikifolio: "Follow Wikifolio Alpha Picker",
-        lblEcoAnalysisTitle: "Analyses & Insights",
+        lblEcoAnalysisTitle: "Analysis & Investment Thesis",
         lblEcoSubstack: "Follow Substack Alpha Picker",
         lblEcoSupportTitle: "Support the Project",
         lblEcoSupportDesc: "This app is 100% free and completely private (no data collection). If this tool helps you on your path to financial independence, you can support the project.",
@@ -1019,7 +1025,7 @@
         btnCover: "Cover",
         lblAllocated: "Allocated:",
         lblRockLockTitle: "🪨 Bedrock Base (In Progress)",
-        lblRockLockDesc: "Allocate annuity to cover 100% of your baseline expenses ({0} {1}/mo) to shatter the rock.",
+        lblRockLockDesc: "Allocate income to cover 100% of your baseline expenses ({0} {1}/mo) to shatter the rock.",
         lblNextTierTitle: "🔒 Next Tier: Level {0}",
         lblNextTierDesc: "Increase your total capital to feed the current Super Klon and unlock this tier.",
         lblPayExpense: "{0} covers {1}% of expense: {2} ({3} {4})",
@@ -1032,7 +1038,7 @@
         confirmReset: "Are you sure you want to reset everything to zero? All your data and expenses will be cleared.",
         badgeFirst: "First Klon",
         badgeRoche: "Shattered Base",
-        badgeAnnuity5Digits: "5-digit Annuity",
+        badgeAnnuity5Digits: "5-digit Income",
         badgeArmy: "Klon Army",
         badgeArtist: "Artist",
         badge100kCapital: "100k Capital",
@@ -1119,6 +1125,9 @@
       document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
       document.getElementById('opt-sort-amount-asc').innerText = t.optSortAmountAsc;
       document.getElementById('opt-sort-creation').innerText = t.optSortCreation;
+      document.getElementById('lbl-eco-transparency').innerHTML = t.lblEcoTransparency;
+      document.getElementById('lbl-eco-brokers-title').innerText = t.lblEcoBrokersTitle;
+      document.getElementById('lbl-eco-crypto-title').innerText = t.lblEcoCryptoTitle;
       document.getElementById('lbl-eco-portfolio-title').innerText = t.lblEcoPortfolioTitle;
       document.getElementById('lbl-eco-wikifolio').innerText = t.lblEcoWikifolio;
       document.getElementById('lbl-eco-analysis-title').innerText = t.lblEcoAnalysisTitle;
@@ -1818,7 +1827,6 @@
         const isActive = currentlyValid.includes(b.id);
         const wasEverUnlocked = state.everUnlockedBadges.includes(b.id);
 
-        // Affichage uniquement si le badge a été débloqué au moins une fois
         if (wasEverUnlocked) {
           let stateClass = isActive ? "active-unlocked" : "lost-inactive";
           let statusIcon = isActive ? "" : " ⚠️";
