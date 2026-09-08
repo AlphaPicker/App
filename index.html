@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alpha Picker — Clones</title>
+  <title>KLON App — Libère ton capital</title>
   <style>
     :root[data-theme="dark"] {
       --bg-color: #0d1117;
@@ -285,7 +285,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
       box-sizing: border-box;
+      text-align: center;
     }
 
     button.btn-danger {
@@ -310,6 +312,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
       box-sizing: border-box;
       transition: background-color 0.2s, color 0.2s;
     }
@@ -384,12 +387,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 2.2rem;
+      line-height: 1;
       overflow: hidden;
       background-size: cover;
       background-position: center;
       flex-shrink: 0;
       position: relative;
+    }
+
+    .clone-avatar.emoji-avatar span {
+      display: inline-block;
+      transform: translate(1px, -2px); /* Correctif de centrage optique pour la couronne et les emojis */
     }
 
     .clone-avatar.locked {
@@ -580,7 +589,7 @@
     }
 
     .badge-item {
-      display: flex;
+      display: none;
       align-items: center;
       gap: 4px;
       padding: 4px 8px;
@@ -588,16 +597,31 @@
       font-size: 0.75rem;
       font-weight: bold;
       background-color: var(--bg-color);
-      border: 1px solid var(--accent-green-bright);
-      color: var(--text-bright);
-      box-shadow: 0 0 6px rgba(126, 231, 135, 0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      transition: all 0.3s ease;
+    }
+
+    .badge-item.active-unlocked {
+      display: inline-flex !important;
+      border-color: var(--accent-green-bright) !important;
+      color: var(--text-bright) !important;
+      box-shadow: 0 0 6px rgba(126, 231, 135, 0.25);
       animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .badge-item.super-badge {
+    .badge-item.active-unlocked.super-badge {
       border-color: var(--accent-purple) !important;
       color: var(--accent-purple) !important;
       box-shadow: 0 0 8px rgba(163, 113, 247, 0.4);
+    }
+
+    .badge-item.lost-inactive {
+      display: inline-flex !important;
+      border-color: var(--accent-orange) !important;
+      color: var(--accent-orange) !important;
+      opacity: 0.65;
+      text-decoration: line-through;
     }
 
     @keyframes badgePop {
@@ -607,15 +631,16 @@
 
     .sort-select-box {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 6px;
       font-size: 0.85rem;
+      width: 100%;
     }
 
     .sort-select-box select {
-      padding: 6px 10px;
+      padding: 8px 10px;
       font-size: 0.85rem;
-      width: auto;
+      width: 100%;
     }
   </style>
 </head>
@@ -626,7 +651,7 @@
   <div class="app-container">
     <nav>
       <button class="nav-btn active" id="nav-tab1" onclick="switchTab('tab1', event)">📊 1. Charges & Capital</button>
-      <button class="nav-btn" id="nav-tab2" onclick="switchTab('tab2', event)">👤 2. Clones</button>
+      <button class="nav-btn" id="nav-tab2" onclick="switchTab('tab2', event)">👤 2. Klons</button>
       <button class="nav-btn" id="nav-tab3" onclick="switchTab('tab3', event)">🌐 3. Écosystème</button>
     </nav>
 
@@ -696,16 +721,16 @@
       </div>
 
       <div class="card">
-        <div class="card-title" id="lbl-add-expense-title">💸 Ajouter une charge fixe</div>
+        <div class="card-title" id="lbl-add-expense-title">💸 Ajouter une charge mensuelle</div>
         <div class="input-group">
-          <input type="text" id="expense-name" placeholder="Ex: Loyer, Électricité..." onkeydown="if(event.key==='Enter') addExpense()">
+          <input type="text" id="expense-name" placeholder="Ex: Loyer, Électricité, Courses..." onkeydown="if(event.key==='Enter') addExpense()">
           <input type="number" id="expense-amount" placeholder="Montant" step="1" inputmode="numeric" style="max-width: 110px;" onkeydown="if(event.key==='Enter') addExpense()">
           <button class="btn-primary" onclick="addExpense()">+</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title" id="lbl-expenses-list-title">📋 Liste des charges</div>
+        <div class="card-title" id="lbl-expenses-list-title">📋 Liste des charges mensuelles</div>
         <div id="expenses-list"></div>
       </div>
 
@@ -714,7 +739,7 @@
         <div style="display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
           <button class="btn-secondary" style="flex: 1; min-width: 90px;" id="btn-export" onclick="exportData()">💾 Exporter</button>
           <label class="btn-secondary" style="flex: 1; min-width: 90px;" id="lbl-import">
-            📂 Importer
+            <span>📂 Importer</span>
             <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
           </label>
           <button class="btn-reset" style="flex: 1; min-width: 110px;" id="btn-reset" onclick="resetAllData()">🗑️ Réinitialiser</button>
@@ -726,7 +751,7 @@
       </div>
     </div>
 
-    <!-- ONGLET 2 : RESULTAT DES CLONES -->
+    <!-- ONGLET 2 : RESULTAT DES KLONS -->
     <div id="tab2" class="tab-content">
       <div class="global-progress-card">
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold;">
@@ -755,8 +780,8 @@
         <div class="sort-select-box" style="margin-top: 8px;">
           <span id="lbl-sort-by">Trier les cartes :</span>
           <select id="sort-select" onchange="changeSortMode(this.value)">
-            <option value="prog_desc" id="opt-sort-prog-desc">Complétés en premier (100% ➔ 0%)</option>
-            <option value="prog_asc" id="opt-sort-prog-asc">À financer en premier (0% ➔ 100%)</option>
+            <option value="prog_desc" id="opt-sort-prog-desc">Complétés en premier</option>
+            <option value="prog_asc" id="opt-sort-prog-asc">À financer en premier</option>
             <option value="amount_desc" id="opt-sort-amount-desc">Montant le plus élevé</option>
             <option value="amount_asc" id="opt-sort-amount-asc">Montant le plus faible</option>
             <option value="creation" id="opt-sort-creation">Ordre d'ajout</option>
@@ -771,31 +796,72 @@
 
     <!-- ONGLET 3 : ÉCOSYSTÈME -->
     <div id="tab3" class="tab-content">
-      <div class="card">
-        <div class="card-title" id="lbl-eco-platforms-title">Plateformes d'Investissement</div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <a href="https://ibkr.com/referral/jeremy1408" target="_blank" rel="noopener noreferrer" class="link-btn">Interactive Brokers (IBKR)</a>
-          <a href="https://bour.so/p/qLTYowTO9uQ" target="_blank" rel="noopener noreferrer" class="link-btn">BoursoBank</a>
-          <button class="link-btn" id="fortuneo-btn" onclick="copyFortuneoCode()">Fortuneo (Code Parrain : 12874482)</button>
+      <!-- Note de transparence -->
+      <div class="card" style="border-left: 4px solid var(--accent-blue);">
+        <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
+          <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.
         </div>
       </div>
 
+      <!-- Banques & Courtiers -->
+      <div class="card">
+        <div class="card-title">📈 Banques & Courtiers</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="https://refnocode.trade.re/48z435t2" target="_blank" rel="noopener noreferrer" class="link-btn">
+            Trade Republic
+          </a>
+          <a href="https://ibkr.com/referral/jeremy1408" target="_blank" rel="noopener noreferrer" class="link-btn">
+            Interactive Brokers (IBKR)
+          </a>
+          <a href="https://bour.so/p/qLTYowTO9uQ" target="_blank" rel="noopener noreferrer" class="link-btn">
+            BoursoBank
+          </a>
+          <button class="link-btn" id="fortuneo-btn" onclick="copyFortuneoCode()">
+            Fortuneo (Code Parrain : 12874482)
+          </button>
+        </div>
+      </div>
+
+      <!-- Crypto & Rendement Alternatif -->
+      <div class="card">
+        <div class="card-title">🪙 Crypto & Rendement Alternatif</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="https://coinbase.com/join/BBE6P47?src=android-link" target="_blank" rel="noopener noreferrer" class="link-btn">
+            Coinbase
+          </a>
+          <a href="https://crypto.com/app/wu2sfywjnt" target="_blank" rel="noopener noreferrer" class="link-btn">
+            Crypto.com
+          </a>
+          <a href="https://mintos.com/ref/CKKUD1" target="_blank" rel="noopener noreferrer" class="link-btn">
+            Mintos — Plateforme multi-actifs
+          </a>
+        </div>
+      </div>
+
+      <!-- Suivi & Contenu -->
       <div class="card">
         <div class="card-title" id="lbl-eco-portfolio-title">Portefeuille & Performances</div>
-        <a href="https://www.wikifolio.com/en/int/p/alphapicker?tab=wikifolios" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-wikifolio">Suivre le Wikifolio Alpha Picker</a>
+        <a href="https://www.wikifolio.com/en/int/p/alphapicker?tab=wikifolios" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-wikifolio">
+          Suivre le Wikifolio Alpha Picker
+        </a>
       </div>
 
       <div class="card">
         <div class="card-title" id="lbl-eco-analysis-title">Analyses & Thèses</div>
-        <a href="https://substack.com/@alphapicker?r=3bj34c&utm_campaign=profile&utm_medium=profile-page" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-substack">Suivre le Substack Alpha Picker</a>
+        <a href="https://substack.com/@alphapicker?r=3bj34c&utm_campaign=profile&utm_medium=profile-page" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-substack">
+          Suivre le Substack Alpha Picker
+        </a>
       </div>
 
+      <!-- Soutien -->
       <div class="card">
         <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
-          L'application est 100 % gratuite et totalement confidentielle (aucune collecte de données, aucun accès externe). Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.
+          L'application est 100 % gratuite, sans publicité et totalement confidentielle (aucune collecte de données). Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
         </p>
-        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: var(--accent-green); color: white;" id="lbl-eco-paypal">Faire un don via PayPal</a>
+        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: var(--accent-green); color: white;" id="lbl-eco-paypal">
+          Faire un don via PayPal
+        </a>
       </div>
     </div>
   </div>
@@ -806,7 +872,7 @@
       <div class="card-title" id="modal-title-text">Avatars par Palier d'Avancement</div>
       
       <p style="font-size: 0.85rem; opacity: 0.8;" id="modal-desc-text">
-        Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes clones</strong>.
+        Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.
       </p>
 
       <div class="tier-grid" id="modal-tier-grid"></div>
@@ -833,17 +899,17 @@
     const I18N = {
       fr: {
         navTab1: "📊 1. Charges & Capital",
-        navTab2: "👤 2. Clones",
+        navTab2: "👤 2. Klons",
         navTab3: "🌐 3. Écosystème",
         lblFirstname: "Prénom :",
         lblCapitalTitle: "Capital Global Liquide",
         placeholderCapital: "Montant du capital",
         lblAnnuityCapacity: "Rente théorique (4% / an) :",
         lblTotalExpenses: "Total Charges Mensuelles",
-        lblAddExpenseTitle: "💸 Ajouter une charge fixe",
-        placeholderExpenseName: "Ex: Loyer, Électricité...",
+        lblAddExpenseTitle: "💸 Ajouter une charge mensuelle",
+        placeholderExpenseName: "Ex: Loyer, Électricité, Courses...",
         placeholderExpenseAmount: "Montant",
-        lblExpensesListTitle: "📋 Liste des charges",
+        lblExpensesListTitle: "📋 Liste des charges mensuelles",
         lblDataManagementTitle: "💾 Gestion des Données",
         btnExport: "💾 Exporter",
         lblImport: "📂 Importer",
@@ -854,12 +920,11 @@
         btnModalOpen: "⚙️ Avatars par Palier",
         lblRemainingCapacity: "Reste disponible :",
         lblSortBy: "Trier les cartes :",
-        optSortProgDesc: "Complétés en premier (100% ➔ 0%)",
-        optSortProgAsc: "À financer en premier (0% ➔ 100%)",
+        optSortProgDesc: "Complétés en premier",
+        optSortProgAsc: "À financer en premier",
         optSortAmountDesc: "Montant le plus élevé",
         optSortAmountAsc: "Montant le plus faible",
         optSortCreation: "Ordre d'ajout",
-        lblEcoPlatformsTitle: "Plateformes d'Investissement",
         lblEcoPortfolioTitle: "Portefeuille & Performances",
         lblEcoWikifolio: "Suivre le Wikifolio Alpha Picker",
         lblEcoAnalysisTitle: "Analyses & Thèses",
@@ -868,7 +933,7 @@
         lblEcoSupportDesc: "L'application est 100 % gratuite et totalement confidentielle (aucune collecte de données, aucun accès externe). Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
         lblEcoPaypal: "Faire un don via PayPal",
         modalTitleDefault: "Avatars par Palier d'Avancement",
-        modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes clones</strong>.",
+        modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.",
         lblCropTitle: "Ajuster la photo (Glisse pour déplacer)",
         lblCropZoom: "Zoom:",
         btnCropConfirm: "Valider la photo",
@@ -881,19 +946,19 @@
         lblRockLockTitle: "🪨 Socle de Roche (En cours)",
         lblRockLockDesc: "Alloue la rente pour couvrir 100 % de tes charges de base ({0} {1}/mois) et briser la roche.",
         lblNextTierTitle: "🔒 Palier Suivant : Niveau {0}",
-        lblNextTierDesc: "Augmente ton capital total pour alimenter le Super Clone actuel et débloquer ce niveau.",
+        lblNextTierDesc: "Augmente ton capital total pour alimenter le Super Klon actuel et débloquer ce niveau.",
         lblPayExpense: "{0} paye {1}% de la charge : {2} ({3} {4})",
         lblTarget: "Cible : {0} {1}/mois ({2}x charges) — {3}%",
-        lblSuperCloneName: "Super Clone",
-        modalTitleDedicated: "Visuel Dédié au Clone / Super Clone",
-        modalDescDedicated: "Ajuste la photo unique pour ce clone débloqué à 100 %.",
-        promptCloneName: "Saisis le prénom souhaité pour ce clone :",
-        promptSuperCloneName: "Saisis le prénom souhaité pour ce Super Clone :",
+        lblSuperCloneName: "Super Klon",
+        modalTitleDedicated: "Visuel Dédié au Klon / Super Klon",
+        modalDescDedicated: "Ajuste la photo unique pour ce Klon débloqué à 100 %.",
+        promptCloneName: "Saisis le prénom souhaité pour ce Klon :",
+        promptSuperCloneName: "Saisis le prénom souhaité pour ce Super Klon :",
         confirmReset: "Es-tu sûr de vouloir tout réinitialiser à zéro ? Toutes tes données et charges seront effacées.",
-        badgeFirst: "Premier clone",
+        badgeFirst: "Premier Klon",
         badgeRoche: "Socle brisé",
         badgeAnnuity5Digits: "Rente 5 chiffres",
-        badgeArmy: "Armée de clones",
+        badgeArmy: "Armée de Klons",
         badgeArtist: "Artiste",
         badge100kCapital: "100k Capital",
         badge7DigitsCapital: "Capital 7 chiffres",
@@ -905,21 +970,21 @@
         badgeLevelDiamond: "Niveau Diamant",
         perMonth: "/mois",
         completedCounter: "👑 {0}/{1} à 100%",
-        superCompletedCounter: "⭐ {0} Super Clone{1} au max"
+        superCompletedCounter: "⭐ {0} Super Klon{1} au max"
       },
       en: {
         navTab1: "📊 1. Expenses & Capital",
-        navTab2: "👤 2. Clones",
+        navTab2: "👤 2. Klons",
         navTab3: "🌐 3. Ecosystem",
         lblFirstname: "First Name:",
         lblCapitalTitle: "Total Liquid Capital",
         placeholderCapital: "Capital amount",
         lblAnnuityCapacity: "Theoretical Annuity (4% / yr):",
         lblTotalExpenses: "Total Monthly Expenses",
-        lblAddExpenseTitle: "💸 Add a Fixed Expense",
-        placeholderExpenseName: "Ex: Rent, Electricity...",
+        lblAddExpenseTitle: "💸 Add a Monthly Expense",
+        placeholderExpenseName: "Ex: Rent, Electricity, Groceries...",
         placeholderExpenseAmount: "Amount",
-        lblExpensesListTitle: "📋 Expenses List",
+        lblExpensesListTitle: "📋 Monthly Expenses List",
         lblDataManagementTitle: "💾 Data Management",
         btnExport: "💾 Export",
         lblImport: "📂 Import",
@@ -930,12 +995,11 @@
         btnModalOpen: "⚙️ Tier Avatars",
         lblRemainingCapacity: "Remaining available:",
         lblSortBy: "Sort cards:",
-        optSortProgDesc: "Completed first (100% ➔ 0%)",
-        optSortProgAsc: "To fund first (0% ➔ 100%)",
+        optSortProgDesc: "Completed first",
+        optSortProgAsc: "To fund first",
         optSortAmountDesc: "Highest amount",
         optSortAmountAsc: "Lowest amount",
         optSortCreation: "Order added",
-        lblEcoPlatformsTitle: "Investment Platforms",
         lblEcoPortfolioTitle: "Portfolio & Performance",
         lblEcoWikifolio: "Follow Wikifolio Alpha Picker",
         lblEcoAnalysisTitle: "Analyses & Insights",
@@ -944,7 +1008,7 @@
         lblEcoSupportDesc: "This app is 100% free and completely private (no data collection). If this tool helps you on your path to financial independence, you can support the project.",
         lblEcoPaypal: "Donate via PayPal",
         modalTitleDefault: "Avatars by Progress Tier",
-        modalDescDefault: "Configure photos for all 6 tiers. They will apply to <strong>all your clones</strong>.",
+        modalDescDefault: "Configure photos for all 6 tiers. They will apply to <strong>all your Klons</strong>.",
         lblCropTitle: "Adjust Photo (Drag to move)",
         lblCropZoom: "Zoom:",
         btnCropConfirm: "Confirm Photo",
@@ -957,19 +1021,19 @@
         lblRockLockTitle: "🪨 Bedrock Base (In Progress)",
         lblRockLockDesc: "Allocate annuity to cover 100% of your baseline expenses ({0} {1}/mo) to shatter the rock.",
         lblNextTierTitle: "🔒 Next Tier: Level {0}",
-        lblNextTierDesc: "Increase your total capital to feed the current Super Clone and unlock this tier.",
+        lblNextTierDesc: "Increase your total capital to feed the current Super Klon and unlock this tier.",
         lblPayExpense: "{0} covers {1}% of expense: {2} ({3} {4})",
         lblTarget: "Target: {0} {1}/mo ({2}x expenses) — {3}%",
-        lblSuperCloneName: "Super Clone",
-        modalTitleDedicated: "Dedicated Avatar for Clone / Super Clone",
-        modalDescDedicated: "Adjust the unique photo for this 100% unlocked clone.",
-        promptCloneName: "Enter the desired name for this clone:",
-        promptSuperCloneName: "Enter the desired name for this Super Clone:",
+        lblSuperCloneName: "Super Klon",
+        modalTitleDedicated: "Dedicated Avatar for Klon / Super Klon",
+        modalDescDedicated: "Adjust the unique photo for this 100% unlocked Klon.",
+        promptCloneName: "Enter the desired name for this Klon:",
+        promptSuperCloneName: "Enter the desired name for this Super Klon:",
         confirmReset: "Are you sure you want to reset everything to zero? All your data and expenses will be cleared.",
-        badgeFirst: "First clone",
+        badgeFirst: "First Klon",
         badgeRoche: "Shattered Base",
         badgeAnnuity5Digits: "5-digit Annuity",
-        badgeArmy: "Clone Army",
+        badgeArmy: "Klon Army",
         badgeArtist: "Artist",
         badge100kCapital: "100k Capital",
         badge7DigitsCapital: "7-digit Capital",
@@ -981,7 +1045,7 @@
         badgeLevelDiamond: "Diamond Level",
         perMonth: "/mo",
         completedCounter: "👑 {0}/{1} at 100%",
-        superCompletedCounter: "⭐ {0} Super Clone{1} maxed"
+        superCompletedCounter: "⭐ {0} Super Klon{1} maxed"
       }
     };
 
@@ -997,10 +1061,10 @@
       firstname: localStorage.getItem('alpha_firstname') || "",
       customCloneNames: JSON.parse(localStorage.getItem('alpha_custom_clone_names')) || {},
       sortMode: localStorage.getItem('alpha_sort_mode') || "prog_desc",
-      unlockedBadges: JSON.parse(localStorage.getItem('alpha_unlocked_badges')) || []
+      everUnlockedBadges: JSON.parse(localStorage.getItem('alpha_ever_unlocked_badges')) || []
     };
 
-    const DEFAULT_EMOJIS = { 0: '😫', 20: '🙁', 40: '😐', 60: '🙂', 80: '😎', 100: '👑' };
+    const DEFAULT_EMOJIS = { 0: '😫', 20: '😟', 40: '😐', 60: '🙂', 80: '😃', 100: '👑' };
     const TIERS = [
       { id: "super_fer", nameFR: "Fer", nameEN: "Iron", mult: 2, icon: "⚔️" },
       { id: "super_bronze", nameFR: "Bronze", nameEN: "Bronze", mult: 4, icon: "🥉" },
@@ -1042,7 +1106,7 @@
       document.getElementById('lbl-expenses-list-title').innerText = t.lblExpensesListTitle;
       document.getElementById('lbl-data-management-title').innerText = t.lblDataManagementTitle;
       document.getElementById('btn-export').innerText = t.btnExport;
-      document.getElementById('lbl-import').childNodes[0].nodeValue = t.lblImport + " ";
+      document.getElementById('lbl-import').querySelector('span').innerText = t.lblImport;
       document.getElementById('btn-reset').innerText = t.btnReset;
       document.getElementById('lbl-privacy-footer').innerText = t.lblPrivacyFooter;
       document.getElementById('lbl-global-progress').innerText = t.lblGlobalProgress;
@@ -1055,7 +1119,6 @@
       document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
       document.getElementById('opt-sort-amount-asc').innerText = t.optSortAmountAsc;
       document.getElementById('opt-sort-creation').innerText = t.optSortCreation;
-      document.getElementById('lbl-eco-platforms-title').innerText = t.lblEcoPlatformsTitle;
       document.getElementById('lbl-eco-portfolio-title').innerText = t.lblEcoPortfolioTitle;
       document.getElementById('lbl-eco-wikifolio').innerText = t.lblEcoWikifolio;
       document.getElementById('lbl-eco-analysis-title').innerText = t.lblEcoAnalysisTitle;
@@ -1137,12 +1200,12 @@
       localStorage.setItem('alpha_dedicated_avatars', JSON.stringify(state.dedicatedAvatars));
       localStorage.setItem('alpha_firstname', state.firstname);
       localStorage.setItem('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
-      localStorage.setItem('alpha_unlocked_badges', JSON.stringify(state.unlockedBadges));
+      localStorage.setItem('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
     }
 
     function exportData() {
       try {
-        const fileName = `alpha_picker_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        const fileName = `klon_app_backup_${new Date().toISOString().slice(0, 10)}.json`;
         const jsonContent = JSON.stringify(state, null, 2);
         const blob = new Blob([jsonContent], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -1178,7 +1241,7 @@
             state.theme = state.theme || "dark";
             state.lang = state.lang || "fr";
             state.sortMode = state.sortMode || "prog_desc";
-            state.unlockedBadges = state.unlockedBadges || [];
+            state.everUnlockedBadges = state.everUnlockedBadges || [];
             state.dedicatedAvatars = state.dedicatedAvatars || {};
             state.customCloneNames = state.customCloneNames || {};
             document.getElementById('user-firstname-input').value = state.firstname;
@@ -1220,7 +1283,7 @@
           firstname: "",
           customCloneNames: {},
           sortMode: "prog_desc",
-          unlockedBadges: []
+          everUnlockedBadges: []
         };
         document.getElementById('user-firstname-input').value = "";
         document.getElementById('capital-input').value = "";
@@ -1467,8 +1530,8 @@
         grid.innerHTML += `
           <div class="tier-item">
             <div style="font-size: 0.85rem; font-weight: bold; width: 35px;">${step}%</div>
-            <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-color); background-size: cover; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-              ${customImg ? `<img src="${customImg}" style="width:100%; height:100%; object-fit:cover;">` : DEFAULT_EMOJIS[step]}
+            <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-color); background-size: cover; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 1.5rem; line-height: 1;">
+              ${customImg ? `<img src="${customImg}" style="width:100%; height:100%; object-fit:cover;">` : `<span>${DEFAULT_EMOJIS[step]}</span>`}
             </div>
             
             <div style="display: flex; gap: 4px; margin-left: auto; align-items: center;">
@@ -1667,44 +1730,54 @@
       animate();
     }
 
-    function checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, monthlyCapacity) {
+    /* GESTION DYNAMIQUE DES BADGES ET DE LEUR ÉTAT VISUEL */
+    function checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, monthlyCapacity, totalExpenses) {
       const t = getT();
+      let currentlyValid = [];
       let newlyUnlocked = false;
 
-      function unlock(badgeId) {
-        if (!state.unlockedBadges.includes(badgeId)) {
-          state.unlockedBadges.push(badgeId);
+      // Condition : Total des charges >= 1 000 €
+      const meetsExpenseThreshold = totalExpenses >= 1000;
+
+      if (meetsExpenseThreshold) {
+        if (completedClonesCount > 0) currentlyValid.push("badge_first");
+
+        for (let target = 10; target <= 90; target += 10) {
+          if (coverageRatio >= target) currentlyValid.push(`badge_${target}`);
+        }
+
+        if (allBaseCompleted) currentlyValid.push("badge_roche");
+        if (completedClonesCount >= 5) currentlyValid.push("badge_army");
+
+        unlockedSuperIds.forEach(tierId => {
+          currentlyValid.push(`badge_${tierId}`);
+        });
+
+        // Badges de Rente
+        if (monthlyCapacity >= 10) currentlyValid.push("badge_10_m");
+        if (monthlyCapacity >= 50) currentlyValid.push("badge_50_m");
+        if (monthlyCapacity >= 100) currentlyValid.push("badge_100_m");
+        if (monthlyCapacity >= 500) currentlyValid.push("badge_500_m");
+        if (monthlyCapacity >= 1000) currentlyValid.push("badge_1000_m");
+        if (monthlyCapacity >= 10000) currentlyValid.push("badge_10000_m");
+      }
+
+      // Badges uniquement patrimoniaux
+      if (Object.keys(state.dedicatedAvatars).length > 0) currentlyValid.push("badge_artist");
+      if (state.capital >= 100000) currentlyValid.push("badge_100k");
+      if (state.capital >= 1000000) currentlyValid.push("badge_7_digits");
+      if (state.capital >= 10000000) currentlyValid.push("badge_8_digits");
+
+      // Vérification des nouveaux déblocages absolus pour le feu d'artifice
+      currentlyValid.forEach(bId => {
+        if (!state.everUnlockedBadges.includes(bId)) {
+          state.everUnlockedBadges.push(bId);
           newlyUnlocked = true;
         }
-      }
-
-      if (completedClonesCount > 0) unlock("badge_first");
-
-      for (let target = 10; target <= 90; target += 10) {
-        if (coverageRatio >= target) unlock(`badge_${target}`);
-      }
-
-      if (allBaseCompleted) unlock("badge_roche");
-
-      if (monthlyCapacity >= 10) unlock("badge_10_m");
-      if (monthlyCapacity >= 50) unlock("badge_50_m");
-      if (monthlyCapacity >= 100) unlock("badge_100_m");
-      if (monthlyCapacity >= 500) unlock("badge_500_m");
-      if (monthlyCapacity >= 1000) unlock("badge_1000_m");
-      if (monthlyCapacity >= 10000) unlock("badge_10000_m");
-
-      if (completedClonesCount >= 5) unlock("badge_army");
-      if (Object.keys(state.dedicatedAvatars).length > 0) unlock("badge_artist");
-      if (state.capital >= 100000) unlock("badge_100k");
-      if (state.capital >= 1000000) unlock("badge_7_digits");
-      if (state.capital >= 10000000) unlock("badge_8_digits");
-
-      unlockedSuperIds.forEach(tierId => {
-        unlock(`badge_${tierId}`);
       });
 
       if (newlyUnlocked) {
-        localStorage.setItem('alpha_unlocked_badges', JSON.stringify(state.unlockedBadges));
+        localStorage.setItem('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
         triggerConfetti();
       }
 
@@ -1714,7 +1787,7 @@
         { id: "badge_20", icon: "🌿", label: "20%", isSuper: false },
         { id: "badge_30", icon: "🪴", label: "30%", isSuper: false },
         { id: "badge_40", icon: "🌳", label: "40%", isSuper: false },
-        { id: "badge_50", icon: "🔋", label: "50%", isSuper: false },
+        { id: "badge_50", icon: "⚖️", label: "50%", isSuper: false },
         { id: "badge_60", icon: "🔥", label: "60%", isSuper: false },
         { id: "badge_70", icon: "🚀", label: "70%", isSuper: false },
         { id: "badge_80", icon: "🌟", label: "80%", isSuper: false },
@@ -1740,12 +1813,20 @@
 
       const badgesBox = document.getElementById('badges-box');
       badgesBox.innerHTML = '';
+      
       ALL_BADGES.forEach(b => {
-        if (state.unlockedBadges.includes(b.id)) {
+        const isActive = currentlyValid.includes(b.id);
+        const wasEverUnlocked = state.everUnlockedBadges.includes(b.id);
+
+        // Affichage uniquement si le badge a été débloqué au moins une fois
+        if (wasEverUnlocked) {
+          let stateClass = isActive ? "active-unlocked" : "lost-inactive";
+          let statusIcon = isActive ? "" : " ⚠️";
           const superClass = b.isSuper ? 'super-badge' : '';
+
           badgesBox.innerHTML += `
-            <div class="badge-item ${superClass}">
-              <span>${b.icon}</span> ${b.label}
+            <div class="badge-item ${stateClass} ${superClass}">
+              <span>${b.icon}</span> ${b.label}${statusIcon}
             </div>
           `;
         }
@@ -1777,13 +1858,14 @@
       remainingDisplay.innerText = `${formatNumber(remainingCapacity)} ${state.currency}${t.perMonth}`;
 
       let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+      const hasExpenses = totalExpenses > 0;
 
-      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      let coverageRatio = hasExpenses ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
       document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
       document.getElementById('global-coverage-bar').style.width = `${coverageRatio}%`;
 
-      if (totalExpenses === 0) {
-        checkBadges(0, 0, false, [], totalMonthlyCapacity);
+      if (!hasExpenses) {
+        checkBadges(0, 0, false, [], totalMonthlyCapacity, 0);
         return;
       }
 
@@ -1825,7 +1907,7 @@
 
         let avatarHTML = avatar.type === 'image' 
           ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
-          : `<div class="clone-avatar ${statusClass}" ${clickHandler}>${avatar.value}</div>`;
+          : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
 
         const cloneName = getCloneName(e.id, idx);
         const payText = t.lblPayExpense
@@ -1901,7 +1983,7 @@
 
           let avatarHTML = avatar.type === 'image' 
             ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
-            : `<div class="clone-avatar ${statusClass}" ${clickHandler}>${avatar.value}</div>`;
+            : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
 
           const customSuperName = state.customCloneNames[tier.id] ? state.customCloneNames[tier.id] : "";
           const superDisplayName = customSuperName !== "" ? `${t.lblSuperCloneName} ${customSuperName}` : t.lblSuperCloneName;
@@ -1957,7 +2039,7 @@
         }
       }
 
-      checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, totalMonthlyCapacity);
+      checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, totalMonthlyCapacity, totalExpenses);
     }
 
     function copyFortuneoCode() {
