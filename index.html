@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Picker — Clones</title>
+  <style>
+    :root[data-theme="dark"] {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --text-main: #c9d1d9;
+      --text-bright: #f0f6fc;
+      --accent-blue: #58a6ff;
+      --accent-green: #238636;
+      --accent-green-bright: #7ee787;
+      --accent-orange: #f0883e;
+      --accent-red: #da3633;
+      --accent-purple: #a371f7;
+    }
+
+    :root[data-theme="light"] {
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffff;
+      --border-color: #d0d7de;
+      --text-main: #24292f;
+      --text-bright: #1f2328;
+      --accent-blue: #0969da;
+      --accent-green: #1f883d;
+      --accent-green-bright: #1a7f37;
+      --accent-orange: #bc4c00;
+      --accent-red: #cf222e;
+      --accent-purple: #8250df;
+    }
+
+    :root[data-theme="colorblind"] {
+      --bg-color: #000000;
+      --card-bg: #121212;
+      --border-color: #ffffff;
+      --text-main: #ffffff;
+      --text-bright: #ffff00;
+      --accent-blue: #00ffff;
+      --accent-green: #00ff00;
+      --accent-green-bright: #00ff00;
+      --accent-orange: #ff8000;
+      --accent-red: #ff0000;
+      --accent-purple: #ffff00;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] { -moz-appearance: textfield; }
+
+    .app-container {
+      width: 100%;
+      max-width: 600px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    nav {
+      display: flex;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .nav-btn {
+      flex: 1;
+      padding: 14px 10px;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background-color 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .nav-btn.active {
+      background-color: var(--border-color);
+      color: var(--accent-blue);
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .tab-content { display: none; flex-direction: column; gap: 16px; }
+    .tab-content.active { display: flex; }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .tooltip-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--accent-blue);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .help-box {
+      display: none;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .help-box.active { display: block; }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"], input[type="number"], select {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-bright);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    select {
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--accent-blue);
+    }
+
+    .firstname-inline-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    .inline-firstname-input {
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--accent-blue);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      flex: 1;
+      max-width: 160px;
+    }
+
+    .capital-dashboard-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .capital-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .capital-clean-input {
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-color: var(--border-color);
+      text-align: left;
+    }
+
+    .currency-select {
+      width: auto;
+      padding: 12px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .rente-badge-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .inline-amount-input {
+      width: 95px !important;
+      padding: 8px !important;
+      text-align: right;
+      font-weight: bold;
+      color: var(--accent-green-bright) !important;
+    }
+
+    .currency-align-label {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      height: 100%;
+      user-select: none;
+    }
+
+    button.btn-primary {
+      background-color: var(--accent-green);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    button.btn-secondary, label.btn-secondary {
+      background-color: var(--bg-color);
+      color: var(--accent-blue);
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    button.btn-danger {
+      background-color: transparent;
+      color: var(--accent-red);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button.btn-reset {
+      background-color: transparent;
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+      padding: 10px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    button.btn-reset:hover {
+      background-color: var(--accent-red);
+      color: white;
+    }
+
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .expense-item:last-child { border-bottom: none; }
+
+    .total-box {
+      text-align: center;
+      padding: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    .total-amount {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--accent-green-bright);
+      margin-top: 4px;
+    }
+
+    .info-footer {
+      font-size: 0.8rem;
+      color: var(--text-main);
+      text-align: center;
+      margin-top: 8px;
+      line-height: 1.4;
+      opacity: 0.8;
+    }
+
+    .clone-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-left: 4px solid var(--accent-blue);
+      transition: border-color 0.3s;
+    }
+
+    .clone-card.completed {
+      border-left: 4px solid var(--accent-green-bright) !important;
+    }
+
+    .super-clone-card {
+      border-left: 4px solid var(--accent-purple) !important;
+      background: var(--card-bg);
+    }
+
+    .clone-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .clone-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background-color: var(--bg-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .clone-avatar.locked {
+      border: 2px solid var(--accent-red);
+      box-shadow: 0 0 6px rgba(218, 54, 51, 0.4);
+      cursor: not-allowed;
+    }
+
+    .clone-avatar.unlocked {
+      cursor: pointer;
+      border: 2px solid var(--accent-green-bright);
+      box-shadow: 0 0 10px rgba(126, 231, 135, 0.5);
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 6px rgba(126, 231, 135, 0.3); }
+      50% { box-shadow: 0 0 14px rgba(126, 231, 135, 0.8); }
+      100% { box-shadow: 0 0 6px rgba(126, 231, 135, 0.3); }
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 12px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--accent-green-bright);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar-super {
+      background-color: var(--accent-purple) !important;
+    }
+
+    .tier-lock {
+      text-align: center;
+      padding: 20px;
+      border: 2px dashed var(--accent-orange);
+      border-radius: 8px;
+      background-color: var(--card-bg);
+    }
+
+    .btn-global-settings {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--accent-blue);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .tier-item {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .crop-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-color);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    canvas#crop-canvas {
+      border: 2px solid var(--accent-blue);
+      border-radius: 50%;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    canvas#crop-canvas:active { cursor: grabbing; }
+
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 14px;
+      background-color: var(--bg-color);
+      color: var(--accent-blue);
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 1rem;
+      font-weight: bold;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .clickable-clone-name {
+      color: var(--text-bright);
+      cursor: pointer;
+      transition: color 0.2s;
+      font-weight: normal;
+    }
+
+    .clickable-clone-name:hover {
+      color: var(--accent-blue);
+    }
+
+    .counter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .global-progress-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .badges-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      background-color: var(--bg-color);
+      border: 1px solid var(--accent-green-bright);
+      color: var(--text-bright);
+      box-shadow: 0 0 6px rgba(126, 231, 135, 0.2);
+      animation: badgePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .badge-item.super-badge {
+      border-color: var(--accent-purple) !important;
+      color: var(--accent-purple) !important;
+      box-shadow: 0 0 8px rgba(163, 113, 247, 0.4);
+    }
+
+    @keyframes badgePop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .sort-select-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .sort-select-box select {
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      width: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <nav>
+      <button class="nav-btn active" id="nav-tab1" onclick="switchTab('tab1', event)">📊 1. Charges & Capital</button>
+      <button class="nav-btn" id="nav-tab2" onclick="switchTab('tab2', event)">👤 2. Clones</button>
+      <button class="nav-btn" id="nav-tab3" onclick="switchTab('tab3', event)">🌐 3. Écosystème</button>
+    </nav>
+
+    <!-- ONGLET 1 : SAISIE DES DONNÉES -->
+    <div id="tab1" class="tab-content active">
+      <div class="card" style="padding: 14px 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div class="firstname-inline-box" style="flex: 1; min-width: 220px;">
+            <span id="lbl-firstname">Prénom :</span>
+            <input type="text" id="user-firstname-input" class="inline-firstname-input" placeholder="Alpha Picker" onblur="saveUserFirstname()" onkeydown="if(event.key==='Enter') this.blur()">
+          </div>
+          
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <select id="lang-select" class="currency-select" onchange="changeLanguage(this.value)" style="padding: 6px 10px; font-size: 0.85rem;">
+              <option value="fr">FR</option>
+              <option value="en">EN</option>
+            </select>
+
+            <select id="theme-select" class="currency-select" onchange="changeTheme(this.value)" style="padding: 6px 10px; font-size: 0.85rem;">
+              <option value="dark" id="opt-theme-dark">🌙 Sombre</option>
+              <option value="light" id="opt-theme-light">☀️ Clair</option>
+              <option value="colorblind" id="opt-theme-colorblind">👁️ Daltonien</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARTE CAPITAL GLOBAL LIQUIDE -->
+      <div class="capital-dashboard-card">
+        <div class="card-header-flex">
+          <div class="card-title">
+            💰 <span id="lbl-capital-title">Capital Global Liquide</span>
+            <button class="tooltip-btn" onclick="toggleHelp('capital-help')" title="Explications">?</button>
+          </div>
+        </div>
+
+        <div id="capital-help" class="help-box">
+          <span id="lbl-capital-help-text">
+            <strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>
+            Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>
+            La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br>
+            <em>Note : Cela ne constitue pas un conseil en investissement. Chacun reste libre et responsable de la composition de son portefeuille.</em>
+          </span>
+        </div>
+
+        <div class="capital-inputs-grid">
+          <input type="number" id="capital-input" class="capital-clean-input" placeholder="Montant du capital" step="1" inputmode="numeric" onblur="updateCalculations()" onkeydown="if(event.key==='Enter') this.blur()">
+          
+          <select id="currency-select" class="currency-select" onchange="changeCurrency(this.value)">
+            <option value="€">EUR (€)</option>
+            <option value="$">USD ($)</option>
+            <option value="£">GBP (£)</option>
+            <option value="CHF">CHF</option>
+            <option value="CAD">CAD</option>
+          </select>
+        </div>
+
+        <div class="rente-badge-container">
+          <span style="font-size: 0.85rem;" id="lbl-annuity-capacity">Rente théorique (4% / an) :</span>
+          <strong id="monthly-capacity-display" style="color: var(--accent-green-bright); font-size: 1.05rem;">0 /mois</strong>
+        </div>
+      </div>
+
+      <div class="total-box">
+        <div id="lbl-total-expenses">Total Charges Mensuelles</div>
+        <div class="total-amount" id="total-expenses-display">0</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="lbl-add-expense-title">💸 Ajouter une charge fixe</div>
+        <div class="input-group">
+          <input type="text" id="expense-name" placeholder="Ex: Loyer, Électricité..." onkeydown="if(event.key==='Enter') addExpense()">
+          <input type="number" id="expense-amount" placeholder="Montant" step="1" inputmode="numeric" style="max-width: 110px;" onkeydown="if(event.key==='Enter') addExpense()">
+          <button class="btn-primary" onclick="addExpense()">+</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="lbl-expenses-list-title">📋 Liste des charges</div>
+        <div id="expenses-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="lbl-data-management-title">💾 Gestion des Données</div>
+        <div style="display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
+          <button class="btn-secondary" style="flex: 1; min-width: 90px;" id="btn-export" onclick="exportData()">💾 Exporter</button>
+          <label class="btn-secondary" style="flex: 1; min-width: 90px;" id="lbl-import">
+            📂 Importer
+            <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
+          </label>
+          <button class="btn-reset" style="flex: 1; min-width: 110px;" id="btn-reset" onclick="resetAllData()">🗑️ Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="info-footer" id="lbl-privacy-footer">
+        🛡️ Vos données restent 100 % privées. L'application ne collecte aucune information et n'accède pas à votre appareil : les images que vous sélectionnez sont sauvegardées uniquement dans la mémoire locale de votre navigateur.
+      </div>
+    </div>
+
+    <!-- ONGLET 2 : RESULTAT DES CLONES -->
+    <div id="tab2" class="tab-content">
+      <div class="global-progress-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold;">
+          <span id="lbl-global-progress">🎯 Progression Autonomie Globale</span>
+          <span id="global-coverage-percentage" style="color: var(--accent-green-bright);">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="global-coverage-bar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="badges-container" id="badges-box" style="margin-top: 6px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-flex">
+          <div class="card-title" id="lbl-allocation-title">Allocation de la Rente</div>
+          <button class="btn-global-settings" id="btn-modal-open" onclick="openModal()">⚙️ Avatars par Palier</button>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <div style="font-size: 0.9rem;">
+            <span id="lbl-remaining-capacity">Reste disponible :</span> <strong id="remaining-capacity-display" style="color: var(--accent-blue);">0 /mois</strong>
+          </div>
+          <div style="display: flex; gap: 6px;" id="clone-counters-box"></div>
+        </div>
+
+        <div class="sort-select-box" style="margin-top: 8px;">
+          <span id="lbl-sort-by">Trier les cartes :</span>
+          <select id="sort-select" onchange="changeSortMode(this.value)">
+            <option value="prog_desc" id="opt-sort-prog-desc">Complétés en premier (100% ➔ 0%)</option>
+            <option value="prog_asc" id="opt-sort-prog-asc">À financer en premier (0% ➔ 100%)</option>
+            <option value="amount_desc" id="opt-sort-amount-desc">Montant le plus élevé</option>
+            <option value="amount_asc" id="opt-sort-amount-asc">Montant le plus faible</option>
+            <option value="creation" id="opt-sort-creation">Ordre d'ajout</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="clones-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      <div id="super-clones-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      <div id="tier-boss-container"></div>
+    </div>
+
+    <!-- ONGLET 3 : ÉCOSYSTÈME -->
+    <div id="tab3" class="tab-content">
+      <div class="card">
+        <div class="card-title" id="lbl-eco-platforms-title">Plateformes d'Investissement</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <a href="https://ibkr.com/referral/jeremy1408" target="_blank" rel="noopener noreferrer" class="link-btn">Interactive Brokers (IBKR)</a>
+          <a href="https://bour.so/p/qLTYowTO9uQ" target="_blank" rel="noopener noreferrer" class="link-btn">BoursoBank</a>
+          <button class="link-btn" id="fortuneo-btn" onclick="copyFortuneoCode()">Fortuneo (Code Parrain : 12874482)</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="lbl-eco-portfolio-title">Portefeuille & Performances</div>
+        <a href="https://www.wikifolio.com/en/int/p/alphapicker?tab=wikifolios" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-wikifolio">Suivre le Wikifolio Alpha Picker</a>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="lbl-eco-analysis-title">Analyses & Thèses</div>
+        <a href="https://substack.com/@alphapicker?r=3bj34c&utm_campaign=profile&utm_medium=profile-page" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-substack">Suivre le Substack Alpha Picker</a>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
+        <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
+          L'application est 100 % gratuite et totalement confidentielle (aucune collecte de données, aucun accès externe). Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.
+        </p>
+        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: var(--accent-green); color: white;" id="lbl-eco-paypal">Faire un don via PayPal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIGURATION DES VISUELS GLOBAUX -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="card-title" id="modal-title-text">Avatars par Palier d'Avancement</div>
+      
+      <p style="font-size: 0.85rem; opacity: 0.8;" id="modal-desc-text">
+        Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes clones</strong>.
+      </p>
+
+      <div class="tier-grid" id="modal-tier-grid"></div>
+
+      <div id="crop-section" style="display: none;" class="crop-container">
+        <div style="font-size: 0.9rem; font-weight: bold; color: var(--text-bright);" id="lbl-crop-title">Ajuster la photo (Glisse pour déplacer)</div>
+        <canvas id="crop-canvas" width="140" height="140"></canvas>
+        
+        <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 0.8rem;" id="lbl-crop-zoom">Zoom:</span>
+          <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" style="flex:1;">
+        </div>
+        
+        <button class="btn-primary" onclick="confirmCrop()" style="width: 100%;" id="btn-crop-confirm">Valider la photo</button>
+      </div>
+
+      <button class="btn-secondary" onclick="closeModal()" style="margin-top: 10px;" id="btn-modal-close">Fermer</button>
+    </div>
+  </div>
+
+  <input type="file" id="dedicated-avatar-input" accept="image/*" style="display: none;" onchange="handleDedicatedImageSelect(event)">
+
+  <script>
+    const I18N = {
+      fr: {
+        navTab1: "📊 1. Charges & Capital",
+        navTab2: "👤 2. Clones",
+        navTab3: "🌐 3. Écosystème",
+        lblFirstname: "Prénom :",
+        lblCapitalTitle: "Capital Global Liquide",
+        placeholderCapital: "Montant du capital",
+        lblAnnuityCapacity: "Rente théorique (4% / an) :",
+        lblTotalExpenses: "Total Charges Mensuelles",
+        lblAddExpenseTitle: "💸 Ajouter une charge fixe",
+        placeholderExpenseName: "Ex: Loyer, Électricité...",
+        placeholderExpenseAmount: "Montant",
+        lblExpensesListTitle: "📋 Liste des charges",
+        lblDataManagementTitle: "💾 Gestion des Données",
+        btnExport: "💾 Exporter",
+        lblImport: "📂 Importer",
+        btnReset: "🗑️ Réinitialiser",
+        lblPrivacyFooter: "🛡️ Vos données restent 100 % privées. L'application ne collecte aucune information et n'accède pas à votre appareil : les images que vous sélectionnez sont sauvegardées uniquement dans la mémoire locale de votre navigateur.",
+        lblGlobalProgress: "🎯 Progression Autonomie Globale",
+        lblAllocationTitle: "Allocation de la Rente",
+        btnModalOpen: "⚙️ Avatars par Palier",
+        lblRemainingCapacity: "Reste disponible :",
+        lblSortBy: "Trier les cartes :",
+        optSortProgDesc: "Complétés en premier (100% ➔ 0%)",
+        optSortProgAsc: "À financer en premier (0% ➔ 100%)",
+        optSortAmountDesc: "Montant le plus élevé",
+        optSortAmountAsc: "Montant le plus faible",
+        optSortCreation: "Ordre d'ajout",
+        lblEcoPlatformsTitle: "Plateformes d'Investissement",
+        lblEcoPortfolioTitle: "Portefeuille & Performances",
+        lblEcoWikifolio: "Suivre le Wikifolio Alpha Picker",
+        lblEcoAnalysisTitle: "Analyses & Thèses",
+        lblEcoSubstack: "Suivre le Substack Alpha Picker",
+        lblEcoSupportTitle: "Soutenir le Projet",
+        lblEcoSupportDesc: "L'application est 100 % gratuite et totalement confidentielle (aucune collecte de données, aucun accès externe). Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
+        lblEcoPaypal: "Faire un don via PayPal",
+        modalTitleDefault: "Avatars par Palier d'Avancement",
+        modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes clones</strong>.",
+        lblCropTitle: "Ajuster la photo (Glisse pour déplacer)",
+        lblCropZoom: "Zoom:",
+        btnCropConfirm: "Valider la photo",
+        btnModalClose: "Fermer",
+        optThemeDark: "🌙 Sombre",
+        optThemeLight: "☀️ Clair",
+        optThemeColorblind: "👁️ Daltonien",
+        btnCover: "Couvrir",
+        lblAllocated: "Alloué :",
+        lblRockLockTitle: "🪨 Socle de Roche (En cours)",
+        lblRockLockDesc: "Alloue la rente pour couvrir 100 % de tes charges de base ({0} {1}/mois) et briser la roche.",
+        lblNextTierTitle: "🔒 Palier Suivant : Niveau {0}",
+        lblNextTierDesc: "Augmente ton capital total pour alimenter le Super Clone actuel et débloquer ce niveau.",
+        lblPayExpense: "{0} paye {1}% de la charge : {2} ({3} {4})",
+        lblTarget: "Cible : {0} {1}/mois ({2}x charges) — {3}%",
+        lblSuperCloneName: "Super Clone",
+        modalTitleDedicated: "Visuel Dédié au Clone / Super Clone",
+        modalDescDedicated: "Ajuste la photo unique pour ce clone débloqué à 100 %.",
+        promptCloneName: "Saisis le prénom souhaité pour ce clone :",
+        promptSuperCloneName: "Saisis le prénom souhaité pour ce Super Clone :",
+        confirmReset: "Es-tu sûr de vouloir tout réinitialiser à zéro ? Toutes tes données et charges seront effacées.",
+        badgeFirst: "Premier clone",
+        badgeRoche: "Socle brisé",
+        badgeAnnuity5Digits: "Rente 5 chiffres",
+        badgeArmy: "Armée de clones",
+        badgeArtist: "Artiste",
+        badge100kCapital: "100k Capital",
+        badge7DigitsCapital: "Capital 7 chiffres",
+        badge8DigitsCapital: "Capital 8 chiffres",
+        badgeLevelIron: "Niveau Fer",
+        badgeLevelBronze: "Niveau Bronze",
+        badgeLevelSilver: "Niveau Argent",
+        badgeLevelGold: "Niveau Or",
+        badgeLevelDiamond: "Niveau Diamant",
+        perMonth: "/mois",
+        completedCounter: "👑 {0}/{1} à 100%",
+        superCompletedCounter: "⭐ {0} Super Clone{1} au max"
+      },
+      en: {
+        navTab1: "📊 1. Expenses & Capital",
+        navTab2: "👤 2. Clones",
+        navTab3: "🌐 3. Ecosystem",
+        lblFirstname: "First Name:",
+        lblCapitalTitle: "Total Liquid Capital",
+        placeholderCapital: "Capital amount",
+        lblAnnuityCapacity: "Theoretical Annuity (4% / yr):",
+        lblTotalExpenses: "Total Monthly Expenses",
+        lblAddExpenseTitle: "💸 Add a Fixed Expense",
+        placeholderExpenseName: "Ex: Rent, Electricity...",
+        placeholderExpenseAmount: "Amount",
+        lblExpensesListTitle: "📋 Expenses List",
+        lblDataManagementTitle: "💾 Data Management",
+        btnExport: "💾 Export",
+        lblImport: "📂 Import",
+        btnReset: "🗑️ Reset",
+        lblPrivacyFooter: "🛡️ Your data remains 100% private. The app collects no information and does not access your device: uploaded images are saved strictly in your browser local storage.",
+        lblGlobalProgress: "🎯 Global Freedom Progress",
+        lblAllocationTitle: "Annuity Allocation",
+        btnModalOpen: "⚙️ Tier Avatars",
+        lblRemainingCapacity: "Remaining available:",
+        lblSortBy: "Sort cards:",
+        optSortProgDesc: "Completed first (100% ➔ 0%)",
+        optSortProgAsc: "To fund first (0% ➔ 100%)",
+        optSortAmountDesc: "Highest amount",
+        optSortAmountAsc: "Lowest amount",
+        optSortCreation: "Order added",
+        lblEcoPlatformsTitle: "Investment Platforms",
+        lblEcoPortfolioTitle: "Portfolio & Performance",
+        lblEcoWikifolio: "Follow Wikifolio Alpha Picker",
+        lblEcoAnalysisTitle: "Analyses & Insights",
+        lblEcoSubstack: "Follow Substack Alpha Picker",
+        lblEcoSupportTitle: "Support the Project",
+        lblEcoSupportDesc: "This app is 100% free and completely private (no data collection). If this tool helps you on your path to financial independence, you can support the project.",
+        lblEcoPaypal: "Donate via PayPal",
+        modalTitleDefault: "Avatars by Progress Tier",
+        modalDescDefault: "Configure photos for all 6 tiers. They will apply to <strong>all your clones</strong>.",
+        lblCropTitle: "Adjust Photo (Drag to move)",
+        lblCropZoom: "Zoom:",
+        btnCropConfirm: "Confirm Photo",
+        btnModalClose: "Close",
+        optThemeDark: "🌙 Dark",
+        optThemeLight: "☀️ Light",
+        optThemeColorblind: "👁️ Colorblind",
+        btnCover: "Cover",
+        lblAllocated: "Allocated:",
+        lblRockLockTitle: "🪨 Bedrock Base (In Progress)",
+        lblRockLockDesc: "Allocate annuity to cover 100% of your baseline expenses ({0} {1}/mo) to shatter the rock.",
+        lblNextTierTitle: "🔒 Next Tier: Level {0}",
+        lblNextTierDesc: "Increase your total capital to feed the current Super Clone and unlock this tier.",
+        lblPayExpense: "{0} covers {1}% of expense: {2} ({3} {4})",
+        lblTarget: "Target: {0} {1}/mo ({2}x expenses) — {3}%",
+        lblSuperCloneName: "Super Clone",
+        modalTitleDedicated: "Dedicated Avatar for Clone / Super Clone",
+        modalDescDedicated: "Adjust the unique photo for this 100% unlocked clone.",
+        promptCloneName: "Enter the desired name for this clone:",
+        promptSuperCloneName: "Enter the desired name for this Super Clone:",
+        confirmReset: "Are you sure you want to reset everything to zero? All your data and expenses will be cleared.",
+        badgeFirst: "First clone",
+        badgeRoche: "Shattered Base",
+        badgeAnnuity5Digits: "5-digit Annuity",
+        badgeArmy: "Clone Army",
+        badgeArtist: "Artist",
+        badge100kCapital: "100k Capital",
+        badge7DigitsCapital: "7-digit Capital",
+        badge8DigitsCapital: "8-digit Capital",
+        badgeLevelIron: "Iron Level",
+        badgeLevelBronze: "Bronze Level",
+        badgeLevelSilver: "Silver Level",
+        badgeLevelGold: "Gold Level",
+        badgeLevelDiamond: "Diamond Level",
+        perMonth: "/mo",
+        completedCounter: "👑 {0}/{1} at 100%",
+        superCompletedCounter: "⭐ {0} Super Clone{1} maxed"
+      }
+    };
+
+    let state = {
+      expenses: JSON.parse(localStorage.getItem('alpha_expenses')) || [],
+      capital: Math.round(parseFloat(localStorage.getItem('alpha_capital'))) || 0,
+      currency: localStorage.getItem('alpha_currency') || "€",
+      theme: localStorage.getItem('alpha_theme') || "dark",
+      lang: localStorage.getItem('alpha_lang') || "fr",
+      allocations: JSON.parse(localStorage.getItem('alpha_allocations')) || {},
+      globalAvatars: JSON.parse(localStorage.getItem('alpha_global_avatars')) || {},
+      dedicatedAvatars: JSON.parse(localStorage.getItem('alpha_dedicated_avatars')) || {},
+      firstname: localStorage.getItem('alpha_firstname') || "",
+      customCloneNames: JSON.parse(localStorage.getItem('alpha_custom_clone_names')) || {},
+      sortMode: localStorage.getItem('alpha_sort_mode') || "prog_desc",
+      unlockedBadges: JSON.parse(localStorage.getItem('alpha_unlocked_badges')) || []
+    };
+
+    const DEFAULT_EMOJIS = { 0: '😫', 20: '🙁', 40: '😐', 60: '🙂', 80: '😎', 100: '👑' };
+    const TIERS = [
+      { id: "super_fer", nameFR: "Fer", nameEN: "Iron", mult: 2, icon: "⚔️" },
+      { id: "super_bronze", nameFR: "Bronze", nameEN: "Bronze", mult: 4, icon: "🥉" },
+      { id: "super_argent", nameFR: "Argent", nameEN: "Silver", mult: 8, icon: "🥈" },
+      { id: "super_or", nameFR: "Or", nameEN: "Gold", mult: 16, icon: "🥇" },
+      { id: "super_diamant", nameFR: "Diamant", nameEN: "Diamond", mult: 32, icon: "💎" }
+    ];
+
+    function getT() {
+      return I18N[state.lang] || I18N.fr;
+    }
+
+    function formatNumber(num) {
+      const locale = state.lang === 'en' ? 'en-US' : 'fr-FR';
+      return new Intl.NumberFormat(locale).format(num);
+    }
+
+    function changeLanguage(lang) {
+      state.lang = lang;
+      localStorage.setItem('alpha_lang', lang);
+      applyTranslations();
+      renderExpenses();
+      updateCalculations();
+    }
+
+    function applyTranslations() {
+      const t = getT();
+      document.getElementById('nav-tab1').innerText = t.navTab1;
+      document.getElementById('nav-tab2').innerText = t.navTab2;
+      document.getElementById('nav-tab3').innerText = t.navTab3;
+      document.getElementById('lbl-firstname').innerText = t.lblFirstname;
+      document.getElementById('lbl-capital-title').innerText = t.lblCapitalTitle;
+      document.getElementById('capital-input').placeholder = t.placeholderCapital;
+      document.getElementById('lbl-annuity-capacity').innerText = t.lblAnnuityCapacity;
+      document.getElementById('lbl-total-expenses').innerText = t.lblTotalExpenses;
+      document.getElementById('lbl-add-expense-title').innerText = t.lblAddExpenseTitle;
+      document.getElementById('expense-name').placeholder = t.placeholderExpenseName;
+      document.getElementById('expense-amount').placeholder = t.placeholderExpenseAmount;
+      document.getElementById('lbl-expenses-list-title').innerText = t.lblExpensesListTitle;
+      document.getElementById('lbl-data-management-title').innerText = t.lblDataManagementTitle;
+      document.getElementById('btn-export').innerText = t.btnExport;
+      document.getElementById('lbl-import').childNodes[0].nodeValue = t.lblImport + " ";
+      document.getElementById('btn-reset').innerText = t.btnReset;
+      document.getElementById('lbl-privacy-footer').innerText = t.lblPrivacyFooter;
+      document.getElementById('lbl-global-progress').innerText = t.lblGlobalProgress;
+      document.getElementById('lbl-allocation-title').innerText = t.lblAllocationTitle;
+      document.getElementById('btn-modal-open').innerText = t.btnModalOpen;
+      document.getElementById('lbl-remaining-capacity').innerText = t.lblRemainingCapacity;
+      document.getElementById('lbl-sort-by').innerText = t.lblSortBy;
+      document.getElementById('opt-sort-prog-desc').innerText = t.optSortProgDesc;
+      document.getElementById('opt-sort-prog-asc').innerText = t.optSortProgAsc;
+      document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
+      document.getElementById('opt-sort-amount-asc').innerText = t.optSortAmountAsc;
+      document.getElementById('opt-sort-creation').innerText = t.optSortCreation;
+      document.getElementById('lbl-eco-platforms-title').innerText = t.lblEcoPlatformsTitle;
+      document.getElementById('lbl-eco-portfolio-title').innerText = t.lblEcoPortfolioTitle;
+      document.getElementById('lbl-eco-wikifolio').innerText = t.lblEcoWikifolio;
+      document.getElementById('lbl-eco-analysis-title').innerText = t.lblEcoAnalysisTitle;
+      document.getElementById('lbl-eco-substack').innerText = t.lblEcoSubstack;
+      document.getElementById('lbl-eco-support-title').innerText = t.lblEcoSupportTitle;
+      document.getElementById('lbl-eco-support-desc').innerText = t.lblEcoSupportDesc;
+      document.getElementById('lbl-eco-paypal').innerText = t.lblEcoPaypal;
+      document.getElementById('lbl-crop-title').innerText = t.lblCropTitle;
+      document.getElementById('lbl-crop-zoom').innerText = t.lblCropZoom;
+      document.getElementById('btn-crop-confirm').innerText = t.btnCropConfirm;
+      document.getElementById('btn-modal-close').innerText = t.btnModalClose;
+      document.getElementById('opt-theme-dark').innerText = t.optThemeDark;
+      document.getElementById('opt-theme-light').innerText = t.optThemeLight;
+      document.getElementById('opt-theme-colorblind').innerText = t.optThemeColorblind;
+    }
+
+    let activeCropContext = { mode: 'global', step: null, cloneId: null };
+    let currentImg = null;
+    let cropX = 0, cropY = 0;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+
+    document.getElementById('user-firstname-input').value = state.firstname;
+    document.getElementById('capital-input').value = state.capital || '';
+    document.getElementById('currency-select').value = state.currency;
+    document.getElementById('theme-select').value = state.theme;
+    document.getElementById('lang-select').value = state.lang;
+    document.getElementById('sort-select').value = state.sortMode;
+    document.documentElement.setAttribute('data-theme', state.theme);
+
+    applyTranslations();
+
+    function changeSortMode(mode) {
+      state.sortMode = mode;
+      localStorage.setItem('alpha_sort_mode', mode);
+      renderClones();
+    }
+
+    function saveUserFirstname() {
+      const input = document.getElementById('user-firstname-input');
+      state.firstname = input.value.trim();
+      localStorage.setItem('alpha_firstname', state.firstname);
+      renderClones();
+    }
+
+    function changeCurrency(symbol) {
+      state.currency = symbol;
+      localStorage.setItem('alpha_currency', state.currency);
+      updateCurrencyDisplay();
+      renderExpenses();
+      updateCalculations();
+    }
+
+    function changeTheme(themeName) {
+      state.theme = themeName;
+      localStorage.setItem('alpha_theme', themeName);
+      document.documentElement.setAttribute('data-theme', themeName);
+    }
+
+    function updateCurrencyDisplay() {
+      document.querySelectorAll('.dynamic-currency-symbol').forEach(el => {
+        el.innerText = state.currency;
+      });
+    }
+
+    function toggleHelp(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('active');
+    }
+
+    function saveState() {
+      localStorage.setItem('alpha_expenses', JSON.stringify(state.expenses));
+      localStorage.setItem('alpha_capital', state.capital);
+      localStorage.setItem('alpha_currency', state.currency);
+      localStorage.setItem('alpha_theme', state.theme);
+      localStorage.setItem('alpha_lang', state.lang);
+      localStorage.setItem('alpha_allocations', JSON.stringify(state.allocations));
+      localStorage.setItem('alpha_global_avatars', JSON.stringify(state.globalAvatars));
+      localStorage.setItem('alpha_dedicated_avatars', JSON.stringify(state.dedicatedAvatars));
+      localStorage.setItem('alpha_firstname', state.firstname);
+      localStorage.setItem('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
+      localStorage.setItem('alpha_unlocked_badges', JSON.stringify(state.unlockedBadges));
+    }
+
+    function exportData() {
+      try {
+        const fileName = `alpha_picker_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        const jsonContent = JSON.stringify(state, null, 2);
+        const blob = new Blob([jsonContent], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.href = url;
+        downloadAnchor.download = fileName;
+        
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(downloadAnchor);
+          URL.revokeObjectURL(url);
+        }, 100);
+      } catch (err) {
+        alert("Export error: " + err.message);
+      }
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.expenses && imported.globalAvatars) {
+            state = imported;
+            state.firstname = state.firstname || "";
+            state.currency = state.currency || "€";
+            state.theme = state.theme || "dark";
+            state.lang = state.lang || "fr";
+            state.sortMode = state.sortMode || "prog_desc";
+            state.unlockedBadges = state.unlockedBadges || [];
+            state.dedicatedAvatars = state.dedicatedAvatars || {};
+            state.customCloneNames = state.customCloneNames || {};
+            document.getElementById('user-firstname-input').value = state.firstname;
+            document.getElementById('capital-input').value = state.capital || '';
+            document.getElementById('currency-select').value = state.currency;
+            document.getElementById('theme-select').value = state.theme;
+            document.getElementById('lang-select').value = state.lang;
+            document.getElementById('sort-select').value = state.sortMode;
+            document.documentElement.setAttribute('data-theme', state.theme);
+            applyTranslations();
+            updateCurrencyDisplay();
+            saveState();
+            renderExpenses();
+            updateCalculations();
+            alert(state.lang === 'en' ? "Backup restored successfully!" : "Sauvegarde restaurée avec succès !");
+          } else {
+            alert(state.lang === 'en' ? "Invalid backup file." : "Fichier de sauvegarde invalide.");
+          }
+        } catch (err) {
+          alert(state.lang === 'en' ? "Error reading backup file." : "Erreur lors de la lecture du fichier.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAllData() {
+      const t = getT();
+      if (confirm(t.confirmReset)) {
+        localStorage.clear();
+        state = {
+          expenses: [],
+          capital: 0,
+          currency: "€",
+          theme: "dark",
+          lang: state.lang,
+          allocations: {},
+          globalAvatars: {},
+          dedicatedAvatars: {},
+          firstname: "",
+          customCloneNames: {},
+          sortMode: "prog_desc",
+          unlockedBadges: []
+        };
+        document.getElementById('user-firstname-input').value = "";
+        document.getElementById('capital-input').value = "";
+        document.getElementById('currency-select').value = "€";
+        document.getElementById('sort-select').value = "prog_desc";
+        updateCurrencyDisplay();
+        renderExpenses();
+        updateCalculations();
+      }
+    }
+
+    function switchTab(tabId, evt) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      evt.currentTarget.classList.add('active');
+      
+      if (tabId === 'tab2') renderClones();
+    }
+
+    function generateAllUniqueVariants(baseName) {
+      const accentsMap = {
+        'a': ['à', 'â', 'ä', 'ã'],
+        'e': ['é', 'è', 'ê', 'ë', 'ē'],
+        'i': ['î', 'ï', 'ì', 'ī'],
+        'o': ['ô', 'ö', 'ò', 'ō'],
+        'u': ['û', 'ü', 'ù', 'ū'],
+        'y': ['ÿ', 'ý', 'ŷ']
+      };
+
+      let base = (baseName || "Alpha Picker").trim();
+      let variants = [];
+
+      let chars = base.split('');
+      let vowelPositions = [];
+
+      chars.forEach((char, idx) => {
+        const lower = char.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (accentsMap[lower]) {
+          vowelPositions.push({ idx, lower });
+        }
+      });
+
+      if (vowelPositions.length === 0) {
+        return [base + "ë", base + "é", base + "ï"];
+      }
+
+      vowelPositions.forEach(pos => {
+        const options = accentsMap[pos.lower];
+        options.forEach(acc => {
+          let copy = [...chars];
+          let isUpper = chars[pos.idx] === chars[pos.idx].toUpperCase();
+          copy[pos.idx] = isUpper ? acc.toUpperCase() : acc;
+          let str = copy.join('');
+          
+          if (str !== base && !variants.includes(str)) {
+            variants.push(str);
+          }
+        });
+      });
+
+      if (variants.length === 0) {
+        variants.push(base + "ë");
+      }
+
+      return variants;
+    }
+
+    function getCloneName(id, indexInList) {
+      if (state.customCloneNames[id] && state.customCloneNames[id].trim() !== '') {
+        return state.customCloneNames[id];
+      }
+      
+      const effectiveName = state.firstname.trim() !== "" ? state.firstname : "Alpha Picker";
+      const allVariants = generateAllUniqueVariants(effectiveName);
+      return allVariants[indexInList % allVariants.length];
+    }
+
+    function promptEditCloneName(id, currentName) {
+      const t = getT();
+      const newName = prompt(t.promptCloneName, currentName);
+      if (newName !== null) {
+        state.customCloneNames[id] = newName.trim();
+        saveState();
+        renderClones();
+      }
+    }
+
+    function promptEditSuperCloneName(id, currentCustomName) {
+      const t = getT();
+      const newName = prompt(t.promptSuperCloneName, currentCustomName || "");
+      if (newName !== null) {
+        state.customCloneNames[id] = newName.trim();
+        saveState();
+        renderClones();
+      }
+    }
+
+    function addExpense() {
+      const nameInput = document.getElementById('expense-name');
+      const amountInput = document.getElementById('expense-amount');
+      const name = nameInput.value.trim();
+      const amount = Math.round(parseFloat(amountInput.value));
+
+      if (name && !isNaN(amount) && amount > 0) {
+        const id = Date.now();
+        state.expenses.push({ id, name, amount });
+        state.allocations[id] = 0;
+        nameInput.value = '';
+        amountInput.value = '';
+        renderExpenses();
+        saveState();
+        updateCalculations();
+      }
+    }
+
+    function updateExpenseAmount(id, newAmount) {
+      const val = Math.round(parseFloat(newAmount));
+      const expense = state.expenses.find(e => e.id === id);
+      if (expense && !isNaN(val) && val >= 0) {
+        expense.amount = val;
+        saveState();
+        calculateTotalExpenses();
+        updateCalculations();
+      }
+    }
+
+    function removeExpense(id) {
+      state.expenses = state.expenses.filter(e => e.id !== id);
+      delete state.allocations[id];
+      delete state.customCloneNames[id];
+      delete state.dedicatedAvatars[id];
+      renderExpenses();
+      saveState();
+      updateCalculations();
+    }
+
+    function calculateTotalExpenses() {
+      const total = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+      document.getElementById('total-expenses-display').innerText = `${formatNumber(total)} ${state.currency}`;
+    }
+
+    function renderExpenses() {
+      const list = document.getElementById('expenses-list');
+      list.innerHTML = '';
+      
+      state.expenses.forEach(e => {
+        list.innerHTML += `
+          <div class="expense-item">
+            <div><strong>${e.name}</strong></div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="number" class="inline-amount-input" value="${e.amount}" step="1" inputmode="numeric" onblur="updateExpenseAmount(${e.id}, this.value)" onkeydown="if(event.key==='Enter') this.blur()">
+              <span class="currency-align-label">${state.currency}</span>
+              <button class="btn-danger" onclick="removeExpense(${e.id})">✕</button>
+            </div>
+          </div>
+        `;
+      });
+      calculateTotalExpenses();
+    }
+
+    function updateCloneAllocation(id, value) {
+      const totalMonthlyCapacity = Math.round((state.capital * 0.04) / 12);
+      
+      let otherAllocations = 0;
+      Object.keys(state.allocations).forEach(key => {
+        if (parseInt(key) !== id) {
+          otherAllocations += Math.round(state.allocations[key] || 0);
+        }
+      });
+
+      const maxPossibleForThisClone = Math.max(0, totalMonthlyCapacity - otherAllocations);
+      const expense = state.expenses.find(e => e.id === id);
+      const targetMax = Math.min(expense.amount, maxPossibleForThisClone);
+
+      let requestedVal = Math.round(parseFloat(value));
+      if (isNaN(requestedVal) || requestedVal < 0) requestedVal = 0;
+
+      state.allocations[id] = Math.min(requestedVal, targetMax);
+      saveState();
+      renderClones();
+    }
+
+    function fillRemaining(id) {
+      const totalMonthlyCapacity = Math.round((state.capital * 0.04) / 12);
+      let usedAllocations = 0;
+      
+      Object.keys(state.allocations).forEach(key => {
+        if (parseInt(key) !== id) {
+          usedAllocations += Math.round(state.allocations[key] || 0);
+        }
+      });
+
+      const remaining = Math.max(0, totalMonthlyCapacity - usedAllocations);
+      const expense = state.expenses.find(e => e.id === id);
+      
+      state.allocations[id] = Math.min(remaining, expense.amount);
+      saveState();
+      renderClones();
+    }
+
+    function triggerDedicatedAvatarUpload(cloneId) {
+      activeCropContext = { mode: 'dedicated', cloneId: cloneId, step: null };
+      document.getElementById('dedicated-avatar-input').click();
+    }
+
+    function handleDedicatedImageSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const t = getT();
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentImg = new Image();
+        currentImg.onload = function() {
+          cropX = 0;
+          cropY = 0;
+          document.getElementById('zoom-slider').value = 1;
+          document.getElementById('modal-title-text').innerText = t.modalTitleDedicated;
+          document.getElementById('modal-desc-text').innerText = t.modalDescDedicated;
+          document.getElementById('modal-tier-grid').innerHTML = '';
+          document.getElementById('crop-section').style.display = 'flex';
+          document.getElementById('settings-modal').classList.add('active');
+          initCropCanvas();
+        };
+        currentImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    function openModal() {
+      const t = getT();
+      activeCropContext = { mode: 'global', step: null, cloneId: null };
+      document.getElementById('modal-title-text').innerText = t.modalTitleDefault;
+      document.getElementById('modal-desc-text').innerHTML = t.modalDescDefault;
+      
+      const grid = document.getElementById('modal-tier-grid');
+      grid.innerHTML = '';
+
+      for (let step = 0; step <= 100; step += 20) {
+        const customImg = state.globalAvatars[step] || null;
+        grid.innerHTML += `
+          <div class="tier-item">
+            <div style="font-size: 0.85rem; font-weight: bold; width: 35px;">${step}%</div>
+            <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-color); background-size: cover; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+              ${customImg ? `<img src="${customImg}" style="width:100%; height:100%; object-fit:cover;">` : DEFAULT_EMOJIS[step]}
+            </div>
+            
+            <div style="display: flex; gap: 4px; margin-left: auto; align-items: center;">
+              <label class="btn-secondary" style="font-size: 0.75rem; padding: 6px 8px; cursor: pointer;">
+                📸
+                <input type="file" accept="image/*" style="display:none" onchange="handleGlobalImageSelect(event, ${step})">
+              </label>
+              ${customImg ? `<button class="btn-danger" style="padding: 5px 8px; font-size: 0.75rem;" onclick="deleteGlobalAvatar(${step})" title="Reset">✕</button>` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('crop-section').style.display = 'none';
+      document.getElementById('settings-modal').classList.add('active');
+    }
+
+    function deleteGlobalAvatar(step) {
+      delete state.globalAvatars[step];
+      saveState();
+      openModal();
+    }
+
+    function closeModal() {
+      document.getElementById('settings-modal').classList.remove('active');
+      renderClones();
+    }
+
+    function handleGlobalImageSelect(event, step) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      activeCropContext = { mode: 'global', step: step, cloneId: null };
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentImg = new Image();
+        currentImg.onload = function() {
+          cropX = 0;
+          cropY = 0;
+          document.getElementById('zoom-slider').value = 1;
+          document.getElementById('crop-section').style.display = 'flex';
+          initCropCanvas();
+        };
+        currentImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    function initCropCanvas() {
+      const canvas = document.getElementById('crop-canvas');
+      canvas.onmousedown = startDrag;
+      canvas.onmousemove = drag;
+      canvas.onmouseup = endDrag;
+      canvas.ontouchstart = (e) => startDrag(e.touches[0]);
+      canvas.ontouchmove = (e) => drag(e.touches[0]);
+      canvas.ontouchend = endDrag;
+
+      drawCropCanvas();
+    }
+
+    function startDrag(e) {
+      isDragging = true;
+      startX = e.clientX - cropX;
+      startY = e.clientY - cropY;
+    }
+
+    function drag(e) {
+      if (!isDragging) return;
+      cropX = e.clientX - startX;
+      cropY = e.clientY - startY;
+      drawCropCanvas();
+    }
+
+    function endDrag() { isDragging = false; }
+
+    function drawCropCanvas() {
+      if (!currentImg) return;
+      const canvas = document.getElementById('crop-canvas');
+      const ctx = canvas.getContext('2d');
+      const zoom = parseFloat(document.getElementById('zoom-slider').value);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const baseScale = Math.min(canvas.width / currentImg.width, canvas.height / currentImg.height);
+      const scale = baseScale * zoom;
+
+      const imgWidth = currentImg.width * scale;
+      const imgHeight = currentImg.height * scale;
+
+      const drawX = (canvas.width - imgWidth) / 2 + cropX;
+      const drawY = (canvas.height - imgHeight) / 2 + cropY;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(currentImg, drawX, drawY, imgWidth, imgHeight);
+      ctx.restore();
+    }
+
+    document.getElementById('zoom-slider').addEventListener('input', drawCropCanvas);
+
+    function confirmCrop() {
+      const canvas = document.getElementById('crop-canvas');
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+      if (activeCropContext.mode === 'global') {
+        state.globalAvatars[activeCropContext.step] = dataUrl;
+        saveState();
+        openModal();
+      } else if (activeCropContext.mode === 'dedicated') {
+        state.dedicatedAvatars[activeCropContext.cloneId] = dataUrl;
+        saveState();
+        closeModal();
+      }
+    }
+
+    function getAvatarForClone(cloneId, percentage, defaultFallback = null) {
+      let roundedStep = Math.floor(percentage / 20) * 20;
+
+      if (percentage >= 100 && state.dedicatedAvatars[cloneId]) {
+        return { type: 'image', value: state.dedicatedAvatars[cloneId], isDedicated: true };
+      }
+
+      if (state.globalAvatars[roundedStep]) {
+        return { type: 'image', value: state.globalAvatars[roundedStep], isDedicated: false };
+      }
+
+      return { type: 'emoji', value: defaultFallback || DEFAULT_EMOJIS[roundedStep] || '😫', isDedicated: false };
+    }
+
+    function updateCalculations() {
+      const capitalInput = document.getElementById('capital-input');
+      const rawVal = capitalInput.value.trim();
+      const inputVal = rawVal !== '' ? Math.round(parseFloat(rawVal)) : 0;
+      const t = getT();
+      
+      state.capital = !isNaN(inputVal) && inputVal >= 0 ? inputVal : 0;
+      saveState();
+      
+      const monthlyCapacity = Math.round((state.capital * 0.04) / 12);
+      document.getElementById('monthly-capacity-display').innerText = `${formatNumber(monthlyCapacity)} ${state.currency}${t.perMonth}`;
+      
+      renderClones();
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+      const colors = ['#7ee787', '#58a6ff', '#a371f7', '#f0883e', '#ffff00'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.7) * 14,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 10
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.3;
+          p.rotation += p.vRot;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+
+          if (p.y > canvas.height) particles.splice(index, 1);
+        });
+
+        if (particles.length > 0 && frame < 120) {
+          frame++;
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animate();
+    }
+
+    function checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, monthlyCapacity) {
+      const t = getT();
+      let newlyUnlocked = false;
+
+      function unlock(badgeId) {
+        if (!state.unlockedBadges.includes(badgeId)) {
+          state.unlockedBadges.push(badgeId);
+          newlyUnlocked = true;
+        }
+      }
+
+      if (completedClonesCount > 0) unlock("badge_first");
+
+      for (let target = 10; target <= 90; target += 10) {
+        if (coverageRatio >= target) unlock(`badge_${target}`);
+      }
+
+      if (allBaseCompleted) unlock("badge_roche");
+
+      if (monthlyCapacity >= 10) unlock("badge_10_m");
+      if (monthlyCapacity >= 50) unlock("badge_50_m");
+      if (monthlyCapacity >= 100) unlock("badge_100_m");
+      if (monthlyCapacity >= 500) unlock("badge_500_m");
+      if (monthlyCapacity >= 1000) unlock("badge_1000_m");
+      if (monthlyCapacity >= 10000) unlock("badge_10000_m");
+
+      if (completedClonesCount >= 5) unlock("badge_army");
+      if (Object.keys(state.dedicatedAvatars).length > 0) unlock("badge_artist");
+      if (state.capital >= 100000) unlock("badge_100k");
+      if (state.capital >= 1000000) unlock("badge_7_digits");
+      if (state.capital >= 10000000) unlock("badge_8_digits");
+
+      unlockedSuperIds.forEach(tierId => {
+        unlock(`badge_${tierId}`);
+      });
+
+      if (newlyUnlocked) {
+        localStorage.setItem('alpha_unlocked_badges', JSON.stringify(state.unlockedBadges));
+        triggerConfetti();
+      }
+
+      const ALL_BADGES = [
+        { id: "badge_first", icon: "🌱", label: t.badgeFirst, isSuper: false },
+        { id: "badge_10", icon: "☘️", label: "10%", isSuper: false },
+        { id: "badge_20", icon: "🌿", label: "20%", isSuper: false },
+        { id: "badge_30", icon: "🪴", label: "30%", isSuper: false },
+        { id: "badge_40", icon: "🌳", label: "40%", isSuper: false },
+        { id: "badge_50", icon: "🔋", label: "50%", isSuper: false },
+        { id: "badge_60", icon: "🔥", label: "60%", isSuper: false },
+        { id: "badge_70", icon: "🚀", label: "70%", isSuper: false },
+        { id: "badge_80", icon: "🌟", label: "80%", isSuper: false },
+        { id: "badge_90", icon: "✨", label: "90%", isSuper: false },
+        { id: "badge_roche", icon: "🪨", label: t.badgeRoche, isSuper: false },
+        { id: "badge_10_m", icon: "⚡", label: `10${state.currency}${t.perMonth}`, isSuper: false },
+        { id: "badge_50_m", icon: "🔋", label: `50${state.currency}${t.perMonth}`, isSuper: false },
+        { id: "badge_100_m", icon: "💵", label: `100${state.currency}${t.perMonth}`, isSuper: false },
+        { id: "badge_500_m", icon: "💸", label: `500${state.currency}${t.perMonth}`, isSuper: false },
+        { id: "badge_1000_m", icon: "💰", label: `1 000${state.currency}${t.perMonth}`, isSuper: false },
+        { id: "badge_10000_m", icon: "🏆", label: t.badgeAnnuity5Digits, isSuper: false },
+        { id: "badge_army", icon: "👑", label: t.badgeArmy, isSuper: false },
+        { id: "badge_artist", icon: "🎨", label: t.badgeArtist, isSuper: false },
+        { id: "badge_100k", icon: "🏦", label: t.badge100kCapital, isSuper: false },
+        { id: "badge_7_digits", icon: "🏰", label: t.badge7DigitsCapital, isSuper: false },
+        { id: "badge_8_digits", icon: "🪐", label: t.badge8DigitsCapital, isSuper: false },
+        { id: "badge_super_fer", icon: "⚔️", label: t.badgeLevelIron, isSuper: true },
+        { id: "badge_super_bronze", icon: "🥉", label: t.badgeLevelBronze, isSuper: true },
+        { id: "badge_super_argent", icon: "🥈", label: t.badgeLevelSilver, isSuper: true },
+        { id: "badge_super_or", icon: "🥇", label: t.badgeLevelGold, isSuper: true },
+        { id: "badge_super_diamant", icon: "💎", label: t.badgeLevelDiamond, isSuper: true }
+      ];
+
+      const badgesBox = document.getElementById('badges-box');
+      badgesBox.innerHTML = '';
+      ALL_BADGES.forEach(b => {
+        if (state.unlockedBadges.includes(b.id)) {
+          const superClass = b.isSuper ? 'super-badge' : '';
+          badgesBox.innerHTML += `
+            <div class="badge-item ${superClass}">
+              <span>${b.icon}</span> ${b.label}
+            </div>
+          `;
+        }
+      });
+    }
+
+    function renderClones() {
+      const t = getT();
+      const container = document.getElementById('clones-container');
+      const superContainer = document.getElementById('super-clones-container');
+      const bossContainer = document.getElementById('tier-boss-container');
+      const countersBox = document.getElementById('clone-counters-box');
+      
+      container.innerHTML = '';
+      superContainer.innerHTML = '';
+      bossContainer.innerHTML = '';
+      countersBox.innerHTML = '';
+
+      const totalMonthlyCapacity = Math.round((state.capital * 0.04) / 12);
+      let totalAllocated = 0;
+
+      state.expenses.forEach(e => {
+        if (state.allocations[e.id] === undefined) state.allocations[e.id] = 0;
+        totalAllocated += Math.round(state.allocations[e.id]);
+      });
+
+      const remainingCapacity = Math.max(0, totalMonthlyCapacity - totalAllocated);
+      const remainingDisplay = document.getElementById('remaining-capacity-display');
+      remainingDisplay.innerText = `${formatNumber(remainingCapacity)} ${state.currency}${t.perMonth}`;
+
+      let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+
+      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
+      document.getElementById('global-coverage-bar').style.width = `${coverageRatio}%`;
+
+      if (totalExpenses === 0) {
+        checkBadges(0, 0, false, [], totalMonthlyCapacity);
+        return;
+      }
+
+      let completedClonesCount = 0;
+
+      let clonesWithRatio = state.expenses.map(e => {
+        const allocated = Math.round(state.allocations[e.id] || 0);
+        let percentage = Math.min(100, Math.round((allocated / e.amount) * 100));
+        if (isNaN(percentage)) percentage = 0;
+        if (percentage >= 100) completedClonesCount++;
+        return { ...e, allocated, percentage };
+      });
+
+      countersBox.innerHTML += `
+        <div class="counter-badge" style="color: var(--accent-green-bright);">
+          ${t.completedCounter.replace('{0}', completedClonesCount).replace('{1}', clonesWithRatio.length)}
+        </div>
+      `;
+
+      if (state.sortMode === 'prog_desc') {
+        clonesWithRatio.sort((a, b) => b.percentage - a.percentage);
+      } else if (state.sortMode === 'prog_asc') {
+        clonesWithRatio.sort((a, b) => a.percentage - b.percentage);
+      } else if (state.sortMode === 'amount_desc') {
+        clonesWithRatio.sort((a, b) => b.amount - a.amount);
+      } else if (state.sortMode === 'amount_asc') {
+        clonesWithRatio.sort((a, b) => a.amount - b.amount);
+      }
+
+      let allBaseCompleted = (completedClonesCount === clonesWithRatio.length);
+
+      clonesWithRatio.forEach((e, idx) => {
+        const avatar = getAvatarForClone(e.id, e.percentage);
+        const isUnlocked = e.percentage >= 100;
+        
+        let clickHandler = isUnlocked ? `onclick="triggerDedicatedAvatarUpload(${e.id})"` : '';
+        let statusClass = isUnlocked ? 'unlocked' : 'locked';
+        let completedCardClass = isUnlocked ? 'completed' : '';
+
+        let avatarHTML = avatar.type === 'image' 
+          ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
+          : `<div class="clone-avatar ${statusClass}" ${clickHandler}>${avatar.value}</div>`;
+
+        const cloneName = getCloneName(e.id, idx);
+        const payText = t.lblPayExpense
+          .replace('{0}', cloneName)
+          .replace('{1}', e.percentage)
+          .replace('{2}', e.name)
+          .replace('{3}', formatNumber(e.amount))
+          .replace('{4}', state.currency);
+
+        container.innerHTML += `
+          <div class="card clone-card ${completedCardClass}">
+            <div class="clone-header">
+              ${avatarHTML}
+              <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
+                <span class="clickable-clone-name" onclick="promptEditCloneName(${e.id}, '${cloneName}')">${payText}</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 8px; align-items: center; margin: 4px 0;">
+              <span style="font-size: 0.85rem; opacity: 0.8;">${t.lblAllocated}</span>
+              <input 
+                type="number" 
+                class="inline-amount-input" 
+                value="${e.allocated}" 
+                step="1"
+                inputmode="numeric"
+                onblur="updateCloneAllocation(${e.id}, this.value)"
+                onkeydown="if(event.key==='Enter') this.blur()"
+              >
+              <span class="currency-align-label">${state.currency}</span>
+              <button class="btn-secondary" onclick="fillRemaining(${e.id})">${t.btnCover}</button>
+            </div>
+
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: ${Math.min(100, e.percentage)}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      let completedSuperClonesCount = 0;
+      let unlockedSuperIds = [];
+
+      if (!allBaseCompleted) {
+        bossContainer.innerHTML = `
+          <div class="tier-lock">
+            <div style="font-weight: bold; color: var(--accent-orange); margin-bottom: 4px;">${t.lblRockLockTitle}</div>
+            <div style="font-size: 0.85rem; opacity: 0.8;">${t.lblRockLockDesc.replace('{0}', formatNumber(totalExpenses)).replace('{1}', state.currency)}</div>
+          </div>
+        `;
+      } else {
+        let superCapacityAvailable = Math.max(0, totalMonthlyCapacity - totalExpenses);
+        let previousTarget = totalExpenses;
+        let nextLockedTier = null;
+
+        for (let i = 0; i < TIERS.length; i++) {
+          let tier = TIERS[i];
+          let tierName = state.lang === 'en' ? tier.nameEN : tier.nameFR;
+          let targetAmount = Math.round(totalExpenses * tier.mult);
+          let tierCapacityNeeded = targetAmount - previousTarget;
+          let percentage = Math.min(100, Math.round((superCapacityAvailable / tierCapacityNeeded) * 100));
+          if (isNaN(percentage)) percentage = 0;
+
+          const isSuperUnlocked = percentage >= 100;
+          if (isSuperUnlocked) {
+            completedSuperClonesCount++;
+            unlockedSuperIds.push(tier.id);
+          }
+
+          const avatar = getAvatarForClone(tier.id, percentage, tier.icon);
+          let clickHandler = isSuperUnlocked ? `onclick="triggerDedicatedAvatarUpload('${tier.id}')"` : '';
+          let statusClass = isSuperUnlocked ? 'unlocked' : 'locked';
+
+          let avatarHTML = avatar.type === 'image' 
+            ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
+            : `<div class="clone-avatar ${statusClass}" ${clickHandler}>${avatar.value}</div>`;
+
+          const customSuperName = state.customCloneNames[tier.id] ? state.customCloneNames[tier.id] : "";
+          const superDisplayName = customSuperName !== "" ? `${t.lblSuperCloneName} ${customSuperName}` : t.lblSuperCloneName;
+          const targetText = t.lblTarget
+            .replace('{0}', formatNumber(targetAmount))
+            .replace('{1}', state.currency)
+            .replace('{2}', tier.mult)
+            .replace('{3}', percentage);
+
+          superContainer.innerHTML += `
+            <div class="card clone-card super-clone-card ${isSuperUnlocked ? 'completed' : ''}">
+              <div class="clone-header">
+                ${avatarHTML}
+                <div style="flex: 1;">
+                  <div style="color: var(--accent-purple);">
+                    <span class="clickable-clone-name" onclick="promptEditSuperCloneName('${tier.id}', '${customSuperName}')">${superDisplayName}</span> — ${tierName}
+                  </div>
+                  <div style="font-size: 0.85rem; opacity: 0.8;">
+                    ${targetText}
+                  </div>
+                </div>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill progress-bar-super" style="width: ${Math.min(100, percentage)}%;"></div>
+              </div>
+            </div>
+          `;
+
+          if (superCapacityAvailable < tierCapacityNeeded) {
+            nextLockedTier = TIERS[i + 1] || null;
+            break;
+          }
+          superCapacityAvailable -= tierCapacityNeeded;
+          previousTarget = targetAmount;
+        }
+
+        if (completedSuperClonesCount > 0) {
+          countersBox.innerHTML += `
+            <div class="counter-badge" style="color: var(--accent-purple);">
+              ${t.superCompletedCounter.replace('{0}', completedSuperClonesCount).replace('{1}', completedSuperClonesCount > 1 ? (state.lang === 'en' ? 's' : 's') : '')}
+            </div>
+          `;
+        }
+
+        if (nextLockedTier) {
+          let nextTierName = state.lang === 'en' ? nextLockedTier.nameEN : nextLockedTier.nameFR;
+          bossContainer.innerHTML = `
+            <div class="tier-lock">
+              <div style="font-weight: bold; color: var(--accent-purple); margin-bottom: 4px;">${t.lblNextTierTitle.replace('{0}', nextTierName)}</div>
+              <div style="font-size: 0.85rem; opacity: 0.8;">${t.lblNextTierDesc}</div>
+            </div>
+          `;
+        }
+      }
+
+      checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, totalMonthlyCapacity);
+    }
+
+    function copyFortuneoCode() {
+      const code = "12874482";
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('fortuneo-btn');
+        btn.innerText = state.lang === 'en' ? "✅ Code 12874482 copied!" : "✅ Code 12874482 copié !";
+        setTimeout(() => {
+          window.open("https://www.fortuneo.fr", "_blank");
+          btn.innerText = "Fortuneo (Code Parrain : 12874482)";
+        }, 1200);
+      }).catch(() => {
+        window.open("https://www.fortuneo.fr", "_blank");
+      });
+    }
+
+    updateCurrencyDisplay();
+    renderExpenses();
+    updateCalculations();
+  </script>
+</body>
+</html>
