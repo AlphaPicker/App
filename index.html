@@ -62,7 +62,7 @@
       --nav-active-text: #ffff00;
       --btn-paypal-bg: #0d6efd;
       --btn-paypal-text: #ffffff;
-      --badge-inactive-color: #a0a0a0; /* Gris mat haute lisibilité pour les badges inactifs en mode daltonien */
+      --badge-inactive-color: #a0a0a0;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -638,7 +638,12 @@
       background-color: var(--bg-color);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .badge-item:hover {
+      transform: translateY(-1px);
     }
 
     .badge-item.active-unlocked {
@@ -748,6 +753,19 @@
       flex-direction: column;
       gap: 8px;
       line-height: 1.4;
+    }
+
+    .badge-modal-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .badge-modal-icon {
+      font-size: 3rem;
+      line-height: 1;
     }
   </style>
 </head>
@@ -1036,9 +1054,86 @@
     </div>
   </div>
 
+  <!-- MODAL FÉLICITATIONS BADGE -->
+  <div id="badge-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="badge-modal-header">
+        <div class="badge-modal-icon" id="badge-modal-icon">🏆</div>
+        <div class="card-title" id="badge-modal-title" style="margin-bottom: 0;">Félicitations !</div>
+      </div>
+      
+      <p style="font-size: 0.95rem; line-height: 1.5; text-align: center; color: var(--text-main);" id="badge-modal-desc">
+        Explication du badge accompli.
+      </p>
+
+      <button class="btn-primary" onclick="closeBadgeModal()" style="margin-top: 6px;" id="btn-badge-modal-close">Génial !</button>
+    </div>
+  </div>
+
   <input type="file" id="dedicated-avatar-input" accept="image/*" style="display: none;" onchange="handleDedicatedImageSelect(event)">
 
   <script>
+    const BADGE_DETAILS = {
+      fr: {
+        badge_first: { title: "Premier Klon Débloqué !", desc: "Félicitations ! Tu as entièrement financé ton premier Klon. La machine de ton indépendance financière est lancée !" },
+        badge_10: { title: "Cap des 10 % d'Autonomie !", desc: "Bravo ! Tu couvres désormais 10 % de tes charges mensuelles globales grâce à la rente de tes investissements." },
+        badge_20: { title: "Cap des 20 % d'Autonomie !", desc: "20 % de tes factures ne sortent plus de ton salaire ! Ta liberté financière prend de l'ampleur." },
+        badge_30: { title: "Cap des 30 % d'Autonomie !", desc: "Un tiers de ton coût de vie est sécurisé par ton capital. Ton autonomie grandit à grande vitesse !" },
+        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont couvertes de manière totalement passive." },
+        badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !" },
+        badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !" },
+        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi." },
+        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main." },
+        badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !" },
+        badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont couvertes. Le socle vital est entièrement vaincu !" },
+        badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !" },
+        badge_50_m: { title: "Rente de 50 € / mois !", desc: "50 € par mois générés de manière automatique ! De quoi couvrir plusieurs abonnements ou factures." },
+        badge_100_m: { title: "Rente de 100 € / mois !", desc: "Franchissement des 100 € par mois de rente ! Un palier financier crucial est validé." },
+        badge_500_m: { title: "Rente de 500 € / mois !", desc: "500 € par mois ! Ta rente équivaut désormais à un vrai revenu complémentaire récurrent." },
+        badge_1000_m: { title: "Rente de 1 000 € / mois !", desc: "Félicitations pour les 1 000 € par mois ! Tu génères un salaire passif à part entière." },
+        badge_10000_m: { title: "Rente à 5 Chiffres !", desc: "Légendaire ! 10 000 € de rente mensuelle ! Tu fais partie des géants de l'autonomie financière." },
+        badge_army: { title: "Armée de Klons !", desc: "Au moins 5 Klons validés à 100 % ! Tu as levé une véritable armée d'autonomie pour payer tes factures." },
+        badge_artist: { title: "Artiste de la Personnalisation !", desc: "Tu as configuré un visuel unique sur un Klon débloqué. Ton tableau de bord a fière allure !" },
+        badge_100k: { title: "Capital des 100 000 € !", desc: "Cap patrimonial majeur des 6 chiffres franchi avec succès ! Les intérêts composés accélèrent." },
+        badge_7_digits: { title: "Capital des 1 000 000 € !", desc: "Bienvenue dans le club des millionnaires ! Ton patrimoine liquide est un roc indestructible." },
+        badge_8_digits: { title: "Capital des 10 000 000 € !", desc: "Fortune colossale atteinte ! Un patrimoine d'exception au service d'une liberté totale." },
+        badge_super_fer: { title: "Super Klon Niveau Fer !", desc: "Super Klon Fer débloqué ! Tu as doublé la puissance de ta rente au-delà de ton socle vital." },
+        badge_super_bronze: { title: "Super Klon Niveau Bronze !", desc: "Super Klon Bronze complété ! Ta rente génère 4x le montant de tes dépenses de base." },
+        badge_super_argent: { title: "Super Klon Niveau Argent !", desc: "Super Klon Argent atteint ! Ta capacité financière s'élève à 8x tes charges de vie." },
+        badge_super_or: { title: "Super Klon Niveau Or !", desc: "Super Klon Or débloqué ! 16x tes charges couvertes par ta rente, une performance extraordinaire !" },
+        badge_super_diamant: { title: "Super Klon Niveau Diamant !", desc: "Niveau Diamant ultime atteint (32x tes charges) ! Indépendance financière absolue et définitive !" }
+      },
+      en: {
+        badge_first: { title: "First Klon Unlocked!", desc: "Congratulations! You have fully funded your first Klon. Your financial independence engine is up and running!" },
+        badge_10: { title: "10% Freedom Milestone!", desc: "Awesome! You now cover 10% of your total monthly expenses using passive investment income." },
+        badge_20: { title: "20% Freedom Milestone!", desc: "20% of your bills are no longer paid from your salary! Your financial freedom is expanding fast." },
+        badge_30: { title: "30% Freedom Milestone!", desc: "One third of your living costs is now secured by your capital. Great progress!" },
+        badge_40: { title: "40% Freedom Milestone!", desc: "Impressive! 40% of your monthly expenses are now completely passively funded." },
+        badge_50: { title: "50% Halfway Balance!", desc: "Symbolic milestone reached! Your passive income covers exactly half of your entire lifestyle!" },
+        badge_60: { title: "60% Freedom Milestone!", desc: "Over half of your life is now paid for by passive cash flow. Ultimate freedom is getting closer!" },
+        badge_70: { title: "70% Freedom Milestone!", desc: "70% of expenses covered! Your capital is working harder for you than ever." },
+        badge_80: { title: "80% Freedom Milestone!", desc: "80% financial independence! The ultimate goal is now well within reach." },
+        badge_90: { title: "90% Freedom Milestone!", desc: "90% autonomy! You are on the verge of eliminating all your living expenses!" },
+        badge_roche: { title: "Bedrock Smashed!", desc: "Epic achievement! 100% of your baseline expenses are covered. The foundation is completely secured!" },
+        badge_10_m: { title: "€10 / month Income!", desc: "Your first automated passive euros drop every month. Every step counts!" },
+        badge_50_m: { title: "€50 / month Income!", desc: "€50 per month generated automatically! Enough to cover several subscriptions or utility bills." },
+        badge_100_m: { title: "€100 / month Income!", desc: "Crossing the €100/month threshold! A major financial milestone validated." },
+        badge_500_m: { title: "€500 / month Income!", desc: "€500 every month! Your passive income is now a true recurring secondary paycheck." },
+        badge_1000_m: { title: "€1,000 / month Income!", desc: "Congratulations on reaching €1,000/month! You are generating a full-blown passive salary." },
+        badge_10000_m: { title: "5-Digit Monthly Income!", desc: "Legendary! €10,000 monthly income! You stand among the giants of financial independence." },
+        badge_army: { title: "Klon Army!", desc: "At least 5 Klons fully validated at 100%! You have raised a true autonomy army to pay your bills." },
+        badge_artist: { title: "Customization Artist!", desc: "You configured a dedicated custom image on a 100% unlocked Klon. Your dashboard looks great!" },
+        badge_100k: { title: "€100,000 Capital!", desc: "Major 6-figure net worth milestone reached! Compound interest is picking up serious speed." },
+        badge_7_digits: { title: "€1,000,000 Capital!", desc: "Welcome to the millionaires' club! Your liquid capital is an indestructible rock." },
+        badge_8_digits: { title: "€10,000,000 Capital!", desc: "Colossal wealth achieved! An exceptional legacy serving total absolute freedom." },
+        badge_super_fer: { title: "Super Klon Iron Level!", desc: "Iron Super Klon unlocked! You doubled your annuity power beyond your baseline expenses." },
+        badge_super_bronze: { title: "Super Klon Bronze Level!", desc: "Bronze Super Klon maxed! Your passive income generates 4x your baseline living costs." },
+        badge_super_argent: { title: "Super Klon Silver Level!", desc: "Silver Super Klon completed! Your financial capacity now equals 8x your living expenses." },
+        badge_super_or: { title: "Super Klon Gold Level!", desc: "Gold Super Klon unlocked! 16x expenses covered, an extraordinary achievement!" },
+        badge_super_diamant: { title: "Super Klon Diamond Level!", desc: "Ultimate Diamond Level reached (32x expenses)! Absolute and permanent financial independence!" }
+      }
+    };
+
     const I18N = {
       fr: {
         appSubtitle: "Simulateur de Liberté Financière",
@@ -1127,7 +1222,8 @@
         historyBtnAdd: "➕ Relevé aujourd'hui",
         historyIntervalInfo: "Écart min : 30 jours",
         historyEmpty: "Aucun relevé enregistré pour le moment.",
-        historyAddedSuccess: "Relevé de progression enregistré !"
+        historyAddedSuccess: "Relevé de progression enregistré !",
+        btnBadgeModalClose: "Génial !"
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
@@ -1216,7 +1312,8 @@
         historyBtnAdd: "➕ Log today",
         historyIntervalInfo: "Min gap: 30 days",
         historyEmpty: "No progress log recorded yet.",
-        historyAddedSuccess: "Progress log recorded!"
+        historyAddedSuccess: "Progress log recorded!",
+        btnBadgeModalClose: "Awesome!"
       }
     };
 
@@ -1318,6 +1415,7 @@
       document.getElementById('btn-add-history-point').innerText = t.historyBtnAdd;
       document.getElementById('lbl-history-interval-info').innerText = t.historyIntervalInfo;
       document.getElementById('btn-history-close').innerText = t.btnModalClose;
+      document.getElementById('btn-badge-modal-close').innerText = t.btnBadgeModalClose;
     }
 
     let activeCropContext = { mode: 'global', step: null, cloneId: null };
@@ -1918,6 +2016,22 @@
       animate();
     }
 
+    function openBadgeModal(badgeId, iconStr) {
+      const lang = BADGE_DETAILS[state.lang] ? state.lang : 'fr';
+      const details = BADGE_DETAILS[lang][badgeId];
+
+      if (details) {
+        document.getElementById('badge-modal-icon').innerText = iconStr;
+        document.getElementById('badge-modal-title').innerText = details.title;
+        document.getElementById('badge-modal-desc').innerText = details.desc;
+        document.getElementById('badge-modal').classList.add('active');
+      }
+    }
+
+    function closeBadgeModal() {
+      document.getElementById('badge-modal').classList.remove('active');
+    }
+
     /* GESTION DYNAMIQUE DES BADGES ET DE LEUR ÉTAT VISUEL */
     function checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, monthlyCapacity, totalExpenses) {
       const t = getT();
@@ -2012,7 +2126,7 @@
           const superClass = b.isSuper ? 'super-badge' : '';
 
           badgesBox.innerHTML += `
-            <div class="badge-item ${stateClass} ${superClass}">
+            <div class="badge-item ${stateClass} ${superClass}" onclick="openBadgeModal('${b.id}', '${b.icon}')">
               <span>${b.icon}</span> ${b.label}${statusIcon}
             </div>
           `;
