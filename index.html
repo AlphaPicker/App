@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KLON</title>
-  <!-- Icône d'application autonome (SVG Data URI) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563EB'/><text x='50' y='60' font-family='sans-serif' font-weight='bold' font-size='22' fill='white' text-anchor='middle'>KLON</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563EB'/><text x='50' y='60' font-family='sans-serif' font-weight='bold' font-size='22' fill='white' text-anchor='middle'>KLON</text></svg>">
   <style>
@@ -617,6 +616,13 @@
       gap: 8px;
     }
 
+    .global-progress-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
     #confetti-canvas {
       position: fixed;
       top: 0; left: 0;
@@ -731,11 +737,16 @@
     .history-item-details {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .history-item-percentage {
       color: var(--accent-green-bright);
+      font-weight: bold;
+    }
+
+    .history-item-multiplier {
+      color: var(--accent-orange);
       font-weight: bold;
     }
 
@@ -752,7 +763,6 @@
     .history-chart-title {
       font-size: 0.8rem;
       font-weight: bold;
-      color: var(--accent-blue);
       display: flex;
       justify-content: space-between;
     }
@@ -782,6 +792,31 @@
     .badge-modal-icon {
       font-size: 3rem;
       line-height: 1;
+    }
+
+    .progress-badge-header {
+      font-weight: bold;
+      font-size: 0.8rem;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 2px 6px;
+      border-radius: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .progress-badge-header:hover {
+      transform: translateY(-1px);
+    }
+
+    .progress-badge-header.multiplier-badge {
+      color: var(--accent-orange);
+    }
+
+    .progress-badge-header.percentage-badge {
+      color: var(--accent-green-bright);
     }
   </style>
 </head>
@@ -897,15 +932,18 @@
       <div class="global-progress-card">
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold;">
           <span id="lbl-global-progress">🎯 Progression Autonomie Globale</span>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span id="global-coverage-percentage" style="color: var(--accent-green-bright);">0%</span>
-            <button class="btn-history-icon" onclick="openHistoryModal()" title="Historique de progression" id="btn-history-toggle">📜 Historique</button>
+          <button class="btn-history-icon" onclick="openHistoryModal()" title="Historique de progression" id="btn-history-toggle">📜 Historique</button>
+        </div>
+        
+        <div class="global-progress-bar-row">
+          <div class="progress-bar-bg" style="flex: 1;">
+            <div id="global-coverage-bar" class="progress-bar-fill" style="width: 0%;"></div>
           </div>
+          <span id="global-coverage-percentage" class="progress-badge-header percentage-badge" onclick="openPercentageModal()">0%</span>
+          <span id="global-multiplier-badge" class="progress-badge-header multiplier-badge" onclick="openMultiplierModal()">⚡ 1.0x</span>
         </div>
-        <div class="progress-bar-bg">
-          <div id="global-coverage-bar" class="progress-bar-fill" style="width: 0%;"></div>
-        </div>
-        <div class="badges-container" id="badges-box" style="margin-top: 6px;"></div>
+
+        <div class="badges-container" id="badges-box" style="margin-top: 4px;"></div>
       </div>
 
       <div class="card">
@@ -1013,7 +1051,7 @@
         🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.
       </div>
       <div id="lbl-footer-disclaimer-info">
-        ⚠️ <strong>Avertissement :</strong> Cet outil est fourni à titre éducatif et de simulation personnelle. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.
+        ⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.
       </div>
     </footer>
   </div>
@@ -1045,7 +1083,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIQUE DE PROGRESSION AVEC GRAPHIQUE -->
+  <!-- MODAL HISTORIQUE DE PROGRESSION AVEC 2 GRAPHIQUES -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
@@ -1059,13 +1097,22 @@
         <span style="font-size: 0.75rem; opacity: 0.7;" id="lbl-history-interval-info">Écart min : 30 jours</span>
       </div>
 
-      <!-- Graphique SVG de progression -->
+      <!-- Graphique 1 : Vert (Autonomie) -->
       <div class="history-chart-container">
-        <div class="history-chart-title">
-          <span>📈 Courbe d'autonomie</span>
-          <span id="chart-hover-info" style="color: var(--accent-green-bright); font-weight: bold;">--</span>
+        <div class="history-chart-title" style="color: var(--accent-green-bright);">
+          <span>📈 Courbe d'autonomie (%)</span>
+          <span id="chart-hover-info" style="font-weight: bold;">--</span>
         </div>
         <svg id="history-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
+      </div>
+
+      <!-- Graphique 2 : Jaune/Orange (Multiple d'Effort) -->
+      <div class="history-chart-container">
+        <div class="history-chart-title" style="color: var(--accent-orange);">
+          <span>📉 Courbe d'effort restant (Multiple)</span>
+          <span id="chart-mult-hover-info" style="font-weight: bold;">--</span>
+        </div>
+        <svg id="history-mult-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
       </div>
 
       <div class="history-list" id="history-list-box"></div>
@@ -1074,7 +1121,7 @@
     </div>
   </div>
 
-  <!-- MODAL FÉLICITATIONS BADGE -->
+  <!-- MODAL FÉLICITATIONS BADGE OU EXPLICATION MULTIPLE -->
   <div id="badge-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="badge-modal-header">
@@ -1164,7 +1211,7 @@
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Capital Global Liquide",
         placeholderCapital: "Montant du capital",
-        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br><em>Note : Cela ne constitue pas un conseil en investissement. Chacun reste libre et responsable de la composition de son portefeuille.</em>`,
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br><em>Note : Cela ne constitue pas un conseil en investment. Chacun reste libre et responsable de la composition de son portefeuille.</em>`,
         lblAnnuityCapacity: "Rente théorique (4% / an) :",
         lblTotalExpenses: "Total Charges Mensuelles",
         lblAddExpenseTitle: "💸 Ajouter une charge mensuelle",
@@ -1197,7 +1244,7 @@
         lblEcoPaypal: "Faire un don via PayPal",
         lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.",
         lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.",
-        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil est fourni à titre éducatif et de simulation personnelle. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.",
         modalTitleDefault: "Avatars par Palier d'Avancement",
         modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.",
         lblCropTitle: "Ajuster la photo (Glisse pour déplacer)",
@@ -1243,7 +1290,13 @@
         historyIntervalInfo: "Écart min : 30 jours",
         historyEmpty: "Aucun relevé enregistré pour le moment.",
         historyAddedSuccess: "Relevé de progression enregistré !",
-        btnBadgeModalClose: "Génial !"
+        btnBadgeModalClose: "Génial !",
+        multModalTitle: "Facteur d'Effort Restant",
+        multModalDesc: "Ce facteur mesure la distance relative (le multiple de capital) qu'il te reste à parcourir pour financer 100 % de tes charges de base.<br><br>Plus ton capital grandit, plus l'effet boule de neige s'accélère et plus ce chiffre s'effondre rapidement vers <strong>1.0x</strong>.",
+        pctModalTitle: "Progression de l'Autonomie",
+        pctModalDescLow: "Chaque pourcentage gagné est un pas irréversible vers ta liberté. Au début, la montagne semble haute, mais chaque euro investi travaille pour toi sans jamais s'arrêter.",
+        pctModalDescMid: "L'effet boule de neige commence à se faire sentir ! Plus ton pourcentage d'autonomie augmente, plus ton <strong>facteur d'effort baisse rapidement</strong>. La suite est mathématiquement de plus en plus facile !",
+        pctModalDescHigh: "Tu approches du sommet ! Tes revenus passifs couvrent désormais la quasi-totalité de ton mode de vie. L'effort restant est minime par rapport au chemin parcouru."
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
@@ -1317,8 +1370,8 @@
         badgeArmy: "Klon Army",
         badgeArtist: "Artist",
         badge100kCapital: "100k Capital",
-        badge7DigitsCapital: "7-digit Capital",
-        badge8DigitsCapital: "8-digit Capital",
+        badge7DigitsCapital: "Capital 7 digits",
+        badge8DigitsCapital: "Capital 8 digits",
         badgeLevelIron: "Iron Level",
         badgeLevelBronze: "Bronze Level",
         badgeLevelSilver: "Silver Level",
@@ -1333,7 +1386,13 @@
         historyIntervalInfo: "Min gap: 30 days",
         historyEmpty: "No progress log recorded yet.",
         historyAddedSuccess: "Progress log recorded!",
-        btnBadgeModalClose: "Awesome!"
+        btnBadgeModalClose: "Awesome!",
+        multModalTitle: "Remaining Effort Factor",
+        multModalDesc: "This factor measures the relative distance (capital multiple) you have left to cover 100% of your baseline expenses.<br><br>As your capital grows, compounding accelerates and this number rapidly drops toward <strong>1.0x</strong>.",
+        pctModalTitle: "Autonomy Progress",
+        pctModalDescLow: "Every percentage point gained is an irreversible step toward freedom. At first, the climb feels steep, but every invested dollar works endlessly for you.",
+        pctModalDescMid: "The snowball effect is kicking in! As your autonomy percentage grows, your <strong>remaining effort factor drops faster</strong>. Progressively, advancing becomes mathematically easier!",
+        pctModalDescHigh: "You are reaching the summit! Your passive income now covers almost all your living costs. The remaining effort is minimal compared to the ground covered."
       }
     };
 
@@ -1369,6 +1428,22 @@
     function formatNumber(num) {
       const locale = state.lang === 'en' ? 'en-US' : 'fr-FR';
       return new Intl.NumberFormat(locale).format(num);
+    }
+
+    function calculateMultiplier(capital, totalExpenses) {
+      if (totalExpenses <= 0) return 1.0;
+      const monthlyCapacity = (capital * 0.04) / 12;
+      const targetCapital = (totalExpenses * 12) / 0.04;
+      
+      if (monthlyCapacity >= totalExpenses) return 1.0;
+      
+      const missingCapital = targetCapital - capital;
+      const currentRatio = monthlyCapacity / totalExpenses;
+      
+      if (currentRatio <= 0.01) return 100.0;
+      
+      const multiplier = (1 / currentRatio);
+      return Math.max(1.0, Math.round(multiplier * 10) / 10);
     }
 
     function changeLanguage(lang) {
@@ -2048,6 +2123,36 @@
       }
     }
 
+    function openMultiplierModal() {
+      const t = getT();
+      document.getElementById('badge-modal-icon').innerText = '⚡';
+      document.getElementById('badge-modal-title').innerText = t.multModalTitle;
+      document.getElementById('badge-modal-desc').innerHTML = t.multModalDesc;
+      document.getElementById('badge-modal').classList.add('active');
+    }
+
+    function openPercentageModal() {
+      const t = getT();
+      let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+      let totalAllocated = 0;
+      state.expenses.forEach(e => {
+        totalAllocated += Math.round(state.allocations[e.id] || 0);
+      });
+      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+
+      let textDesc = t.pctModalDescLow;
+      if (coverageRatio >= 30 && coverageRatio < 70) {
+        textDesc = t.pctModalDescMid;
+      } else if (coverageRatio >= 70) {
+        textDesc = t.pctModalDescHigh;
+      }
+
+      document.getElementById('badge-modal-icon').innerText = '🎯';
+      document.getElementById('badge-modal-title').innerText = `${t.pctModalTitle} (${coverageRatio}%)`;
+      document.getElementById('badge-modal-desc').innerHTML = textDesc;
+      document.getElementById('badge-modal').classList.add('active');
+    }
+
     function closeBadgeModal() {
       document.getElementById('badge-modal').classList.remove('active');
     }
@@ -2110,7 +2215,7 @@
         { id: "badge_80", icon: "🌟", label: "80%", isSuper: false },
         { id: "badge_90", icon: "✨", label: "90%", isSuper: false },
         { id: "badge_roche", icon: "🪨", label: t.badgeRoche, isSuper: false },
-        { id: "badge_10_m", icon: "⚡", label: `10${state.currency}${t.perMonth}`, isSuper: false },
+        { id: "badge_10_m", icon: "💧", label: `10${state.currency}${t.perMonth}`, isSuper: false },
         { id: "badge_50_m", icon: "🔋", label: `50${state.currency}${t.perMonth}`, isSuper: false },
         { id: "badge_100_m", icon: "💵", label: `100${state.currency}${t.perMonth}`, isSuper: false },
         { id: "badge_500_m", icon: "💸", label: `500${state.currency}${t.perMonth}`, isSuper: false },
@@ -2162,6 +2267,8 @@
 
     function addHistoryRecord(currentPercentage, totalExpenses, isManual = false) {
       const now = Date.now();
+      const mult = calculateMultiplier(state.capital, totalExpenses);
+      
       const newRecord = {
         id: now,
         timestamp: now,
@@ -2169,6 +2276,7 @@
         capital: state.capital,
         expenses: totalExpenses,
         percentage: currentPercentage,
+        multiplier: mult,
         currency: state.currency
       };
 
@@ -2209,15 +2317,22 @@
     }
 
     function renderHistoryChart() {
-      const svg = document.getElementById('history-svg-chart');
+      const svgPct = document.getElementById('history-svg-chart');
+      const svgMult = document.getElementById('history-mult-svg-chart');
       const hoverInfo = document.getElementById('chart-hover-info');
-      svg.innerHTML = '';
+      const hoverMultInfo = document.getElementById('chart-mult-hover-info');
+
+      svgPct.innerHTML = '';
+      svgMult.innerHTML = '';
       hoverInfo.innerText = '--';
+      hoverMultInfo.innerText = '--';
 
       const records = [...state.historyRecords].sort((a, b) => a.timestamp - b.timestamp);
 
       if (records.length < 2) {
-        svg.innerHTML = `<text x="200" y="55" fill="var(--text-main)" font-size="12" text-anchor="middle" opacity="0.6">${state.lang === 'en' ? 'At least 2 points needed for line graph' : 'Au moins 2 relevés nécessaires pour la courbe'}</text>`;
+        const emptyMsg = `<text x="200" y="55" fill="var(--text-main)" font-size="12" text-anchor="middle" opacity="0.6">${state.lang === 'en' ? 'At least 2 points needed' : 'Au moins 2 relevés nécessaires'}</text>`;
+        svgPct.innerHTML = emptyMsg;
+        svgMult.innerHTML = emptyMsg;
         return;
       }
 
@@ -2228,37 +2343,37 @@
       const chartWidth = 400 - paddingLeft - paddingRight;
       const chartHeight = 110 - paddingTop - paddingBottom;
 
+      // --- 1. Graphique d'Autonomie (%) ---
       const minPct = 0;
       const maxPct = Math.max(100, Math.max(...records.map(r => r.percentage)));
 
-      let points = [];
+      let pctPoints = [];
       records.forEach((rec, idx) => {
         const x = paddingLeft + (idx / (records.length - 1)) * chartWidth;
         const y = paddingTop + chartHeight - ((rec.percentage - minPct) / (maxPct - minPct)) * chartHeight;
-        points.push({ x, y, rec });
+        pctPoints.push({ x, y, rec });
       });
 
       [0, 50, 100].forEach(val => {
         if (val <= maxPct) {
           const yVal = paddingTop + chartHeight - ((val - minPct) / (maxPct - minPct)) * chartHeight;
-          svg.innerHTML += `
+          svgPct.innerHTML += `
             <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
             <text x="${paddingLeft - 6}" y="${yVal + 4}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.6">${val}%</text>
           `;
         }
       });
 
-      let pathD = `M ${points[0].x} ${points[0].y}`;
-      for (let i = 1; i < points.length; i++) {
-        pathD += ` L ${points[i].x} ${points[i].y}`;
+      let pctPathD = `M ${pctPoints[0].x} ${pctPoints[0].y}`;
+      for (let i = 1; i < pctPoints.length; i++) {
+        pctPathD += ` L ${pctPoints[i].x} ${pctPoints[i].y}`;
       }
 
-      svg.innerHTML += `<path d="${pathD}" fill="none" stroke="var(--accent-green-bright)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+      svgPct.innerHTML += `<path d="${pctPathD}" fill="none" stroke="var(--accent-green-bright)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+      let pctAreaD = `${pctPathD} L ${pctPoints[pctPoints.length - 1].x} ${paddingTop + chartHeight} L ${pctPoints[0].x} ${paddingTop + chartHeight} Z`;
+      svgPct.innerHTML += `<path d="${pctAreaD}" fill="var(--accent-green-bright)" opacity="0.12" />`;
 
-      let areaD = `${pathD} L ${points[points.length - 1].x} ${paddingTop + chartHeight} L ${points[0].x} ${paddingTop + chartHeight} Z`;
-      svg.innerHTML += `<path d="${areaD}" fill="var(--accent-green-bright)" opacity="0.12" />`;
-
-      points.forEach(p => {
+      pctPoints.forEach(p => {
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", p.x);
         circle.setAttribute("cy", p.y);
@@ -2274,8 +2389,56 @@
 
         circle.addEventListener("mouseenter", updateHover);
         circle.addEventListener("click", updateHover);
+        svgPct.appendChild(circle);
+      });
 
-        svg.appendChild(circle);
+      // --- 2. Graphique du Multiple (Jaune / Orange - Courbe descendante) ---
+      const multValues = records.map(r => r.multiplier !== undefined ? r.multiplier : calculateMultiplier(r.capital, r.expenses));
+      const minMult = 1.0;
+      const maxMult = Math.max(2.0, Math.max(...multValues));
+
+      let multPoints = [];
+      records.forEach((rec, idx) => {
+        const mVal = rec.multiplier !== undefined ? rec.multiplier : calculateMultiplier(rec.capital, rec.expenses);
+        const x = paddingLeft + (idx / (records.length - 1)) * chartWidth;
+        const y = paddingTop + chartHeight - ((mVal - minMult) / (maxMult - minMult)) * chartHeight;
+        multPoints.push({ x, y, rec, mVal });
+      });
+
+      [1.0, Math.round((maxMult + 1.0) / 2), Math.round(maxMult)].forEach(val => {
+        const yVal = paddingTop + chartHeight - ((val - minMult) / (maxMult - minMult)) * chartHeight;
+        svgMult.innerHTML += `
+          <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
+          <text x="${paddingLeft - 6}" y="${yVal + 4}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.6">${val}x</text>
+        `;
+      });
+
+      let multPathD = `M ${multPoints[0].x} ${multPoints[0].y}`;
+      for (let i = 1; i < multPoints.length; i++) {
+        multPathD += ` L ${multPoints[i].x} ${multPoints[i].y}`;
+      }
+
+      svgMult.innerHTML += `<path d="${multPathD}" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+      let multAreaD = `${multPathD} L ${multPoints[multPoints.length - 1].x} ${paddingTop + chartHeight} L ${multPoints[0].x} ${paddingTop + chartHeight} Z`;
+      svgMult.innerHTML += `<path d="${multAreaD}" fill="var(--accent-orange)" opacity="0.12" />`;
+
+      multPoints.forEach(p => {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", p.x);
+        circle.setAttribute("cy", p.y);
+        circle.setAttribute("r", "4.5");
+        circle.setAttribute("fill", "var(--bg-color)");
+        circle.setAttribute("stroke", "var(--accent-orange)");
+        circle.setAttribute("stroke-width", "2");
+        circle.style.cursor = "pointer";
+
+        const updateHover = () => {
+          hoverMultInfo.innerText = `${p.rec.dateStr} : ${p.mVal}x effort`;
+        };
+
+        circle.addEventListener("mouseenter", updateHover);
+        circle.addEventListener("click", updateHover);
+        svgMult.appendChild(circle);
       });
     }
 
@@ -2295,6 +2458,8 @@
 
       reversed.forEach(rec => {
         const recId = rec.id || rec.timestamp;
+        const mult = rec.multiplier !== undefined ? rec.multiplier : calculateMultiplier(rec.capital, rec.expenses);
+        
         box.innerHTML += `
           <div class="history-item">
             <div>
@@ -2305,6 +2470,7 @@
             </div>
             <div class="history-item-details">
               <span class="history-item-percentage">${rec.percentage}%</span>
+              <span class="history-item-multiplier">${mult}x</span>
               <button class="btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteHistoryRecord(${recId})" title="Supprimer ce relevé">🗑️</button>
             </div>
           </div>
@@ -2340,7 +2506,10 @@
       const hasExpenses = totalExpenses > 0;
 
       let coverageRatio = hasExpenses ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      const globalMultiplier = calculateMultiplier(state.capital, totalExpenses);
+
       document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
+      document.getElementById('global-multiplier-badge').innerText = `⚡ ${globalMultiplier}x`;
       document.getElementById('global-coverage-bar').style.width = `${coverageRatio}%`;
 
       if (hasExpenses) {
