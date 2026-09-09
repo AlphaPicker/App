@@ -580,7 +580,6 @@
       color: var(--btn-paypal-text) !important;
     }
 
-    /* Style du nom de Klon : plus grand uniquement, sans gras ni soulignage */
     .clickable-clone-name {
       color: var(--text-bright);
       cursor: pointer;
@@ -703,18 +702,13 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      transition: background-color 0.2s;
-    }
-
-    .btn-history-icon:hover {
-      background: var(--border-color);
     }
 
     .history-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      max-height: 300px;
+      max-height: 250px;
       overflow-y: auto;
     }
 
@@ -731,19 +725,36 @@
 
     .history-item-date {
       color: var(--text-bright);
-      font-weight: bold;
+      font-weight: normal;
     }
 
     .history-item-details {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
+      align-items: center;
+      gap: 12px;
     }
 
     .history-item-percentage {
       color: var(--accent-green-bright);
       font-weight: bold;
+    }
+
+    .history-chart-container {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .history-chart-title {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--accent-blue);
+      display: flex;
+      justify-content: space-between;
     }
 
     .site-footer {
@@ -929,14 +940,12 @@
 
     <!-- ONGLET 3 : ÉCOSYSTÈME -->
     <div id="tab3" class="tab-content">
-      <!-- Note de transparence -->
       <div class="card" style="border-left: 4px solid var(--accent-blue);">
         <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);" id="lbl-eco-transparency">
           <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.
         </div>
       </div>
 
-      <!-- Banques & Courtiers -->
       <div class="card">
         <div class="card-title" id="lbl-eco-brokers-title">📈 Banques & Courtiers</div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -955,7 +964,6 @@
         </div>
       </div>
 
-      <!-- Crypto & Rendement Alternatif -->
       <div class="card">
         <div class="card-title" id="lbl-eco-crypto-title">🪙 Crypto & Rendement Alternatif</div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -971,7 +979,6 @@
         </div>
       </div>
 
-      <!-- Suivi & Contenu -->
       <div class="card">
         <div class="card-title" id="lbl-eco-portfolio-title">Portefeuille & Performances</div>
         <a href="https://www.wikifolio.com/en/int/p/alphapicker?tab=wikifolios" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-wikifolio">
@@ -986,7 +993,6 @@
         </a>
       </div>
 
-      <!-- Soutien -->
       <div class="card">
         <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
@@ -1039,7 +1045,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIQUE DE PROGRESSION -->
+  <!-- MODAL HISTORIQUE DE PROGRESSION AVEC GRAPHIQUE -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
@@ -1051,6 +1057,15 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
         <button class="btn-secondary" onclick="forceAddHistoryRecord()" id="btn-add-history-point">➕ Relevé aujourd'hui</button>
         <span style="font-size: 0.75rem; opacity: 0.7;" id="lbl-history-interval-info">Écart min : 30 jours</span>
+      </div>
+
+      <!-- Graphique SVG de progression -->
+      <div class="history-chart-container">
+        <div class="history-chart-title">
+          <span>📈 Courbe d'autonomie</span>
+          <span id="chart-hover-info" style="color: var(--accent-green-bright); font-weight: bold;">--</span>
+        </div>
+        <svg id="history-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
       </div>
 
       <div class="history-list" id="history-list-box"></div>
@@ -2037,13 +2052,11 @@
       document.getElementById('badge-modal').classList.remove('active');
     }
 
-    /* GESTION DYNAMIQUE DES BADGES ET DE LEUR ÉTAT VISUEL */
     function checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, monthlyCapacity, totalExpenses) {
       const t = getT();
       let currentlyValid = [];
       let newlyUnlocked = false;
 
-      // Condition : Total des charges >= 1 000 €
       const meetsExpenseThreshold = totalExpenses >= 1000;
 
       if (meetsExpenseThreshold) {
@@ -2060,7 +2073,6 @@
           currentlyValid.push(`badge_${tierId}`);
         });
 
-        // Badges de Rente
         if (monthlyCapacity >= 10) currentlyValid.push("badge_10_m");
         if (monthlyCapacity >= 50) currentlyValid.push("badge_50_m");
         if (monthlyCapacity >= 100) currentlyValid.push("badge_100_m");
@@ -2069,13 +2081,11 @@
         if (monthlyCapacity >= 10000) currentlyValid.push("badge_10000_m");
       }
 
-      // Badges uniquement patrimoniaux
       if (Object.keys(state.dedicatedAvatars).length > 0) currentlyValid.push("badge_artist");
       if (state.capital >= 100000) currentlyValid.push("badge_100k");
       if (state.capital >= 1000000) currentlyValid.push("badge_7_digits");
       if (state.capital >= 10000000) currentlyValid.push("badge_8_digits");
 
-      // Vérification des nouveaux déblocages absolus pour le feu d'artifice
       currentlyValid.forEach(bId => {
         if (!state.everUnlockedBadges.includes(bId)) {
           state.everUnlockedBadges.push(bId);
@@ -2139,7 +2149,6 @@
       });
     }
 
-    /* GESTION DES RELEVÉS AUTOMATIQUES DE L'HISTORIQUE (30 JOURS) */
     function checkAutoHistoryRecord(currentPercentage, totalExpenses) {
       const now = Date.now();
       const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -2154,6 +2163,7 @@
     function addHistoryRecord(currentPercentage, totalExpenses, isManual = false) {
       const now = Date.now();
       const newRecord = {
+        id: now,
         timestamp: now,
         dateStr: new Date(now).toLocaleDateString(state.lang === 'en' ? 'en-US' : 'fr-FR', { year: 'numeric', month: 'short', day: 'numeric' }),
         capital: state.capital,
@@ -2183,6 +2193,12 @@
       addHistoryRecord(coverageRatio, totalExpenses, true);
     }
 
+    function deleteHistoryRecord(recordId) {
+      state.historyRecords = state.historyRecords.filter(r => (r.id || r.timestamp) !== recordId);
+      saveState();
+      renderHistoryList();
+    }
+
     function openHistoryModal() {
       renderHistoryList();
       document.getElementById('history-modal').classList.add('active');
@@ -2192,20 +2208,93 @@
       document.getElementById('history-modal').classList.remove('active');
     }
 
+    function renderHistoryChart() {
+      const svg = document.getElementById('history-svg-chart');
+      const hoverInfo = document.getElementById('chart-hover-info');
+      svg.innerHTML = '';
+      hoverInfo.innerText = '--';
+
+      const records = [...state.historyRecords].sort((a, b) => a.timestamp - b.timestamp);
+
+      if (records.length < 2) {
+        svg.innerHTML = `<text x="200" y="55" fill="var(--text-main)" font-size="12" text-anchor="middle" opacity="0.6">${state.lang === 'en' ? 'At least 2 points needed for line graph' : 'Au moins 2 relevés nécessaires pour la courbe'}</text>`;
+        return;
+      }
+
+      const paddingLeft = 30;
+      const paddingRight = 20;
+      const paddingTop = 15;
+      const paddingBottom = 25;
+      const chartWidth = 400 - paddingLeft - paddingRight;
+      const chartHeight = 110 - paddingTop - paddingBottom;
+
+      const minPct = 0;
+      const maxPct = Math.max(100, Math.max(...records.map(r => r.percentage)));
+
+      let points = [];
+      records.forEach((rec, idx) => {
+        const x = paddingLeft + (idx / (records.length - 1)) * chartWidth;
+        const y = paddingTop + chartHeight - ((rec.percentage - minPct) / (maxPct - minPct)) * chartHeight;
+        points.push({ x, y, rec });
+      });
+
+      [0, 50, 100].forEach(val => {
+        if (val <= maxPct) {
+          const yVal = paddingTop + chartHeight - ((val - minPct) / (maxPct - minPct)) * chartHeight;
+          svg.innerHTML += `
+            <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
+            <text x="${paddingLeft - 6}" y="${yVal + 4}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.6">${val}%</text>
+          `;
+        }
+      });
+
+      let pathD = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        pathD += ` L ${points[i].x} ${points[i].y}`;
+      }
+
+      svg.innerHTML += `<path d="${pathD}" fill="none" stroke="var(--accent-green-bright)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+
+      let areaD = `${pathD} L ${points[points.length - 1].x} ${paddingTop + chartHeight} L ${points[0].x} ${paddingTop + chartHeight} Z`;
+      svg.innerHTML += `<path d="${areaD}" fill="var(--accent-green-bright)" opacity="0.12" />`;
+
+      points.forEach(p => {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", p.x);
+        circle.setAttribute("cy", p.y);
+        circle.setAttribute("r", "4.5");
+        circle.setAttribute("fill", "var(--bg-color)");
+        circle.setAttribute("stroke", "var(--accent-green-bright)");
+        circle.setAttribute("stroke-width", "2");
+        circle.style.cursor = "pointer";
+
+        const updateHover = () => {
+          hoverInfo.innerText = `${p.rec.dateStr} : ${p.rec.percentage}% (${formatNumber(p.rec.capital)} ${p.rec.currency || state.currency})`;
+        };
+
+        circle.addEventListener("mouseenter", updateHover);
+        circle.addEventListener("click", updateHover);
+
+        svg.appendChild(circle);
+      });
+    }
+
     function renderHistoryList() {
       const t = getT();
       const box = document.getElementById('history-list-box');
       box.innerHTML = '';
+
+      renderHistoryChart();
 
       if (state.historyRecords.length === 0) {
         box.innerHTML = `<div style="font-size: 0.85rem; opacity: 0.7; text-align: center; padding: 20px;">${t.historyEmpty}</div>`;
         return;
       }
 
-      // Affichage du plus récent au plus ancien
       const reversed = [...state.historyRecords].reverse();
 
       reversed.forEach(rec => {
+        const recId = rec.id || rec.timestamp;
         box.innerHTML += `
           <div class="history-item">
             <div>
@@ -2216,6 +2305,7 @@
             </div>
             <div class="history-item-details">
               <span class="history-item-percentage">${rec.percentage}%</span>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteHistoryRecord(${recId})" title="Supprimer ce relevé">🗑️</button>
             </div>
           </div>
         `;
@@ -2253,7 +2343,6 @@
       document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
       document.getElementById('global-coverage-bar').style.width = `${coverageRatio}%`;
 
-      // Vérification et enregistrement automatique si 30 jours se sont écoulés
       if (hasExpenses) {
         checkAutoHistoryRecord(coverageRatio, totalExpenses);
       }
