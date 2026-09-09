@@ -580,11 +580,16 @@
       color: var(--btn-paypal-text) !important;
     }
 
+    /* Style du nom de Klon : plus grand uniquement, sans gras ni soulignage */
     .clickable-clone-name {
       color: var(--text-bright);
       cursor: pointer;
       transition: color 0.2s;
       font-weight: normal;
+      font-size: 1.15rem;
+      display: inline-block;
+      border-bottom: none;
+      padding-bottom: 0;
     }
 
     .clickable-clone-name:hover {
@@ -1193,7 +1198,7 @@
         lblRockLockDesc: "Alloue ta rente pour couvrir 100 % de tes charges de base ({0} {1}/mois) et briser le socle de roche.",
         lblNextTierTitle: "🔒 Palier Suivant : Niveau {0}",
         lblNextTierDesc: "Augmente ton capital total pour alimenter le Super Klon actuel et débloquer ce niveau.",
-        lblPayExpense: "{0} paye {1}% de la charge : {2} ({3} {4})",
+        lblPayExpense: "paye {0}% de la charge : {1} ({2} {3})",
         lblTarget: "Cible : {0} {1}/mois ({2}x charges) — {3}%",
         lblSuperCloneName: "Super Klon",
         modalTitleDedicated: "Visuel Dédié au Klon / Super Klon",
@@ -1283,7 +1288,7 @@
         lblRockLockDesc: "Allocate your income to cover 100% of your baseline expenses ({0} {1}/mo) and break through the bedrock.",
         lblNextTierTitle: "🔒 Next Tier: Level {0}",
         lblNextTierDesc: "Increase your total capital to feed the current Super Klon and unlock this tier.",
-        lblPayExpense: "{0} covers {1}% of expense: {2} ({3} {4})",
+        lblPayExpense: "covers {0}% of expense: {1} ({2} {3})",
         lblTarget: "Target: {0} {1}/mo ({2}x expenses) — {3}%",
         lblSuperCloneName: "Super Klon",
         modalTitleDedicated: "Dedicated Avatar for Klon / Super Klon",
@@ -2299,19 +2304,18 @@
           : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
 
         const cloneName = getCloneName(e.id, idx);
-        const payText = t.lblPayExpense
-          .replace('{0}', cloneName)
-          .replace('{1}', e.percentage)
-          .replace('{2}', e.name)
-          .replace('{3}', formatNumber(e.amount))
-          .replace('{4}', state.currency);
+        const actionText = t.lblPayExpense
+          .replace('{0}', e.percentage)
+          .replace('{1}', e.name)
+          .replace('{2}', formatNumber(e.amount))
+          .replace('{3}', state.currency);
 
         container.innerHTML += `
           <div class="card clone-card ${completedCardClass}">
             <div class="clone-header">
               ${avatarHTML}
               <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
-                <span class="clickable-clone-name" onclick="promptEditCloneName(${e.id}, '${cloneName}')">${payText}</span>
+                <span class="clickable-clone-name" onclick="promptEditCloneName(${e.id}, '${cloneName}')">${cloneName}</span> ${actionText}
               </div>
             </div>
             
