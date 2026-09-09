@@ -20,6 +20,11 @@
       --accent-orange: #f0883e;
       --accent-red: #da3633;
       --accent-purple: #a371f7;
+      --nav-active-bg: #21262d;
+      --nav-active-text: #58a6ff;
+      --btn-paypal-bg: #238636;
+      --btn-paypal-text: #ffffff;
+      --badge-inactive-color: #f0883e;
     }
 
     :root[data-theme="light"] {
@@ -34,6 +39,11 @@
       --accent-orange: #bc4c00;
       --accent-red: #cf222e;
       --accent-purple: #8250df;
+      --nav-active-bg: #e1e4e8;
+      --nav-active-text: #0969da;
+      --btn-paypal-bg: #1f883d;
+      --btn-paypal-text: #ffffff;
+      --badge-inactive-color: #bc4c00;
     }
 
     :root[data-theme="colorblind"] {
@@ -43,11 +53,16 @@
       --text-main: #ffffff;
       --text-bright: #ffff00;
       --accent-blue: #00ffff;
-      --accent-green: #00ff00;
-      --accent-green-bright: #00ff00;
+      --accent-green: #0d6efd;
+      --accent-green-bright: #ffcc00;
       --accent-orange: #ff8000;
-      --accent-red: #ff0000;
+      --accent-red: #ffcc00;
       --accent-purple: #ffff00;
+      --nav-active-bg: #2a2a2a;
+      --nav-active-text: #ffff00;
+      --btn-paypal-bg: #0d6efd;
+      --btn-paypal-text: #ffffff;
+      --badge-inactive-color: #a0a0a0; /* Gris mat haute lisibilité pour les badges inactifs en mode daltonien */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -130,9 +145,9 @@
     }
 
     .nav-btn.active {
-      background-color: var(--border-color);
-      color: var(--accent-blue);
-      border-bottom: 2px solid var(--accent-blue);
+      background-color: var(--nav-active-bg);
+      color: var(--nav-active-text);
+      border-bottom: 3px solid var(--nav-active-text);
     }
 
     .tab-content { display: none; flex-direction: column; gap: 16px; }
@@ -347,7 +362,7 @@
 
     button.btn-reset:hover {
       background-color: var(--accent-red);
-      color: white;
+      color: black;
     }
 
     .expense-item {
@@ -560,6 +575,11 @@
       box-sizing: border-box;
     }
 
+    .link-btn-paypal {
+      background-color: var(--btn-paypal-bg) !important;
+      color: var(--btn-paypal-text) !important;
+    }
+
     .clickable-clone-name {
       color: var(--text-bright);
       cursor: pointer;
@@ -637,10 +657,9 @@
 
     .badge-item.lost-inactive {
       display: inline-flex !important;
-      border-color: var(--accent-orange) !important;
-      color: var(--accent-orange) !important;
-      opacity: 0.65;
-      text-decoration: line-through;
+      border-color: var(--border-color) !important;
+      color: var(--badge-inactive-color) !important;
+      opacity: 0.8;
     }
 
     @keyframes badgePop {
@@ -660,6 +679,61 @@
       padding: 8px 10px;
       font-size: 0.85rem;
       width: 100%;
+    }
+
+    .btn-history-icon {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--accent-blue);
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-history-icon:hover {
+      background: var(--border-color);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .history-item-date {
+      color: var(--text-bright);
+      font-weight: bold;
+    }
+
+    .history-item-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .history-item-percentage {
+      color: var(--accent-green-bright);
+      font-weight: bold;
     }
 
     .site-footer {
@@ -688,7 +762,7 @@
       <h1>KLON</h1>
       <div class="subtitle" id="app-header-subtitle">Simulateur de Liberté Financière</div>
       <p class="description" id="app-header-desc">
-        Renseigne ton capital et tes charges mensuelles pour calculer ton indépendance financière et débloquer tes Klons de autonomie.
+        Renseigne ton capital et tes charges mensuelles pour calculer ton indépendance financière et débloquer tes Klons d'autonomie.
       </p>
     </header>
 
@@ -789,7 +863,10 @@
       <div class="global-progress-card">
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold;">
           <span id="lbl-global-progress">🎯 Progression Autonomie Globale</span>
-          <span id="global-coverage-percentage" style="color: var(--accent-green-bright);">0%</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="global-coverage-percentage" style="color: var(--accent-green-bright);">0%</span>
+            <button class="btn-history-icon" onclick="openHistoryModal()" title="Historique de progression" id="btn-history-toggle">📜 Historique</button>
+          </div>
         </div>
         <div class="progress-bar-bg">
           <div id="global-coverage-bar" class="progress-bar-fill" style="width: 0%;"></div>
@@ -892,7 +969,7 @@
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
          Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
         </p>
-        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: var(--accent-green); color: white;" id="lbl-eco-paypal">
+        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn link-btn-paypal" id="lbl-eco-paypal">
           Faire un don via PayPal
         </a>
       </div>
@@ -936,6 +1013,26 @@
       </div>
 
       <button class="btn-secondary" onclick="closeModal()" style="margin-top: 10px;" id="btn-modal-close">Fermer</button>
+    </div>
+  </div>
+
+  <!-- MODAL HISTORIQUE DE PROGRESSION -->
+  <div id="history-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
+      
+      <p style="font-size: 0.85rem; opacity: 0.8;" id="history-modal-desc">
+        Relevés automatiques avec un intervalle minimum de 30 jours entre deux points.
+      </p>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <button class="btn-secondary" onclick="forceAddHistoryRecord()" id="btn-add-history-point">➕ Relevé aujourd'hui</button>
+        <span style="font-size: 0.75rem; opacity: 0.7;" id="lbl-history-interval-info">Écart min : 30 jours</span>
+      </div>
+
+      <div class="history-list" id="history-list-box"></div>
+
+      <button class="btn-secondary" onclick="closeHistoryModal()" style="margin-top: 10px;" id="btn-history-close">Fermer</button>
     </div>
   </div>
 
@@ -1024,7 +1121,13 @@
         badgeLevelDiamond: "Niveau Diamant",
         perMonth: "/mois",
         completedCounter: "👑 {0}/{1} à 100%",
-        superCompletedCounter: "⭐ {0} Super Klon{1} au max"
+        superCompletedCounter: "⭐ {0} Super Klon{1} au max",
+        historyTitle: "📜 Historique de Progression",
+        historyDesc: "Relevés automatiques avec un intervalle minimum de 30 jours entre deux points.",
+        historyBtnAdd: "➕ Relevé aujourd'hui",
+        historyIntervalInfo: "Écart min : 30 jours",
+        historyEmpty: "Aucun relevé enregistré pour le moment.",
+        historyAddedSuccess: "Relevé de progression enregistré !"
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
@@ -1107,7 +1210,13 @@
         badgeLevelDiamond: "Diamond Level",
         perMonth: "/mo",
         completedCounter: "👑 {0}/{1} at 100%",
-        superCompletedCounter: "⭐ {0} Super Klon{1} maxed"
+        superCompletedCounter: "⭐ {0} Super Klon{1} maxed",
+        historyTitle: "📜 Progress History",
+        historyDesc: "Automatic logs with a minimum 30-day interval between points.",
+        historyBtnAdd: "➕ Log today",
+        historyIntervalInfo: "Min gap: 30 days",
+        historyEmpty: "No progress log recorded yet.",
+        historyAddedSuccess: "Progress log recorded!"
       }
     };
 
@@ -1123,7 +1232,8 @@
       firstname: localStorage.getItem('alpha_firstname') || "",
       customCloneNames: JSON.parse(localStorage.getItem('alpha_custom_clone_names')) || {},
       sortMode: localStorage.getItem('alpha_sort_mode') || "prog_desc",
-      everUnlockedBadges: JSON.parse(localStorage.getItem('alpha_ever_unlocked_badges')) || []
+      everUnlockedBadges: JSON.parse(localStorage.getItem('alpha_ever_unlocked_badges')) || [],
+      historyRecords: JSON.parse(localStorage.getItem('alpha_history_records')) || []
     };
 
     const DEFAULT_EMOJIS = { 0: '😫', 20: '😟', 40: '😐', 60: '🙂', 80: '😃', 100: '👑' };
@@ -1203,6 +1313,11 @@
       document.getElementById('opt-theme-dark').innerText = t.optThemeDark;
       document.getElementById('opt-theme-light').innerText = t.optThemeLight;
       document.getElementById('opt-theme-colorblind').innerText = t.optThemeColorblind;
+      document.getElementById('history-modal-title').innerText = t.historyTitle;
+      document.getElementById('history-modal-desc').innerText = t.historyDesc;
+      document.getElementById('btn-add-history-point').innerText = t.historyBtnAdd;
+      document.getElementById('lbl-history-interval-info').innerText = t.historyIntervalInfo;
+      document.getElementById('btn-history-close').innerText = t.btnModalClose;
     }
 
     let activeCropContext = { mode: 'global', step: null, cloneId: null };
@@ -1271,6 +1386,7 @@
       localStorage.setItem('alpha_firstname', state.firstname);
       localStorage.setItem('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
       localStorage.setItem('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
+      localStorage.setItem('alpha_history_records', JSON.stringify(state.historyRecords));
     }
 
     function exportData() {
@@ -1312,6 +1428,7 @@
             state.lang = state.lang || "fr";
             state.sortMode = state.sortMode || "prog_desc";
             state.everUnlockedBadges = state.everUnlockedBadges || [];
+            state.historyRecords = state.historyRecords || [];
             state.dedicatedAvatars = state.dedicatedAvatars || {};
             state.customCloneNames = state.customCloneNames || {};
             document.getElementById('user-firstname-input').value = state.firstname;
@@ -1353,7 +1470,8 @@
           firstname: "",
           customCloneNames: {},
           sortMode: "prog_desc",
-          everUnlockedBadges: []
+          everUnlockedBadges: [],
+          historyRecords: []
         };
         document.getElementById('user-firstname-input').value = "";
         document.getElementById('capital-input').value = "";
@@ -1902,6 +2020,89 @@
       });
     }
 
+    /* GESTION DES RELEVÉS AUTOMATIQUES DE L'HISTORIQUE (30 JOURS) */
+    function checkAutoHistoryRecord(currentPercentage, totalExpenses) {
+      const now = Date.now();
+      const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+      let lastRecord = state.historyRecords.length > 0 ? state.historyRecords[state.historyRecords.length - 1] : null;
+
+      if (!lastRecord || (now - lastRecord.timestamp) >= THIRTY_DAYS_MS) {
+        addHistoryRecord(currentPercentage, totalExpenses, false);
+      }
+    }
+
+    function addHistoryRecord(currentPercentage, totalExpenses, isManual = false) {
+      const now = Date.now();
+      const newRecord = {
+        timestamp: now,
+        dateStr: new Date(now).toLocaleDateString(state.lang === 'en' ? 'en-US' : 'fr-FR', { year: 'numeric', month: 'short', day: 'numeric' }),
+        capital: state.capital,
+        expenses: totalExpenses,
+        percentage: currentPercentage,
+        currency: state.currency
+      };
+
+      state.historyRecords.push(newRecord);
+      saveState();
+
+      if (isManual) {
+        const t = getT();
+        alert(t.historyAddedSuccess);
+        renderHistoryList();
+      }
+    }
+
+    function forceAddHistoryRecord() {
+      let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+      let totalAllocated = 0;
+      state.expenses.forEach(e => {
+        totalAllocated += Math.round(state.allocations[e.id] || 0);
+      });
+      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+
+      addHistoryRecord(coverageRatio, totalExpenses, true);
+    }
+
+    function openHistoryModal() {
+      renderHistoryList();
+      document.getElementById('history-modal').classList.add('active');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('history-modal').classList.remove('active');
+    }
+
+    function renderHistoryList() {
+      const t = getT();
+      const box = document.getElementById('history-list-box');
+      box.innerHTML = '';
+
+      if (state.historyRecords.length === 0) {
+        box.innerHTML = `<div style="font-size: 0.85rem; opacity: 0.7; text-align: center; padding: 20px;">${t.historyEmpty}</div>`;
+        return;
+      }
+
+      // Affichage du plus récent au plus ancien
+      const reversed = [...state.historyRecords].reverse();
+
+      reversed.forEach(rec => {
+        box.innerHTML += `
+          <div class="history-item">
+            <div>
+              <div class="history-item-date">📅 ${rec.dateStr}</div>
+              <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 2px;">
+                💰 ${formatNumber(rec.capital)} ${rec.currency || state.currency} | 💸 ${formatNumber(rec.expenses)} ${rec.currency || state.currency}/mo
+              </div>
+            </div>
+            <div class="history-item-details">
+              <span class="history-item-percentage">${rec.percentage}%</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
     function renderClones() {
       const t = getT();
       const container = document.getElementById('clones-container');
@@ -1932,6 +2133,11 @@
       let coverageRatio = hasExpenses ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
       document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
       document.getElementById('global-coverage-bar').style.width = `${coverageRatio}%`;
+
+      // Vérification et enregistrement automatique si 30 jours se sont écoulés
+      if (hasExpenses) {
+        checkAutoHistoryRecord(coverageRatio, totalExpenses);
+      }
 
       if (!hasExpenses) {
         checkBadges(0, 0, false, [], totalMonthlyCapacity, 0);
