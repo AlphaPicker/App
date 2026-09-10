@@ -425,7 +425,20 @@
       flex-direction: column;
       gap: 10px;
       border-left: 4px solid var(--accent-blue);
-      transition: border-color 0.3s;
+      transition: border-color 0.3s, transform 0.15s, opacity 0.15s;
+      cursor: grab;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .clone-card:active {
+      cursor: grabbing;
+    }
+
+    .clone-card.dragging {
+      opacity: 0.4;
+      border: 2px dashed var(--accent-blue) !important;
+      transform: scale(0.98);
     }
 
     .clone-card.completed {
@@ -721,16 +734,18 @@
 
     .sort-select-box {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.85rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       width: 100%;
     }
 
     .sort-select-box select {
-      padding: 8px 10px;
+      padding: 6px 10px;
       font-size: 0.85rem;
-      width: 100%;
+      width: auto;
+      max-width: 55%;
+      flex-shrink: 0;
     }
 
     .btn-history-icon {
@@ -1003,19 +1018,19 @@
         </div>
 
         <div class="sort-select-box" style="margin-top: 8px;">
-          <span id="lbl-sort-by">Trier les cartes :</span>
+          <span id="lbl-sort-by" style="font-size: 0.85rem; font-weight: bold;">Trier les cartes :</span>
           <select id="sort-select" onchange="changeSortMode(this.value)">
-            <option value="prog_desc" id="opt-sort-prog-desc">Complétés en premier</option>
-            <option value="prog_asc" id="opt-sort-prog-asc">À financer en premier</option>
-            <option value="amount_desc" id="opt-sort-amount-desc">Montant le plus élevé</option>
-            <option value="amount_asc" id="opt-sort-amount-asc">Montant le plus faible</option>
+            <option value="manual" id="opt-sort-manual">✋ Manuel</option>
+            <option value="prog_desc" id="opt-sort-prog-desc">Complétés</option>
+            <option value="prog_asc" id="opt-sort-prog-asc">À financer</option>
+            <option value="amount_desc" id="opt-sort-amount-desc">Montant max</option>
+            <option value="amount_asc" id="opt-sort-amount-asc">Montant min</option>
             <option value="creation" id="opt-sort-creation">Ordre d'ajout</option>
           </select>
         </div>
       </div>
 
       <div id="clones-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
-      <div id="super-clones-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
       <div id="tier-boss-container"></div>
     </div>
 
@@ -1193,7 +1208,7 @@
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !" },
         badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi." },
-        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main." },
+        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de hand." },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !" },
         badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont couvertes. Le socle vital est entièrement vaincu !" },
         badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !" },
@@ -1270,10 +1285,11 @@
         btnModalOpen: "⚙️ Avatars par Palier",
         lblRemainingCapacity: "Reste disponible :",
         lblSortBy: "Trier les cartes :",
-        optSortProgDesc: "Complétés en premier",
-        optSortProgAsc: "À financer en premier",
-        optSortAmountDesc: "Montant le plus élevé",
-        optSortAmountAsc: "Montant le plus faible",
+        optSortManual: "✋ Manuel",
+        optSortProgDesc: "Complétés",
+        optSortProgAsc: "À financer",
+        optSortAmountDesc: "Montant max",
+        optSortAmountAsc: "Montant min",
         optSortCreation: "Ordre d'ajout",
         lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.",
         lblEcoBrokersTitle: "📈 Banques & Courtiers",
@@ -1317,8 +1333,8 @@
         badgeArmy: "Armée de Klons",
         badgeArtist: "Artiste",
         badge100kCapital: "100k Capital",
-        badge7DigitsCapital: "Capital 7 chiffres",
-        badge8DigitsCapital: "Capital 8 chiffres",
+        badge7DigitsCapital: "Capital 7 digits",
+        badge8DigitsCapital: "Capital 8 digits",
         badgeLevelIron: "Niveau Fer",
         badgeLevelBronze: "Niveau Bronze",
         badgeLevelSilver: "Niveau Argent",
@@ -1334,14 +1350,19 @@
         historyEmpty: "Aucun relevé enregistré pour le moment.",
         historyAddedSuccess: "Relevé de progression enregistré !",
         btnBadgeModalClose: "Génial !",
+        lostBadgeTitle: "Badge temporairement perdu",
+        lostBadgeDesc: "Tu avais validé ce cap ! L'ajout de nouvelles charges ou la réallocation de ta rente a fait repasser ton niveau en dessous du seuil requis. Réalloue ta rente ou augmente ton capital pour le réactiver !",
         multModalTitle: "Facteur d'Effort Restant",
         multModalDesc: "Ce facteur mesure la distance relative (le multiple de capital) qu'il te reste à parcourir pour financer 100 % de tes charges de base.<br><br>Plus ton capital grandit, plus l'effet boule de neige s'accélère et plus ce chiffre s'effondre rapidement vers <strong>1.0x</strong>.",
         pctModalTitle: "Progression de l'Autonomie",
-        pctModalDescLow: "Chaque pourcentage gagné est un pas irréversible vers ta liberté. Au début, la montagne semble haute, mais chaque euro investi travaille pour toi sans jamais s'arrêter.",
-        pctModalDescMid: "L'effet boule de neige commence à se faire sentir ! Plus ton pourcentage d'autonomie augmente, plus ton <strong>facteur d'effort baisse rapidement</strong>. La suite est mathématiquement de plus en plus facile !",
-        pctModalDescHigh: "Tu approches du sommet ! Tes revenus passifs couvrent désormais la quasi-totalité de ton mode de vie. L'effort restant est minime par rapport au chemin parcouru.",
+        pctModalDesc0: "Au début, la montagne semble haute, mais chaque euro investi travaille pour toi sans jamais s'arrêter. La machine est lancée !",
+        pctModalDesc20: "Le premier vrai cap est franchi ! Au moins un cinquième de ton mode de vie ne sort plus de ton salaire. L'effort commence à se matérialiser.",
+        pctModalDesc40: "Le point de bascule est en vue ! Tu approches de la moitié de ton indépendance. La rente devient un bouclier concret qui paye tes factures.",
+        pctModalDesc60: "La majorité de ta vie est sécurisée ! Plus de la moitié de ton coût de vie est pris en charge automatiquement. L'effet boule de neige accélère.",
+        pctModalDesc80: "La dernière ligne droite vers le sommet ! Tes revenus passifs couvrent la quasi-totalité de ton quotidien. L'objectif ultime est imminent.",
+        pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
         clonesModalTitle: "Klons d'Autonomie",
-        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
+        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officially neutralisée par ta rente passive !",
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
         superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !"
@@ -1371,8 +1392,9 @@
         btnModalOpen: "⚙️ Tier Avatars",
         lblRemainingCapacity: "Remaining available:",
         lblSortBy: "Sort cards:",
-        optSortProgDesc: "Completed first",
-        optSortProgAsc: "To fund first",
+        optSortManual: "✋ Manual",
+        optSortProgDesc: "Completed",
+        optSortProgAsc: "To fund",
         optSortAmountDesc: "Highest amount",
         optSortAmountAsc: "Lowest amount",
         optSortCreation: "Order added",
@@ -1435,12 +1457,17 @@
         historyEmpty: "No progress log recorded yet.",
         historyAddedSuccess: "Progress log recorded!",
         btnBadgeModalClose: "Awesome!",
+        lostBadgeTitle: "Badge Temporarily Lost",
+        lostBadgeDesc: "You previously unlocked this milestone! Adding new expenses or reallocating your income dropped your progress below the required threshold. Reallocate your income or increase your capital to reactivate it!",
         multModalTitle: "Remaining Effort Factor",
         multModalDesc: "This factor measures the relative distance (capital multiple) you have left to cover 100% of your baseline expenses.<br><br>As your capital grows, compounding accelerates and this number rapidly drops toward <strong>1.0x</strong>.",
         pctModalTitle: "Autonomy Progress",
-        pctModalDescLow: "Every percentage point gained is an irreversible step toward freedom. At first, the climb feels steep, but every invested dollar works endlessly for you.",
-        pctModalDescMid: "The snowball effect is kicking in! As your autonomy percentage grows, your <strong>remaining effort factor drops faster</strong>. Progressively, advancing becomes mathematically easier!",
-        pctModalDescHigh: "You are reaching the summit! Your passive income now covers almost all your living costs. The remaining effort is minimal compared to the ground covered.",
+        pctModalDesc0: "At first, the mountain seems high, but every dollar invested works for you non-stop. The engine is running!",
+        pctModalDesc20: "The first milestone is unlocked! At least one fifth of your living costs no longer comes from your paycheck.",
+        pctModalDesc40: "The turning point is in sight! You are approaching half of total independence. Your income is a solid shield.",
+        pctModalDesc60: "Most of your life is secured! Over half of your living expenses are automatically handled. Compounding speeds up.",
+        pctModalDesc80: "The final stretch to the summit! Your passive income covers almost your entire lifestyle. The ultimate goal is near.",
+        pctModalDesc100: "Bedrock base completely smashed! 100% of your baseline expenses are neutralized by your capital.<br><br>⚡ <strong>The real game starts now:</strong> it's time for <strong>Super Klons</strong> to work, multiplying your independence and upgrading your lifestyle!",
         clonesModalTitle: "Autonomy Klons",
         clonesModalDescNone: "Each Klon represents one of your monthly expenses. As soon as a Klon hits 100%, that bill is officially neutralized by your passive income!",
         clonesModalDescSome: "Your Klon army is growing! You already have {0} expense(s) fully funded by your capital. Your salary stays right in your pocket.",
@@ -1460,7 +1487,8 @@
       dedicatedAvatars: JSON.parse(localStorage.getItem('alpha_dedicated_avatars')) || {},
       firstname: localStorage.getItem('alpha_firstname') || "",
       customCloneNames: JSON.parse(localStorage.getItem('alpha_custom_clone_names')) || {},
-      sortMode: localStorage.getItem('alpha_sort_mode') || "prog_desc",
+      sortMode: localStorage.getItem('alpha_sort_mode') || "manual",
+      cardsOrder: JSON.parse(localStorage.getItem('alpha_cards_order')) || [],
       everUnlockedBadges: JSON.parse(localStorage.getItem('alpha_ever_unlocked_badges')) || [],
       historyRecords: JSON.parse(localStorage.getItem('alpha_history_records')) || []
     };
@@ -1499,6 +1527,14 @@
       return Math.max(1.0, Math.round(multiplier * 10) / 10);
     }
 
+    function getBarColor(percentage) {
+      if (state.theme === 'colorblind') return 'var(--accent-green-bright)';
+      if (percentage >= 100) return 'var(--accent-green-bright)';
+      if (percentage >= 60) return 'var(--accent-green)';
+      if (percentage >= 20) return 'var(--accent-orange)';
+      return 'var(--accent-red)';
+    }
+
     function changeLanguage(lang) {
       state.lang = lang;
       localStorage.setItem('alpha_lang', lang);
@@ -1533,6 +1569,7 @@
       document.getElementById('btn-modal-open').innerText = t.btnModalOpen;
       document.getElementById('lbl-remaining-capacity').innerText = t.lblRemainingCapacity;
       document.getElementById('lbl-sort-by').innerText = t.lblSortBy;
+      document.getElementById('opt-sort-manual').innerText = t.optSortManual;
       document.getElementById('opt-sort-prog-desc').innerText = t.optSortProgDesc;
       document.getElementById('opt-sort-prog-asc').innerText = t.optSortProgAsc;
       document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
@@ -1634,6 +1671,8 @@
       localStorage.setItem('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
       localStorage.setItem('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
       localStorage.setItem('alpha_history_records', JSON.stringify(state.historyRecords));
+      localStorage.setItem('alpha_sort_mode', state.sortMode);
+      localStorage.setItem('alpha_cards_order', JSON.stringify(state.cardsOrder));
     }
 
     function exportData() {
@@ -1673,7 +1712,8 @@
             state.currency = state.currency || "€";
             state.theme = state.theme || "dark";
             state.lang = state.lang || "fr";
-            state.sortMode = state.sortMode || "prog_desc";
+            state.sortMode = state.sortMode || "manual";
+            state.cardsOrder = state.cardsOrder || [];
             state.everUnlockedBadges = state.everUnlockedBadges || [];
             state.historyRecords = state.historyRecords || [];
             state.dedicatedAvatars = state.dedicatedAvatars || {};
@@ -1716,14 +1756,15 @@
           dedicatedAvatars: {},
           firstname: "",
           customCloneNames: {},
-          sortMode: "prog_desc",
+          sortMode: "manual",
+          cardsOrder: [],
           everUnlockedBadges: [],
           historyRecords: []
         };
         document.getElementById('user-firstname-input').value = "";
         document.getElementById('capital-input').value = "";
         document.getElementById('currency-select').value = "€";
-        document.getElementById('sort-select').value = "prog_desc";
+        document.getElementById('sort-select').value = "manual";
         updateCurrencyDisplay();
         renderExpenses();
         updateCalculations();
@@ -1757,7 +1798,7 @@
       let vowelPositions = [];
 
       chars.forEach((char, idx) => {
-        const lower = char.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const lower = char.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
         if (accentsMap[lower]) {
           vowelPositions.push({ idx, lower });
         }
@@ -1848,7 +1889,9 @@
     }
 
     function removeExpense(id) {
+      const strId = String(id);
       state.expenses = state.expenses.filter(e => e.id !== id);
+      state.cardsOrder = state.cardsOrder.filter(cId => cId !== strId);
       delete state.allocations[id];
       delete state.customCloneNames[id];
       delete state.dedicatedAvatars[id];
@@ -2031,7 +2074,7 @@
     function startDrag(e) {
       isDragging = true;
       startX = e.clientX - cropX;
-      startY = e.clientY - cropY;
+      startY = e.clientY - startY;
     }
 
     function drag(e) {
@@ -2165,9 +2208,18 @@
       animate();
     }
 
-    function openBadgeModal(badgeId, iconStr) {
+    function openBadgeModal(badgeId, iconStr, isActive = true) {
+      const t = getT();
       const lang = BADGE_DETAILS[state.lang] ? state.lang : 'fr';
       const details = BADGE_DETAILS[lang][badgeId];
+
+      if (!isActive) {
+        document.getElementById('badge-modal-icon').innerText = '⚠️';
+        document.getElementById('badge-modal-title').innerText = t.lostBadgeTitle;
+        document.getElementById('badge-modal-desc').innerText = t.lostBadgeDesc;
+        document.getElementById('badge-modal').classList.add('active');
+        return;
+      }
 
       if (details) {
         document.getElementById('badge-modal-icon').innerText = iconStr;
@@ -2193,17 +2245,38 @@
         totalAllocated += Math.round(state.allocations[e.id] || 0);
       });
       let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      let salaryRatio = 100 - coverageRatio;
+      let salaryAmount = Math.max(0, totalExpenses - totalAllocated);
 
-      let textDesc = t.pctModalDescLow;
-      if (coverageRatio >= 30 && coverageRatio < 70) {
-        textDesc = t.pctModalDescMid;
-      } else if (coverageRatio >= 70) {
-        textDesc = t.pctModalDescHigh;
+      let textDesc = t.pctModalDesc0;
+      if (coverageRatio >= 100) {
+        textDesc = t.pctModalDesc100;
+      } else if (coverageRatio >= 80) {
+        textDesc = t.pctModalDesc80;
+      } else if (coverageRatio >= 60) {
+        textDesc = t.pctModalDesc60;
+      } else if (coverageRatio >= 40) {
+        textDesc = t.pctModalDesc40;
+      } else if (coverageRatio >= 20) {
+        textDesc = t.pctModalDesc20;
       }
+
+      let breakdownHTML = `
+        <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 0.85rem; text-align: left;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span>🤖 <strong>Klons (Rente passive) :</strong></span>
+            <strong style="color: var(--accent-green-bright);">${coverageRatio}% (${formatNumber(totalAllocated)} ${state.currency}/mois)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>💼 <strong>Ton salaire (Travail) :</strong></span>
+            <strong style="color: var(--accent-orange);">${salaryRatio}% (${formatNumber(salaryAmount)} ${state.currency}/mois)</strong>
+          </div>
+        </div>
+      `;
 
       document.getElementById('badge-modal-icon').innerText = '🎯';
       document.getElementById('badge-modal-title').innerText = `${t.pctModalTitle} (${coverageRatio}%)`;
-      document.getElementById('badge-modal-desc').innerHTML = textDesc;
+      document.getElementById('badge-modal-desc').innerHTML = `${breakdownHTML}<div style="margin-top: 8px; text-align: left;">${textDesc}</div>`;
       document.getElementById('badge-modal').classList.add('active');
     }
 
@@ -2320,7 +2393,7 @@
           const superClass = b.isSuper ? 'super-badge' : '';
 
           badgesBox.innerHTML += `
-            <div class="badge-item ${stateClass} ${superClass}" onclick="openBadgeModal('${b.id}', '${b.icon}')">
+            <div class="badge-item ${stateClass} ${superClass}" onclick="openBadgeModal('${b.id}', '${b.icon}', ${isActive})">
               <span>${b.icon}</span> ${b.label}${statusIcon}
             </div>
           `;
@@ -2553,14 +2626,14 @@
     function renderClones() {
       const t = getT();
       const container = document.getElementById('clones-container');
-      const superContainer = document.getElementById('super-clones-container');
       const bossContainer = document.getElementById('tier-boss-container');
       const countersBox = document.getElementById('clone-counters-box');
       
       container.innerHTML = '';
-      superContainer.innerHTML = '';
       bossContainer.innerHTML = '';
       countersBox.innerHTML = '';
+
+      document.getElementById('sort-select').value = state.sortMode;
 
       const totalMonthlyCapacity = Math.round((state.capital * 0.04) / 12);
       let totalAllocated = 0;
@@ -2583,19 +2656,7 @@
       document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
       document.getElementById('global-multiplier-badge').innerText = `⚡ ${globalMultiplier}x`;
       
-      // Couleur dynamique de la barre globale (sauf en mode daltonien)
-      let globalBarColor = 'var(--accent-green-bright)';
-      if (state.theme !== 'colorblind') {
-        if (coverageRatio >= 100) {
-          globalBarColor = 'var(--accent-green-bright)';
-        } else if (coverageRatio >= 60) {
-          globalBarColor = 'var(--accent-green)';
-        } else if (coverageRatio >= 20) {
-          globalBarColor = 'var(--accent-orange)';
-        } else {
-          globalBarColor = 'var(--accent-red)';
-        }
-      }
+      const globalBarColor = getBarColor(coverageRatio);
       const globalBarFill = document.getElementById('global-coverage-bar');
       globalBarFill.style.width = `${coverageRatio}%`;
       globalBarFill.style.backgroundColor = globalBarColor;
@@ -2611,96 +2672,17 @@
 
       let completedClonesCount = 0;
 
-      let clonesWithRatio = state.expenses.map(e => {
+      let baseClones = state.expenses.map((e, idx) => {
         const allocated = Math.round(state.allocations[e.id] || 0);
         let percentage = Math.min(100, Math.round((allocated / e.amount) * 100));
         if (isNaN(percentage)) percentage = 0;
         if (percentage >= 100) completedClonesCount++;
-        return { ...e, allocated, percentage };
+        return { ...e, cardType: 'base', allocated, percentage, origIndex: idx };
       });
 
-      countersBox.innerHTML += `
-        <div class="counter-badge" style="color: var(--accent-green-bright);" onclick="openClonesCounterModal(${completedClonesCount}, ${clonesWithRatio.length})">
-          ${t.completedCounter.replace('{0}', completedClonesCount).replace('{1}', clonesWithRatio.length)}
-        </div>
-      `;
+      let allBaseCompleted = (completedClonesCount === baseClones.length);
 
-      if (state.sortMode === 'prog_desc') {
-        clonesWithRatio.sort((a, b) => b.percentage - a.percentage);
-      } else if (state.sortMode === 'prog_asc') {
-        clonesWithRatio.sort((a, b) => a.percentage - b.percentage);
-      } else if (state.sortMode === 'amount_desc') {
-        clonesWithRatio.sort((a, b) => b.amount - a.amount);
-      } else if (state.sortMode === 'amount_asc') {
-        clonesWithRatio.sort((a, b) => a.amount - b.amount);
-      }
-
-      let allBaseCompleted = (completedClonesCount === clonesWithRatio.length);
-
-      clonesWithRatio.forEach((e, idx) => {
-        const avatar = getAvatarForClone(e.id, e.percentage);
-        const isUnlocked = e.percentage >= 100;
-        
-        let clickHandler = isUnlocked ? `onclick="triggerDedicatedAvatarUpload(${e.id})"` : '';
-        let statusClass = isUnlocked ? 'unlocked' : 'locked';
-        let completedCardClass = isUnlocked ? 'completed' : '';
-
-        let avatarHTML = avatar.type === 'image' 
-          ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
-          : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
-
-        const cloneName = getCloneName(e.id, idx);
-        const actionText = t.lblPayExpense
-          .replace('{0}', e.percentage)
-          .replace('{1}', e.name)
-          .replace('{2}', formatNumber(e.amount))
-          .replace('{3}', state.currency);
-
-        // Couleur dynamique de la barre individuelle (sauf en mode daltonien)
-        let barColor = 'var(--accent-green-bright)';
-        if (state.theme !== 'colorblind') {
-          if (e.percentage >= 100) {
-            barColor = 'var(--accent-green-bright)';
-          } else if (e.percentage >= 60) {
-            barColor = 'var(--accent-green)';
-          } else if (e.percentage >= 20) {
-            barColor = 'var(--accent-orange)';
-          } else {
-            barColor = 'var(--accent-red)';
-          }
-        }
-
-        container.innerHTML += `
-          <div class="card clone-card ${completedCardClass}">
-            <div class="clone-header">
-              ${avatarHTML}
-              <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
-                <span class="clickable-clone-name" onclick="promptEditCloneName(${e.id}, '${cloneName}')">${cloneName}</span> ${actionText}
-              </div>
-            </div>
-            
-            <div style="display: flex; gap: 8px; align-items: center; margin: 4px 0;">
-              <span style="font-size: 0.85rem; opacity: 0.8;">${t.lblAllocated}</span>
-              <input 
-                type="number" 
-                class="inline-amount-input" 
-                value="${e.allocated}" 
-                step="1"
-                inputmode="numeric"
-                onblur="updateCloneAllocation(${e.id}, this.value)"
-                onkeydown="if(event.key==='Enter') this.blur()"
-              >
-              <span class="currency-align-label">${state.currency}</span>
-              <button class="btn-secondary" onclick="fillRemaining(${e.id})">${t.btnCover}</button>
-            </div>
-
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: ${Math.min(100, e.percentage)}%; background-color: ${barColor};"></div>
-            </div>
-          </div>
-        `;
-      });
-
+      let superClones = [];
       let completedSuperClonesCount = 0;
       let unlockedSuperIds = [];
 
@@ -2718,7 +2700,6 @@
 
         for (let i = 0; i < TIERS.length; i++) {
           let tier = TIERS[i];
-          let tierName = state.lang === 'en' ? tier.nameEN : tier.nameFR;
           let targetAmount = Math.round(totalExpenses * tier.mult);
           let tierCapacityNeeded = targetAmount - previousTarget;
           let percentage = Math.min(100, Math.round((superCapacityAvailable / tierCapacityNeeded) * 100));
@@ -2730,40 +2711,14 @@
             unlockedSuperIds.push(tier.id);
           }
 
-          const avatar = getAvatarForClone(tier.id, percentage, tier.icon);
-          let clickHandler = isSuperUnlocked ? `onclick="triggerDedicatedAvatarUpload('${tier.id}')"` : '';
-          let statusClass = isSuperUnlocked ? 'unlocked' : 'locked';
-
-          let avatarHTML = avatar.type === 'image' 
-            ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
-            : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
-
-          const customSuperName = state.customCloneNames[tier.id] ? state.customCloneNames[tier.id] : "";
-          const superDisplayName = customSuperName !== "" ? `${t.lblSuperCloneName} ${customSuperName}` : t.lblSuperCloneName;
-          const targetText = t.lblTarget
-            .replace('{0}', formatNumber(targetAmount))
-            .replace('{1}', state.currency)
-            .replace('{2}', tier.mult)
-            .replace('{3}', percentage);
-
-          superContainer.innerHTML += `
-            <div class="card clone-card super-clone-card ${isSuperUnlocked ? 'completed' : ''}">
-              <div class="clone-header">
-                ${avatarHTML}
-                <div style="flex: 1;">
-                  <div style="color: var(--accent-purple);">
-                    <span class="clickable-clone-name" onclick="promptEditSuperCloneName('${tier.id}', '${customSuperName}')">${superDisplayName}</span> — ${tierName}
-                  </div>
-                  <div style="font-size: 0.85rem; opacity: 0.8;">
-                    ${targetText}
-                  </div>
-                </div>
-              </div>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill progress-bar-super" style="width: ${Math.min(100, percentage)}%;"></div>
-              </div>
-            </div>
-          `;
+          superClones.push({
+            id: tier.id,
+            cardType: 'super',
+            tier: tier,
+            targetAmount: targetAmount,
+            percentage: percentage,
+            isUnlocked: isSuperUnlocked
+          });
 
           if (superCapacityAvailable < tierCapacityNeeded) {
             nextLockedTier = TIERS[i + 1] || null;
@@ -2771,14 +2726,6 @@
           }
           superCapacityAvailable -= tierCapacityNeeded;
           previousTarget = targetAmount;
-        }
-
-        if (completedSuperClonesCount > 0) {
-          countersBox.innerHTML += `
-            <div class="counter-badge" style="color: var(--accent-purple);" onclick="openSuperCounterModal(${completedSuperClonesCount})">
-              ${t.superCompletedCounter.replace('{0}', completedSuperClonesCount).replace('{1}', completedSuperClonesCount > 1 ? (state.lang === 'en' ? 's' : 's') : '')}
-            </div>
-          `;
         }
 
         if (nextLockedTier) {
@@ -2792,7 +2739,202 @@
         }
       }
 
+      countersBox.innerHTML += `
+        <div class="counter-badge" style="color: var(--accent-green-bright);" onclick="openClonesCounterModal(${completedClonesCount}, ${baseClones.length})">
+          ${t.completedCounter.replace('{0}', completedClonesCount).replace('{1}', baseClones.length)}
+        </div>
+      `;
+
+      if (completedSuperClonesCount > 0) {
+        countersBox.innerHTML += `
+          <div class="counter-badge" style="color: var(--accent-purple);" onclick="openSuperCounterModal(${completedSuperClonesCount})">
+            ${t.superCompletedCounter.replace('{0}', completedSuperClonesCount).replace('{1}', completedSuperClonesCount > 1 ? (state.lang === 'en' ? 's' : 's') : '')}
+          </div>
+        `;
+      }
+
+      let allCards = [...baseClones, ...superClones];
+
+      if (state.sortMode === 'prog_desc') {
+        allCards.sort((a, b) => b.percentage - a.percentage);
+      } else if (state.sortMode === 'prog_asc') {
+        allCards.sort((a, b) => a.percentage - b.percentage);
+      } else if (state.sortMode === 'amount_desc') {
+        allCards.sort((a, b) => {
+          let amtA = a.cardType === 'base' ? a.amount : a.targetAmount;
+          let amtB = b.cardType === 'base' ? b.amount : b.targetAmount;
+          return amtB - amtA;
+        });
+      } else if (state.sortMode === 'amount_asc') {
+        allCards.sort((a, b) => {
+          let amtA = a.cardType === 'base' ? a.amount : a.targetAmount;
+          let amtB = b.cardType === 'base' ? b.amount : b.targetAmount;
+          return amtA - amtB;
+        });
+      } else if (state.sortMode === 'manual' && state.cardsOrder.length > 0) {
+        allCards.sort((a, b) => {
+          let idxA = state.cardsOrder.indexOf(String(a.id));
+          let idxB = state.cardsOrder.indexOf(String(b.id));
+          if (idxA === -1) idxA = 999;
+          if (idxB === -1) idxB = 999;
+          return idxA - idxB;
+        });
+      }
+
+      allCards.forEach((c) => {
+        if (c.cardType === 'base') {
+          const avatar = getAvatarForClone(c.id, c.percentage);
+          const isUnlocked = c.percentage >= 100;
+          
+          let clickHandler = isUnlocked ? `onclick="triggerDedicatedAvatarUpload(${c.id})"` : '';
+          let statusClass = isUnlocked ? 'unlocked' : 'locked';
+          let completedCardClass = isUnlocked ? 'completed' : '';
+
+          let avatarHTML = avatar.type === 'image' 
+            ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
+            : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
+
+          const cloneName = getCloneName(c.id, c.origIndex);
+          const actionText = t.lblPayExpense
+            .replace('{0}', c.percentage)
+            .replace('{1}', c.name)
+            .replace('{2}', formatNumber(c.amount))
+            .replace('{3}', state.currency);
+
+          const barColor = getBarColor(c.percentage);
+
+          container.innerHTML += `
+            <div class="card clone-card ${completedCardClass}" draggable="true" data-id="${c.id}">
+              <div class="clone-header">
+                ${avatarHTML}
+                <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
+                  <span class="clickable-clone-name" onclick="promptEditCloneName(${c.id}, '${cloneName}')">${cloneName}</span> ${actionText}
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 8px; align-items: center; margin: 4px 0;">
+                <span style="font-size: 0.85rem; opacity: 0.8;">${t.lblAllocated}</span>
+                <input 
+                  type="number" 
+                  class="inline-amount-input" 
+                  value="${c.allocated}" 
+                  step="1"
+                  inputmode="numeric"
+                  onblur="updateCloneAllocation(${c.id}, this.value)"
+                  onkeydown="if(event.key==='Enter') this.blur()"
+                >
+                <span class="currency-align-label">${state.currency}</span>
+                <button class="btn-secondary" onclick="fillRemaining(${c.id})">${t.btnCover}</button>
+              </div>
+
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: ${Math.min(100, c.percentage)}%; background-color: ${barColor};"></div>
+              </div>
+            </div>
+          `;
+        } else {
+          let tier = c.tier;
+          let tierName = state.lang === 'en' ? tier.nameEN : tier.nameFR;
+          const avatar = getAvatarForClone(tier.id, c.percentage, tier.icon);
+          let clickHandler = c.isUnlocked ? `onclick="triggerDedicatedAvatarUpload('${tier.id}')"` : '';
+          let statusClass = c.isUnlocked ? 'unlocked' : 'locked';
+
+          let avatarHTML = avatar.type === 'image' 
+            ? `<div class="clone-avatar ${statusClass}" style="background-image: url('${avatar.value}');" ${clickHandler}></div>`
+            : `<div class="clone-avatar emoji-avatar ${statusClass}" ${clickHandler}><span>${avatar.value}</span></div>`;
+
+          const customSuperName = state.customCloneNames[tier.id] ? state.customCloneNames[tier.id] : "";
+          const superDisplayName = customSuperName !== "" ? `${t.lblSuperCloneName} ${customSuperName}` : t.lblSuperCloneName;
+          const targetText = t.lblTarget
+            .replace('{0}', formatNumber(c.targetAmount))
+            .replace('{1}', state.currency)
+            .replace('{2}', tier.mult)
+            .replace('{3}', c.percentage);
+
+          container.innerHTML += `
+            <div class="card clone-card super-clone-card ${c.isUnlocked ? 'completed' : ''}" draggable="true" data-id="${tier.id}">
+              <div class="clone-header">
+                ${avatarHTML}
+                <div style="flex: 1;">
+                  <div style="color: var(--accent-purple);">
+                    <span class="clickable-clone-name" onclick="promptEditSuperCloneName('${tier.id}', '${customSuperName}')">${superDisplayName}</span> — ${tierName}
+                  </div>
+                  <div style="font-size: 0.85rem; opacity: 0.8;">
+                    ${targetText}
+                  </div>
+                </div>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill progress-bar-super" style="width: ${Math.min(100, c.percentage)}%;"></div>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      initDragAndDrop();
       checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, totalMonthlyCapacity, totalExpenses);
+    }
+
+    function initDragAndDrop() {
+      const container = document.getElementById('clones-container');
+      const cards = container.querySelectorAll('.clone-card');
+
+      cards.forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+          card.classList.add('dragging');
+          e.dataTransfer.setData('text/plain', card.dataset.id);
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          saveNewOrder();
+        });
+
+        let touchTimer;
+        card.addEventListener('touchstart', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('clickable-clone-name')) return;
+          touchTimer = setTimeout(() => {
+            card.classList.add('dragging');
+          }, 300);
+        }, { passive: true });
+
+        card.addEventListener('touchend', () => {
+          clearTimeout(touchTimer);
+          if (card.classList.contains('dragging')) {
+            card.classList.remove('dragging');
+            saveNewOrder();
+          }
+        });
+      });
+
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const draggingCard = container.querySelector('.dragging');
+        if (!draggingCard) return;
+
+        const siblings = [...container.querySelectorAll('.clone-card:not(.dragging)')];
+        const nextSibling = siblings.find(sibling => {
+          const box = sibling.getBoundingClientRect();
+          return e.clientY < box.top + box.height / 2;
+        });
+
+        container.insertBefore(draggingCard, nextSibling);
+      });
+    }
+
+    function saveNewOrder() {
+      const container = document.getElementById('clones-container');
+      const cardElements = container.querySelectorAll('.clone-card');
+      
+      state.cardsOrder = Array.from(cardElements).map(card => String(card.dataset.id));
+      state.sortMode = 'manual';
+
+      localStorage.setItem('alpha_cards_order', JSON.stringify(state.cardsOrder));
+      localStorage.setItem('alpha_sort_mode', 'manual');
+      document.getElementById('sort-select').value = 'manual';
+
+      saveState();
     }
 
     function copyFortuneoCode() {
