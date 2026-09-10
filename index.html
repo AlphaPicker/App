@@ -1,16 +1,21 @@
-<!DOCTYPE html>
-<html lang="fr" data-theme="dark">
-<head>
+<!DOCTYPE html><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KLON</title>
-  <!-- Balises PWA pour le mode application plein écran -->
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22KLON%22,%22short_name%22:%22KLON%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230d1117%22,%22theme_color%22:%22%230d1117%22,%22icons%22:[{%22src%22:%22data:image/svg%2Bxml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0 0 100 100'%3E%3Crect%20width='100'%20height='100'%20fill='%232563EB'/%3E%3Ctext%20x='50'%20y='60'%20font-family='sans-serif'%20font-weight='bold'%20font-size='22'%20fill='white'%20text-anchor='middle'%3EKLON%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg%2Bxml%22}]}">
+
+  <!-- Métadonnées Mobile / PWA -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0d1117">
+
+  <!-- Manifest PWA Intégré (Data URL) -->
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22KLON%22,%22short_name%22:%22KLON%22,%22start_url%22:%22./index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%230d1117%22,%22theme_color%22:%22%230d1117%22,%22icons%22:[{%22src%22:%22data:image/svg%2Bxml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20fill='%232563EB'/%3E%3Ctext%20x='50'%20y='60'%20font-family='sans-serif'%20font-weight='bold'%20font-size='22'%20fill='white'%20text-anchor='middle'%3EKLON%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg%2Bxml%22}]}">
+
+  <!-- Favicons -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563EB'/><text x='50' y='60' font-family='sans-serif' font-weight='bold' font-size='22' fill='white' text-anchor='middle'>KLON</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563EB'/><text x='50' y='60' font-family='sans-serif' font-weight='bold' font-size='22' fill='white' text-anchor='middle'>KLON</text></svg>">
+
   <style>
     :root[data-theme="dark"] {
       --bg-color: #0d1117;
