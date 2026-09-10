@@ -947,7 +947,7 @@
       cursor: not-allowed;
     }
 
-    /* --- STYLES KLON SNAKE ET VIGNETTES --- */
+    /* STYLES SNAKE */
     .snake-header-title {
       font-size: 1.15rem;
       font-weight: bold;
@@ -1081,7 +1081,7 @@
 
   <div class="app-container">
     
-    <!-- EN-TÊTE DE L'APPLICATION -->
+    <!-- EN-TÊTE -->
     <header class="app-header">
       <h1>KLON</h1>
       <div class="subtitle" id="app-header-subtitle">Simulateur de Liberté Financière</div>
@@ -1102,7 +1102,7 @@
       </button>
     </nav>
 
-    <!-- ONGLET 1 : SAISIE DES DONNÉES -->
+    <!-- ONGLET 1 -->
     <div id="tab1" class="tab-content active">
       <div class="card" style="padding: 12px 14px;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
@@ -1125,7 +1125,6 @@
         </div>
       </div>
 
-      <!-- CARTE CAPITAL GLOBAL LIQUIDE -->
       <div class="capital-dashboard-card">
         <div class="card-header-flex">
           <div class="card-title">
@@ -1183,12 +1182,12 @@
             <span>📂 Importer</span>
             <input type="file" accept=".json" style="display: none;" onchange="importData(event)">
           </label>
-          <button class="btn-reset" style="flex: 1; min-width: 110px;" id="btn-reset" onclick="resetAllData()">🗑️ Réinitialiser</button>
+          <button class="btn-reset" style="flex: 1; min-width: 110px;" id="btn-reset" onclick="confirmResetDialog()">🗑️ Réinitialiser</button>
         </div>
       </div>
     </div>
 
-    <!-- ONGLET 2 : RESULTAT DES KLONS -->
+    <!-- ONGLET 2 -->
     <div id="tab2" class="tab-content">
       <div class="global-progress-card">
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold;">
@@ -1236,11 +1235,11 @@
       <div id="tier-boss-container"></div>
     </div>
 
-    <!-- ONGLET 3 : ÉCOSYSTÈME -->
+    <!-- ONGLET 3 -->
     <div id="tab3" class="tab-content">
       <div class="card" style="border-left: 4px solid var(--accent-blue);">
         <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);" id="lbl-eco-transparency">
-          <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.
+          <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage.
         </div>
       </div>
 
@@ -1276,27 +1275,40 @@
       <div class="card">
         <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
-          Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
+          Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via un don.
         </p>
         <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn link-btn-paypal" id="lbl-eco-paypal">Faire un don via PayPal</a>
       </div>
     </div>
 
-    <!-- FOOTER LÉGAL ET CONFIDENTIALITÉ -->
+    <!-- FOOTER -->
     <footer class="site-footer">
       <div id="lbl-footer-app-info">
-        <strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.
+        <strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong>.
       </div>
       <div id="lbl-footer-privacy-info">
-        🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.
+        🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données.
       </div>
       <div id="lbl-footer-disclaimer-info">
-        ⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.
+        ⚠️ <strong>Avertissement :</strong> Cet outil sert de simulation personnelle et éducative.
       </div>
     </footer>
   </div>
 
-  <!-- MODAL CONFIGURATION DES VISUELS GLOBAUX -->
+  <!-- MODAL ALERTES / CONFIRMATIONS SYSTEME PROPRES -->
+  <div id="custom-dialog-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 380px; text-align: center;">
+      <div style="font-size: 2.5rem; line-height: 1;" id="dialog-icon">ℹ️</div>
+      <div class="card-title" style="justify-content: center; font-size: 1.2rem;" id="dialog-title">Notification</div>
+      <p style="font-size: 0.9rem; line-height: 1.4; color: var(--text-main);" id="dialog-message">Message ici</p>
+
+      <div style="display: flex; gap: 8px; margin-top: 10px; justify-content: center;" id="dialog-buttons">
+        <button class="btn-primary" id="dialog-btn-ok" onclick="closeCustomDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AVATARS -->
   <div id="settings-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" id="modal-title-text">Avatars par Palier d'Avancement</div>
@@ -1325,7 +1337,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIQUE DE PROGRESSION -->
+  <!-- MODAL HISTORIQUE -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
       <div style="display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
@@ -1382,7 +1394,7 @@
     </div>
   </div>
 
-  <!-- MODAL COFFRE À JEUX (KLON ARCADE) -->
+  <!-- MODAL COFFRE A JEUX -->
   <div id="arcade-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" style="justify-content: center;">🎁 Coffre à Jeux Klon</div>
@@ -1398,11 +1410,10 @@
     </div>
   </div>
 
-  <!-- MODAL INTÉGRÉE DU JEU KLON SNAKE (AVEC BOUTONS D'ACTION EN HAUT) -->
+  <!-- MODAL SNAKE -->
   <div id="snake-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px; padding: 12px;">
       
-      <!-- En-tête avec Rejouer à gauche, Titre au centre, Retour à droite -->
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
         <button onclick="startSnakeGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 34px; height: 34px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
         
@@ -1415,7 +1426,6 @@
       </div>
 
       <div class="snake-scores-row">
-        <!-- Boîte du score avec la photo du Klon au-dessus -->
         <div class="snake-score-box">
           <div id="snake-klon-vignette-header" class="snake-klon-avatar-vignette">👑</div>
           <div>Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
@@ -1429,7 +1439,6 @@
 
       <canvas id="snake-canvas" width="280" height="280"></canvas>
 
-      <!-- Pad Mobile Aéré -->
       <div class="snake-dpad">
         <div></div>
         <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
@@ -1445,7 +1454,7 @@
     </div>
   </div>
 
-  <!-- MODAL GAME OVER NATIVE SNAKE -->
+  <!-- MODAL GAME OVER SNAKE -->
   <div id="snake-gameover-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 320px; text-align: center;">
       <div style="font-size: 3rem; line-height: 1;" id="gameover-icon">💥</div>
@@ -1460,7 +1469,7 @@
     </div>
   </div>
 
-  <!-- MODAL LEADERBOARD SNAKE (TOP 10 AVEC AVATARS) -->
+  <!-- MODAL LEADERBOARD SNAKE -->
   <div id="snake-leaderboard-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px;">
       <div class="card-title" style="justify-content: center;">🏆 Top 10 Records KLON Snake</div>
@@ -1477,6 +1486,88 @@
   <input type="file" id="dedicated-avatar-input" accept="image/*" style="display: none;" onchange="handleDedicatedImageSelect(event)">
 
   <script>
+    // ACCÈS SÉCURISÉ AU LOCALSTORAGE
+    const storageMem = {};
+    function safeGet(key, fallback = null) {
+      try {
+        const val = localStorage.getItem(key);
+        return val !== null ? val : fallback;
+      } catch (e) {
+        return storageMem[key] !== undefined ? storageMem[key] : fallback;
+      }
+    }
+
+    function safeSet(key, val) {
+      try {
+        localStorage.setItem(key, val);
+      } catch (e) {
+        storageMem[key] = val;
+      }
+    }
+
+    function safeParse(key, fallback) {
+      try {
+        const val = safeGet(key);
+        return val ? JSON.parse(val) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    let state = {
+      expenses: safeParse('alpha_expenses', []),
+      capital: Math.round(parseFloat(safeGet('alpha_capital', '0'))) || 0,
+      currency: safeGet('alpha_currency', '€'),
+      theme: safeGet('alpha_theme', 'dark'),
+      lang: safeGet('alpha_lang', 'fr'),
+      allocations: safeParse('alpha_allocations', {}),
+      globalAvatars: safeParse('alpha_global_avatars', {}),
+      dedicatedAvatars: safeParse('alpha_dedicated_avatars', {}),
+      firstname: safeGet('alpha_firstname', ''),
+      customCloneNames: safeParse('alpha_custom_clone_names', {}),
+      sortMode: safeGet('alpha_sort_mode', 'manual'),
+      cardsOrder: safeParse('alpha_cards_order', []),
+      everUnlockedBadges: safeParse('alpha_ever_unlocked_badges', []),
+      historyRecords: safeParse('alpha_history_records', []),
+      gameLeaderboards: safeParse('alpha_game_leaderboards', {})
+    };
+
+    let dialogConfirmCallback = null;
+
+    function showCustomDialog(icon, title, message, isConfirm = false, onConfirm = null) {
+      document.getElementById('dialog-icon').innerText = icon || 'ℹ️';
+      document.getElementById('dialog-title').innerText = title || 'Information';
+      document.getElementById('dialog-message').innerText = message || '';
+
+      const btnBox = document.getElementById('dialog-buttons');
+      dialogConfirmCallback = onConfirm;
+
+      if (isConfirm) {
+        btnBox.innerHTML = `
+          <button class="btn-reset" onclick="executeDialogConfirm()">Confirmer</button>
+          <button class="btn-secondary" onclick="closeCustomDialog()">Annuler</button>
+        `;
+      } else {
+        btnBox.innerHTML = `
+          <button class="btn-primary" onclick="closeCustomDialog()">OK</button>
+        `;
+      }
+
+      document.getElementById('custom-dialog-modal').classList.add('active');
+    }
+
+    function closeCustomDialog() {
+      document.getElementById('custom-dialog-modal').classList.remove('active');
+      dialogConfirmCallback = null;
+    }
+
+    function executeDialogConfirm() {
+      if (typeof dialogConfirmCallback === 'function') {
+        dialogConfirmCallback();
+      }
+      closeCustomDialog();
+    }
+
     let currentBadgeAnimType = 'confetti';
 
     const BADGE_DETAILS = {
@@ -1485,13 +1576,13 @@
         badge_10: { title: "Cap des 10 % d'Autonomie !", desc: "Bravo ! Tu couvres désormais 10 % de tes charges mensuelles globales grâce à la rente de tes investissements.", anim: "confetti" },
         badge_20: { title: "Cap des 20 % d'Autonomie !", desc: "20 % de tes factures ne sortent plus de ton salaire ! Ta liberté financière prend de l'ampleur.", anim: "cash" },
         badge_30: { title: "Cap des 30 % d'Autonomie !", desc: "Un tiers de ton coût de vie est sécurisé par ton capital. Ton autonomie grandit à grande vitesse !", anim: "confetti" },
-        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont covered de manière totalement passive.", anim: "cash" },
+        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont couvertes de manière totalement passive.", anim: "cash" },
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !", anim: "gold" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !", anim: "confetti" },
-        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges covered ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
+        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
         badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main.", anim: "fireworks" },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !", anim: "diamonds" },
-        badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont covered. Le socle vital est entièrement vaincu !", anim: "fireworks" },
+        badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont couvertes. Le socle vital est entièrement vaincu !", anim: "fireworks" },
         badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !", anim: "confetti" },
         badge_50_m: { title: "Rente de 50 € / mois !", desc: "50 € par mois générés de manière automatique ! De quoi couvrir plusieurs abonnements ou factures.", anim: "confetti" },
         badge_100_m: { title: "Rente de 100 € / mois !", desc: "Franchissement des 100 € par mois de rente ! Un palier financier crucial est validé.", anim: "cash" },
@@ -1550,7 +1641,7 @@
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Capital Global Liquide",
         placeholderCapital: "Montant du capital",
-        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br><em>Note : Cela ne constitue pas un conseil en investissement. Chacun reste libre et responsable de la composition de son portefeuille.</em>`,
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers. <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study).`,
         lblAnnuityCapacity: "Rente théorique (4% / an) :",
         lblTotalExpenses: "Total Charges Mensuelles",
         lblAddExpenseTitle: "💸 Ajouter une charge mensuelle",
@@ -1571,7 +1662,7 @@
         optSortProgAsc: "À financer",
         optSortAmountDesc: "Montant max",
         optSortAmountAsc: "Montant min",
-        lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.",
+        lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage.",
         lblEcoBrokersTitle: "📈 Banques & Courtiers",
         lblEcoCryptoTitle: "🪙 Crypto & Rendement Alternatif",
         lblEcoPortfolioTitle: "Portefeuille & Performances",
@@ -1581,9 +1672,9 @@
         lblEcoSupportTitle: "Soutenir le Projet",
         lblEcoSupportDesc: "Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
         lblEcoPaypal: "Faire un don via PayPal",
-        lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.",
-        lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.",
-        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.",
+        lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong>.",
+        lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative.",
         modalTitleDefault: "Avatars par Palier d'Avancement",
         modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.",
         lblCropTitle: "Ajuster la photo (Glisse pour déplacer)",
@@ -1606,7 +1697,7 @@
         modalDescDedicated: "Ajuste la photo unique pour ce Klon débloqué à 100 %.",
         promptCloneName: "Saisis le prénom souhaité pour ce Klon :",
         promptSuperCloneName: "Saisis le prénom souhaité pour ce Super Klon :",
-        confirmReset: "Es-tu sûr de vouloir tout réinitialiser à zéro ? Toutes tes données et charges seront effacées.",
+        confirmReset: "Es-tu sûr de vouloir tout réinitialiser à zéro ?",
         badgeFirst: "Premier Klon",
         badgeRoche: "Socle brisé",
         badgeAnnuity5Digits: "Rente 5 chiffres",
@@ -1630,33 +1721,34 @@
         historyAddedSuccess: "Relevé de progression enregistré !",
         btnBadgeModalClose: "Génial !",
         lostBadgeTitle: "Badge temporairement perdu",
-        lostBadgeDesc: "Tu avais validé ce cap ! L'ajout de nouvelles charges ou la réallocation de ta rente a fait repasser ton niveau en dessous du seuil requis. Réalloue ta rente ou augmente ton capital pour le réactiver !",
+        lostBadgeDesc: "Tu avais validé ce cap ! Réalloue ta rente ou augmente ton capital pour le réactiver !",
         multModalTitle: "Facteur d'Effort Restant",
-        multModalDesc: "Ce facteur mesure la distance relative (le multiple de capital) qu'il te reste à parcourir pour financer 100 % de tes charges de base.<br><br>Plus ton capital grandit, plus l'effet boule de neige s'accélère et plus ce chiffre s'effondre rapidement vers <strong>1.0x</strong>.",
+        multModalDesc: "Ce facteur mesure la distance relative qu'il te reste à parcourir pour financer 100 % de tes charges.",
         pctModalTitle: "Progression de l'Autonomie",
-        pctModalDesc0: "Au début, la montagne semble haute, mais chaque euro invested travaille pour toi sans jamais s'arrêter. La machine est lancée !",
-        pctModalDesc20: "Le premier vrai cap est franchi ! Au moins un cinquième de ton mode de vie ne sort plus de ton salaire. L'effort commence à se matérialiser.",
-        pctModalDesc40: "Le point de bascule est en vue ! Tu approches de la moitié de ton indépendance. La rente devient un bouclier concret qui paye tes factures.",
-        pctModalDesc60: "La majorité de ta vie est sécurisée ! Plus de la moitié de ton coût de vie est pris en charge automatiquement. L'effet boule de neige accélère.",
-        pctModalDesc80: "La dernière ligne droite vers le sommet ! Tes revenus passifs couvrent la quasi-totalité de ton quotidien. L'objectif ultime est imminent.",
-        pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
-        pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
+        pctModalDesc0: "Chaque euro investi travaille pour toi sans jamais s'arrêter. La machine est lancée !",
+        pctModalDesc20: "Le premier vrai cap est franchi !",
+        pctModalDesc40: "Le point de bascule est en vue !",
+        pctModalDesc60: "La majorité de ta vie est sécurisée !",
+        pctModalDesc80: "La dernière ligne droite vers le sommet !",
+        pctModalDesc100: "Socle de roche totalement pulvérisé !",
+        pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong>",
         clonesModalTitle: "Klons d'Autonomie",
-        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
-        clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
+        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles.",
+        clonesModalDescSome: "Ton armée de Klons prend de l'ampleur !",
         superModalTitle: "Super Klons de Puissance",
-        superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !"
+        superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges sont vaincues.",
+        comingSoonText: "Prochainement..."
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
-        appDesc: "Enter your capital and expenses to calculate your financial freedom and unlock your autonomy Klons.",
+        appDesc: "Enter your capital and expenses to calculate your financial freedom.",
         navTab1: "Expenses & Capital",
         navTab2: "Klons",
         navTab3: "Ecosystem",
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Total Liquid Capital",
         placeholderCapital: "Capital amount",
-        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Liquid Capital & The 4% Rule:</strong><br>Enter the total amount of your capital available or invested in financial markets (stock portfolios, ETFs, cash equivalents). <em>Do not include real estate assets.</em><br><br>The <strong>4% rule</strong> is a widely recognized financial independence benchmark originating from historic financial research (Trinity Study). It relies on the long-term historical performance of major global stock indices like the <strong>S&P 500</strong>, which has delivered an average gross annual return of ~10% over the last 20 years (~7% net of inflation).<br><br><em>Note: This tool is provided for educational purposes only and does not constitute investment advice.</em>`,
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Liquid Capital & The 4% Rule:</strong><br>Enter total available liquid capital.`,
         lblAnnuityCapacity: "Estimated Income (4% / yr):",
         lblTotalExpenses: "Total Monthly Expenses",
         lblAddExpenseTitle: "💸 Add a Monthly Expense",
@@ -1677,7 +1769,7 @@
         optSortProgAsc: "To fund",
         optSortAmountDesc: "Highest amount",
         optSortAmountAsc: "Lowest amount",
-        lblEcoTransparency: "<strong>🤝 Transparency & Referral:</strong> The links below are affiliate and referral links. By opening an account through these links, you can receive welcome bonuses offered by platforms while supporting the free development of this app.",
+        lblEcoTransparency: "<strong>🤝 Transparency & Referral:</strong> The links below are affiliate links.",
         lblEcoBrokersTitle: "📈 Banks & Brokers",
         lblEcoCryptoTitle: "🪙 Crypto & Alternative Yield",
         lblEcoPortfolioTitle: "Portfolio & Track Record",
@@ -1685,14 +1777,14 @@
         lblEcoAnalysisTitle: "Analysis & Investment Thesis",
         lblEcoSubstack: "Follow Substack Alpha Picker",
         lblEcoSupportTitle: "Support the Project",
-        lblEcoSupportDesc: "If this tool helps you on your path to financial independence, you can support the project.",
+        lblEcoSupportDesc: "If this tool helps you, you can support the project.",
         lblEcoPaypal: "Donate via PayPal",
-        lblFooterAppInfo: "<strong>KLON</strong> — Free & Open Source app developed by <strong>Alpha Picker</strong> and hosted on GitHub Pages.",
-        lblFooterPrivacyInfo: "🛡️ <strong>Privacy:</strong> No tracking cookies, no data collection. All inputs are strictly saved locally within your browser.",
-        lblFooterDisclaimerInfo: "⚠️ <strong>Disclaimer:</strong> This tool is provided for educational purposes and personal simulation only. It does not constitute investment advice or financial solicitation.",
+        lblFooterAppInfo: "<strong>KLON</strong> — Free & Open Source app.",
+        lblFooterPrivacyInfo: "🛡️ <strong>Privacy:</strong> No cookies, no tracking.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Disclaimer:</strong> Personal simulation tool.",
         modalTitleDefault: "Avatars by Progress Tier",
-        modalDescDefault: "Configure photos for all 6 tiers. They will apply to <strong>all your Klons</strong>.",
-        lblCropTitle: "Adjust Photo (Drag to move)",
+        modalDescDefault: "Configure photos for all 6 tiers.",
+        lblCropTitle: "Adjust Photo",
         lblCropZoom: "Zoom:",
         btnCropConfirm: "Confirm Photo",
         btnModalClose: "Close",
@@ -1701,18 +1793,18 @@
         optThemeColorblind: "👁️ Colorblind",
         btnCover: "Cover",
         lblAllocated: "Allocated:",
-        lblRockLockTitle: "🪨 Bedrock Base (In Progress)",
-        lblRockLockDesc: "Allocate your income to cover 100% of your baseline expenses ({0} {1}/mo) and break through the bedrock.",
+        lblRockLockTitle: "🪨 Bedrock Base",
+        lblRockLockDesc: "Allocate income to cover 100% of baseline expenses.",
         lblNextTierTitle: "🔒 Next Tier: Level {0}",
-        lblNextTierDesc: "Increase your total capital to feed the current Super Klon and unlock this tier.",
-        lblPayExpense: "covers {0}% of your expense: {1} ({2} {3})",
+        lblNextTierDesc: "Increase total capital to unlock this tier.",
+        lblPayExpense: "covers {0}% of expense: {1} ({2} {3})",
         lblTarget: "Target: {0} {1}/mo ({2}x expenses) — {3}%",
         lblSuperCloneName: "Super Klon",
-        modalTitleDedicated: "Dedicated Avatar for Klon / Super Klon",
-        modalDescDedicated: "Adjust the unique photo for this 100% unlocked Klon.",
-        promptCloneName: "Enter the desired name for this Klon:",
-        promptSuperCloneName: "Enter the desired name for this Super Klon:",
-        confirmReset: "Are you sure you want to reset everything to zero? All your data and expenses will be cleared.",
+        modalTitleDedicated: "Dedicated Avatar",
+        modalDescDedicated: "Adjust unique photo for this Klon.",
+        promptCloneName: "Enter name for this Klon:",
+        promptSuperCloneName: "Enter name for this Super Klon:",
+        confirmReset: "Are you sure you want to reset everything?",
         badgeFirst: "First Klon",
         badgeRoche: "Shattered Base",
         badgeAnnuity5Digits: "5-digit Income",
@@ -1730,46 +1822,30 @@
         completedCounter: "👑 {0}/{1} at 100%",
         superCompletedCounter: "⭐ {0} Super Klon{1} maxed",
         historyTitle: "📜 Progress History",
-        historyDesc: "Automatic logs with a minimum 30-day interval between points.",
+        historyDesc: "Automatic logs.",
         historyBtnAdd: "➕ Log today",
         historyEmpty: "No progress log recorded yet.",
         historyAddedSuccess: "Progress log recorded!",
         btnBadgeModalClose: "Awesome!",
         lostBadgeTitle: "Badge Temporarily Lost",
-        lostBadgeDesc: "You previously unlocked this milestone! Adding new expenses or reallocating your income dropped your progress below the required threshold. Reallocate your income or increase your capital to reactivate it!",
+        lostBadgeDesc: "Reallocate income or increase capital to reactivate!",
         multModalTitle: "Remaining Effort Factor",
-        multModalDesc: "This factor measures the relative distance (capital multiple) you have left to cover 100% of your baseline expenses.<br><br>As your capital grows, compounding accelerates and this number rapidly drops toward <strong>1.0x</strong>.",
+        multModalDesc: "Distance left to cover 100% expenses.",
         pctModalTitle: "Autonomy Progress",
-        pctModalDesc0: "At first, the mountain seems high, but every dollar invested works for you non-stop. The engine is running!",
-        pctModalDesc20: "The first milestone is unlocked! At least one fifth of your living costs no longer comes from your paycheck.",
-        pctModalDesc40: "The turning point is in sight! You are approaching half of total independence. Your income is a solid shield.",
-        pctModalDesc60: "Most of your life is secured! Over half of your living expenses are automatically handled. Compounding speeds up.",
-        pctModalDesc80: "The final stretch to the summit! Your passive income covers almost your entire lifestyle. The ultimate goal is near.",
-        pctModalDesc100: "Bedrock base completely smashed! 100% of your baseline expenses are neutralized by your capital.<br><br>⚡ <strong>The real game starts now:</strong> it's time for <strong>Super Klons</strong> to work, multiplying your independence and upgrading your lifestyle!",
-        pctModalDescSuper: "⭐ <strong>Incredible! You passed 100% autonomy!</strong><br><br>Your capital generates more income than needed to cover your baseline lifestyle. You have entered the realm of <strong>Super Klons</strong>: total freedom where every extra dollar multiplies your passive living power!",
+        pctModalDesc0: "Every dollar works non-stop.",
+        pctModalDesc20: "First milestone unlocked!",
+        pctModalDesc40: "Turning point in sight!",
+        pctModalDesc60: "Most of your life is secured!",
+        pctModalDesc80: "Final stretch to summit!",
+        pctModalDesc100: "Bedrock base smashed!",
+        pctModalDescSuper: "⭐ <strong>Passed 100% autonomy!</strong>",
         clonesModalTitle: "Autonomy Klons",
-        clonesModalDescNone: "Each Klon represents one of your monthly expenses. As soon as a Klon hits 100%, that bill is officially neutralized by your passive income!",
-        clonesModalDescSome: "Your Klon army is growing! You already have {0} expense(s) fully funded by your capital. Your salary stays right in your pocket.",
+        clonesModalDescNone: "Each Klon represents an expense.",
+        clonesModalDescSome: "Klon army is growing!",
         superModalTitle: "Power Super Klons",
-        superModalDesc: "Super Klons activate once 100% of your baseline expenses are defeated. They measure your annuity overpower (2x, 4x, 8x... your expenses) to reach complete abundance!"
+        superModalDesc: "Super Klons activate once expenses are 100% covered.",
+        comingSoonText: "Coming soon..."
       }
-    };
-
-    let state = {
-      expenses: JSON.parse(localStorage.getItem('alpha_expenses')) || [],
-      capital: Math.round(parseFloat(localStorage.getItem('alpha_capital'))) || 0,
-      currency: localStorage.getItem('alpha_currency') || "€",
-      theme: localStorage.getItem('alpha_theme') || "dark",
-      lang: localStorage.getItem('alpha_lang') || "fr",
-      allocations: JSON.parse(localStorage.getItem('alpha_allocations')) || {},
-      globalAvatars: JSON.parse(localStorage.getItem('alpha_global_avatars')) || {},
-      dedicatedAvatars: JSON.parse(localStorage.getItem('alpha_dedicated_avatars')) || {},
-      firstname: localStorage.getItem('alpha_firstname') || "",
-      customCloneNames: JSON.parse(localStorage.getItem('alpha_custom_clone_names')) || {},
-      sortMode: localStorage.getItem('alpha_sort_mode') || "manual",
-      cardsOrder: JSON.parse(localStorage.getItem('alpha_cards_order')) || [],
-      everUnlockedBadges: JSON.parse(localStorage.getItem('alpha_ever_unlocked_badges')) || [],
-      historyRecords: JSON.parse(localStorage.getItem('alpha_history_records')) || []
     };
 
     const DEFAULT_EMOJIS = { 0: '😫', 20: '😟', 40: '😐', 60: '🙂', 80: '😃', 100: '👑' };
@@ -1781,26 +1857,46 @@
       { id: "super_diamant", nameFR: "Diamant", nameEN: "Diamond", mult: 32, icon: "💎" }
     ];
 
+    const ARCADE_GAMES_LIST = [
+      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
+      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 999, desc: '' },
+      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 999, desc: '' },
+      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, desc: '' }
+    ];
+
     let selectedKlonForGame = null;
     let headImageObj = null;
+
+    let activeCropContext = { mode: 'global', step: null, cloneId: null };
+    let currentImg = null;
+    let cropX = 0, cropY = 0;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+
+    let snakeGameTimeout = null;
+    let snake = [];
+    let snakeFood = { x: 0, y: 0, icon: '🪙' };
+    let snakeDir = 'RIGHT';
+    let nextDir = 'RIGHT';
+    let snakeScore = 0;
+    let currentSpeed = 180;
+
+    const GRID_SIZE = 14;
+    const TILE_SIZE = 20;
 
     function getT() { return I18N[state.lang] || I18N.fr; }
 
     function formatNumber(num) {
       const locale = state.lang === 'en' ? 'en-US' : 'fr-FR';
-      return new Intl.NumberFormat(locale).format(num);
+      return new Intl.NumberFormat(locale).format(num || 0);
     }
 
     function calculateMultiplier(capital, totalExpenses) {
       if (totalExpenses <= 0) return 1.0;
       const monthlyCapacity = (capital * 0.04) / 12;
-      const targetCapital = (totalExpenses * 12) / 0.04;
-      
       if (monthlyCapacity >= totalExpenses) return 1.0;
       
-      const missingCapital = targetCapital - capital;
       const currentRatio = monthlyCapacity / totalExpenses;
-      
       if (currentRatio <= 0.01) return 100.0;
       
       const multiplier = (1 / currentRatio);
@@ -1816,310 +1912,95 @@
       return 'var(--accent-red)';
     }
 
-    function changeLanguage(lang) {
-      state.lang = lang;
-      localStorage.setItem('alpha_lang', lang);
-      applyTranslations();
-      renderExpenses();
-      updateCalculations();
-    }
-
-    function applyTranslations() {
-      const t = getT();
-      document.getElementById('app-header-subtitle').innerText = t.appSubtitle;
-      document.getElementById('app-header-desc').innerText = t.appDesc;
-      document.getElementById('txt-nav-tab1').innerText = t.navTab1;
-      document.getElementById('txt-nav-tab2').innerText = t.navTab2;
-      document.getElementById('txt-nav-tab3').innerText = t.navTab3;
-      document.getElementById('user-firstname-input').placeholder = t.placeholderFirstname;
-      document.getElementById('lbl-capital-title').innerText = t.lblCapitalTitle;
-      document.getElementById('lbl-capital-help-text').innerHTML = t.lblCapitalHelpText;
-      document.getElementById('capital-input').placeholder = t.placeholderCapital;
-      document.getElementById('lbl-annuity-capacity').innerText = t.lblAnnuityCapacity;
-      document.getElementById('lbl-total-expenses').innerText = t.lblTotalExpenses;
-      document.getElementById('lbl-add-expense-title').innerText = t.lblAddExpenseTitle;
-      document.getElementById('expense-name').placeholder = t.placeholderExpenseName;
-      document.getElementById('expense-amount').placeholder = t.placeholderExpenseAmount;
-      document.getElementById('lbl-expenses-list-title').innerText = t.lblExpensesListTitle;
-      document.getElementById('lbl-data-management-title').innerText = t.lblDataManagementTitle;
-      document.getElementById('btn-export').innerText = t.btnExport;
-      document.getElementById('lbl-import').querySelector('span').innerText = t.lblImport;
-      document.getElementById('btn-reset').innerText = t.btnReset;
-      document.getElementById('lbl-global-progress').innerText = t.lblGlobalProgress;
-      document.getElementById('lbl-allocation-title').innerText = t.lblAllocationTitle;
-      document.getElementById('btn-modal-open').innerText = t.btnModalOpen;
-      document.getElementById('lbl-remaining-capacity').innerText = t.lblRemainingCapacity;
-      document.getElementById('lbl-sort-by').innerText = t.lblSortBy;
-      document.getElementById('opt-sort-manual').innerText = t.optSortManual;
-      document.getElementById('opt-sort-prog-desc').innerText = t.optSortProgDesc;
-      document.getElementById('opt-sort-prog-asc').innerText = t.optSortProgAsc;
-      document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
-      document.getElementById('opt-sort-amount-asc').innerText = t.optSortAmountAsc;
-      document.getElementById('lbl-eco-transparency').innerHTML = t.lblEcoTransparency;
-      document.getElementById('lbl-eco-brokers-title').innerText = t.lblEcoBrokersTitle;
-      document.getElementById('lbl-eco-crypto-title').innerText = t.lblEcoCryptoTitle;
-      document.getElementById('lbl-eco-portfolio-title').innerText = t.lblEcoPortfolioTitle;
-      document.getElementById('lbl-eco-wikifolio').innerText = t.lblEcoWikifolio;
-      document.getElementById('lbl-eco-analysis-title').innerText = t.lblEcoAnalysisTitle;
-      document.getElementById('lbl-eco-substack').innerText = t.lblEcoSubstack;
-      document.getElementById('lbl-eco-support-title').innerText = t.lblEcoSupportTitle;
-      document.getElementById('lbl-eco-support-desc').innerText = t.lblEcoSupportDesc;
-      document.getElementById('lbl-eco-paypal').innerText = t.lblEcoPaypal;
-      document.getElementById('lbl-footer-app-info').innerHTML = t.lblFooterAppInfo;
-      document.getElementById('lbl-footer-privacy-info').innerHTML = t.lblFooterPrivacyInfo;
-      document.getElementById('lbl-footer-disclaimer-info').innerHTML = t.lblFooterDisclaimerInfo;
-      document.getElementById('lbl-crop-title').innerText = t.lblCropTitle;
-      document.getElementById('lbl-crop-zoom').innerText = t.lblCropZoom;
-      document.getElementById('btn-crop-confirm').innerText = t.btnCropConfirm;
-      document.getElementById('btn-modal-close').innerText = t.btnModalClose;
-      document.getElementById('opt-theme-dark').innerText = t.optThemeDark;
-      document.getElementById('opt-theme-light').innerText = t.optThemeLight;
-      document.getElementById('opt-theme-colorblind').innerText = t.optThemeColorblind;
-      document.getElementById('history-modal-title').innerText = t.historyTitle;
-      document.getElementById('history-modal-desc').innerText = t.historyDesc;
-      document.getElementById('btn-add-history-point').innerText = t.historyBtnAdd;
-      document.getElementById('btn-history-close').innerText = t.btnModalClose;
-      document.getElementById('btn-badge-modal-close').innerText = t.btnBadgeModalClose;
-    }
-
-    let activeCropContext = { mode: 'global', step: null, cloneId: null };
-    let currentImg = null;
-    let cropX = 0, cropY = 0;
-    let isDragging = false;
-    let startX = 0, startY = 0;
-
-    document.getElementById('user-firstname-input').value = state.firstname;
-    document.getElementById('capital-input').value = state.capital || '';
-    document.getElementById('currency-select').value = state.currency;
-    document.getElementById('theme-select').value = state.theme;
-    document.getElementById('lang-select').value = state.lang;
-    document.getElementById('sort-select').value = state.sortMode;
-    document.documentElement.setAttribute('data-theme', state.theme);
-
-    applyTranslations();
-
-    function changeSortMode(mode) {
-      state.sortMode = mode;
-      localStorage.setItem('alpha_sort_mode', mode);
-      renderClones();
-    }
-
-    function saveUserFirstname() {
-      const input = document.getElementById('user-firstname-input');
-      state.firstname = input.value.trim();
-      localStorage.setItem('alpha_firstname', state.firstname);
-      if (document.getElementById('tab2').classList.contains('active')) renderClones();
-    }
-
-    function changeCurrency(symbol) {
-      state.currency = symbol;
-      localStorage.setItem('alpha_currency', symbol);
-      updateCurrencyDisplay();
-      renderExpenses();
-      updateCalculations();
-    }
-
-    function changeTheme(themeName) {
-      state.theme = themeName;
-      localStorage.setItem('alpha_theme', themeName);
-      document.documentElement.setAttribute('data-theme', themeName);
-      if (document.getElementById('tab2').classList.contains('active')) renderClones();
-    }
-
-    function updateCurrencyDisplay() {
-      document.querySelectorAll('.dynamic-currency-symbol').forEach(el => {
-        el.innerText = state.currency;
-      });
-    }
-
-    function toggleHelp(id) {
-      const box = document.getElementById(id);
-      box.classList.toggle('active');
-    }
-
     function saveState() {
-      localStorage.setItem('alpha_expenses', JSON.stringify(state.expenses));
-      localStorage.setItem('alpha_capital', state.capital);
-      localStorage.setItem('alpha_currency', state.currency);
-      localStorage.setItem('alpha_theme', state.theme);
-      localStorage.setItem('alpha_lang', state.lang);
-      localStorage.setItem('alpha_allocations', JSON.stringify(state.allocations));
-      localStorage.setItem('alpha_global_avatars', JSON.stringify(state.globalAvatars));
-      localStorage.setItem('alpha_dedicated_avatars', JSON.stringify(state.dedicatedAvatars));
-      localStorage.setItem('alpha_firstname', state.firstname);
-      localStorage.setItem('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
-      localStorage.setItem('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
-      localStorage.setItem('alpha_history_records', JSON.stringify(state.historyRecords));
-      localStorage.setItem('alpha_sort_mode', state.sortMode);
-      localStorage.setItem('alpha_cards_order', JSON.stringify(state.cardsOrder));
-    }
-
-    function exportData() {
-      try {
-        const fileName = `klon_app_backup_${new Date().toISOString().slice(0, 10)}.json`;
-        const jsonContent = JSON.stringify(state, null, 2);
-        const blob = new Blob([jsonContent], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.href = url;
-        downloadAnchor.download = fileName;
-        
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        
-        setTimeout(() => {
-          document.body.removeChild(downloadAnchor);
-          URL.revokeObjectURL(url);
-        }, 100);
-      } catch (err) {
-        alert("Export error: " + err.message);
-      }
-    }
-
-    function importData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (imported.expenses && imported.globalAvatars) {
-            state = imported;
-            state.firstname = state.firstname || "";
-            state.currency = state.currency || "€";
-            state.theme = state.theme || "dark";
-            state.lang = state.lang || "fr";
-            state.sortMode = state.sortMode || "manual";
-            state.cardsOrder = state.cardsOrder || [];
-            state.everUnlockedBadges = state.everUnlockedBadges || [];
-            state.historyRecords = state.historyRecords || [];
-            state.dedicatedAvatars = state.dedicatedAvatars || {};
-            state.customCloneNames = state.customCloneNames || {};
-            document.getElementById('user-firstname-input').value = state.firstname;
-            document.getElementById('capital-input').value = state.capital || '';
-            document.getElementById('currency-select').value = state.currency;
-            document.getElementById('theme-select').value = state.theme;
-            document.getElementById('lang-select').value = state.lang;
-            document.getElementById('sort-select').value = state.sortMode;
-            document.documentElement.setAttribute('data-theme', state.theme);
-            applyTranslations();
-            updateCurrencyDisplay();
-            saveState();
-            renderExpenses();
-            updateCalculations();
-            alert(state.lang === 'en' ? "Backup restored successfully!" : "Sauvegarde restaurée avec succès !");
-          } else {
-            alert(state.lang === 'en' ? "Invalid backup file." : "Fichier de sauvegarde invalide.");
-          }
-        } catch (err) {
-          alert(state.lang === 'en' ? "Error reading backup file." : "Erreur lors de la lecture du fichier.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetAllData() {
-      const t = getT();
-      if (confirm(t.confirmReset)) {
-        localStorage.clear();
-        state = {
-          expenses: [],
-          capital: 0,
-          currency: "€",
-          theme: "dark",
-          lang: state.lang,
-          allocations: {},
-          globalAvatars: {},
-          dedicatedAvatars: {},
-          firstname: "",
-          customCloneNames: {},
-          sortMode: "manual",
-          cardsOrder: [],
-          everUnlockedBadges: [],
-          historyRecords: []
-        };
-        document.getElementById('user-firstname-input').value = "";
-        document.getElementById('capital-input').value = "";
-        document.getElementById('currency-select').value = "€";
-        document.getElementById('sort-select').value = "manual";
-        updateCurrencyDisplay();
-        renderExpenses();
-        updateCalculations();
-      }
+      safeSet('alpha_expenses', JSON.stringify(state.expenses));
+      safeSet('alpha_capital', state.capital);
+      safeSet('alpha_currency', state.currency);
+      safeSet('alpha_theme', state.theme);
+      safeSet('alpha_lang', state.lang);
+      safeSet('alpha_allocations', JSON.stringify(state.allocations));
+      safeSet('alpha_global_avatars', JSON.stringify(state.globalAvatars));
+      safeSet('alpha_dedicated_avatars', JSON.stringify(state.dedicatedAvatars));
+      safeSet('alpha_firstname', state.firstname);
+      safeSet('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
+      safeSet('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
+      safeSet('alpha_history_records', JSON.stringify(state.historyRecords));
+      safeSet('alpha_game_leaderboards', JSON.stringify(state.gameLeaderboards));
+      safeSet('alpha_sort_mode', state.sortMode);
+      safeSet('alpha_cards_order', JSON.stringify(state.cardsOrder));
     }
 
     function switchTab(tabId, evt) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       
-      document.getElementById(tabId).classList.add('active');
-      evt.currentTarget.classList.add('active');
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.add('active');
+
+      if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add('active');
+      } else {
+        const targetNav = document.getElementById('nav-' + tabId);
+        if (targetNav) targetNav.classList.add('active');
+      }
       
       if (tabId === 'tab2') renderClones();
     }
 
+    function changeTheme(themeName) {
+      state.theme = themeName;
+      safeSet('alpha_theme', themeName);
+      document.documentElement.setAttribute('data-theme', themeName);
+      if (document.getElementById('tab2') && document.getElementById('tab2').classList.contains('active')) renderClones();
+    }
+
+    function changeLanguage(lang) {
+      state.lang = lang;
+      safeSet('alpha_lang', lang);
+      applyTranslations();
+      renderExpenses();
+      updateCalculations();
+    }
+
+    function changeCurrency(symbol) {
+      state.currency = symbol;
+      safeSet('alpha_currency', symbol);
+      updateCurrencyDisplay();
+      renderExpenses();
+      updateCalculations();
+    }
+
+    function changeSortMode(mode) {
+      state.sortMode = mode;
+      safeSet('alpha_sort_mode', mode);
+      renderClones();
+    }
+
+    function saveUserFirstname() {
+      const input = document.getElementById('user-firstname-input');
+      state.firstname = input ? input.value.trim() : "";
+      safeSet('alpha_firstname', state.firstname);
+      if (document.getElementById('tab2') && document.getElementById('tab2').classList.contains('active')) renderClones();
+    }
+
     function generateAllUniqueVariants(baseName) {
-      const accentsMap = {
-        'a': ['à', 'â', 'ä', 'ã'],
-        'e': ['é', 'è', 'ê', 'ë', 'ē'],
-        'i': ['î', 'ï', 'ì', 'ī'],
-        'o': ['ô', 'ö', 'ò', 'ō'],
-        'u': ['û', 'ü', 'ù', 'ū'],
-        'y': ['ÿ', 'ý', 'ŷ']
-      };
-
       let base = (baseName || "Alpha Picker").trim();
-      let variants = [];
-
-      let chars = base.split('');
-      let vowelPositions = [];
-
-      chars.forEach((char, idx) => {
-        const lower = char.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-        if (accentsMap[lower]) {
-          vowelPositions.push({ idx, lower });
-        }
-      });
-
-      if (vowelPositions.length === 0) {
-        return [base + "ë", base + "é", base + "ï"];
-      }
-
-      vowelPositions.forEach(pos => {
-        const options = accentsMap[pos.lower];
-        options.forEach(acc => {
-          let copy = [...chars];
-          let isUpper = chars[pos.idx] === chars[pos.idx].toUpperCase();
-          copy[pos.idx] = isUpper ? acc.toUpperCase() : acc;
-          let str = copy.join('');
-          
-          if (str !== base && !variants.includes(str)) {
-            variants.push(str);
-          }
-        });
-      });
-
-      if (variants.length === 0) {
-        variants.push(base + "ë");
-      }
-
-      return variants;
+      return [base, base + " 2", base + " 3", base + " 4", base + " 5"];
     }
 
     function getCloneName(id, indexInList) {
       if (state.customCloneNames[id] && state.customCloneNames[id].trim() !== '') {
         return state.customCloneNames[id];
       }
-      
       const effectiveName = state.firstname.trim() !== "" ? state.firstname : "Alpha Picker";
       const allVariants = generateAllUniqueVariants(effectiveName);
       return allVariants[indexInList % allVariants.length];
     }
 
-    function promptEditCloneName(id, currentName) {
+    function promptEditCloneName(id) {
       const t = getT();
+      const origIndex = state.expenses.findIndex(e => e.id === id);
+      const currentName = getCloneName(id, origIndex >= 0 ? origIndex : 0);
       const newName = prompt(t.promptCloneName, currentName);
       if (newName !== null) {
         state.customCloneNames[id] = newName.trim();
@@ -2128,11 +2009,12 @@
       }
     }
 
-    function promptEditSuperCloneName(id, currentCustomName) {
+    function promptEditSuperCloneName(tierId) {
       const t = getT();
-      const newName = prompt(t.promptSuperCloneName, currentCustomName || "");
+      const currentCustomName = state.customCloneNames[tierId] || "";
+      const newName = prompt(t.promptSuperCloneName, currentCustomName);
       if (newName !== null) {
-        state.customCloneNames[id] = newName.trim();
+        state.customCloneNames[tierId] = newName.trim();
         saveState();
         renderClones();
       }
@@ -2181,11 +2063,13 @@
 
     function calculateTotalExpenses() {
       const total = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
-      document.getElementById('total-expenses-display').innerText = `${formatNumber(total)} ${state.currency}`;
+      const display = document.getElementById('total-expenses-display');
+      if (display) display.innerText = `${formatNumber(total)} ${state.currency}`;
     }
 
     function renderExpenses() {
       const list = document.getElementById('expenses-list');
+      if (!list) return;
       list.innerHTML = '';
       
       state.expenses.forEach(e => {
@@ -2203,6 +2087,24 @@
       calculateTotalExpenses();
     }
 
+    function updateCalculations() {
+      const capitalInput = document.getElementById('capital-input');
+      const rawVal = capitalInput ? capitalInput.value.trim() : '';
+      const inputVal = rawVal !== '' ? Math.round(parseFloat(rawVal)) : 0;
+      const t = getT();
+      
+      state.capital = !isNaN(inputVal) && inputVal >= 0 ? inputVal : 0;
+      saveState();
+      
+      const monthlyCapacity = Math.round((state.capital * 0.04) / 12);
+      const display = document.getElementById('monthly-capacity-display');
+      if (display) display.innerText = `${formatNumber(monthlyCapacity)} ${state.currency}${t.perMonth}`;
+      
+      if (document.getElementById('tab2') && document.getElementById('tab2').classList.contains('active')) {
+        renderClones();
+      }
+    }
+
     function updateCloneAllocation(id, value) {
       const totalMonthlyCapacity = Math.round((state.capital * 0.04) / 12);
       
@@ -2215,6 +2117,8 @@
 
       const maxPossibleForThisClone = Math.max(0, totalMonthlyCapacity - otherAllocations);
       const expense = state.expenses.find(e => e.id === id);
+      if (!expense) return;
+
       const targetMax = Math.min(expense.amount, maxPossibleForThisClone);
 
       let requestedVal = Math.round(parseFloat(value));
@@ -2237,6 +2141,7 @@
 
       const remaining = Math.max(0, totalMonthlyCapacity - usedAllocations);
       const expense = state.expenses.find(e => e.id === id);
+      if (!expense) return;
       
       state.allocations[id] = Math.min(remaining, expense.amount);
       saveState();
@@ -2257,8 +2162,7 @@
       reader.onload = function(e) {
         currentImg = new Image();
         currentImg.onload = function() {
-          cropX = 0;
-          cropY = 0;
+          cropX = 0; cropY = 0;
           document.getElementById('zoom-slider').value = 1;
           document.getElementById('modal-title-text').innerText = t.modalTitleDedicated;
           document.getElementById('modal-desc-text').innerText = t.modalDescDedicated;
@@ -2326,8 +2230,7 @@
       reader.onload = function(e) {
         currentImg = new Image();
         currentImg.onload = function() {
-          cropX = 0;
-          cropY = 0;
+          cropX = 0; cropY = 0;
           document.getElementById('zoom-slider').value = 1;
           document.getElementById('crop-section').style.display = 'flex';
           initCropCanvas();
@@ -2346,14 +2249,13 @@
       canvas.ontouchstart = (e) => startDrag(e.touches[0]);
       canvas.ontouchmove = (e) => drag(e.touches[0]);
       canvas.ontouchend = endDrag;
-
       drawCropCanvas();
     }
 
     function startDrag(e) {
       isDragging = true;
       startX = e.clientX - cropX;
-      startY = e.clientY - startY;
+      startY = e.clientY - cropY;
     }
 
     function drag(e) {
@@ -2372,13 +2274,11 @@
       const zoom = parseFloat(document.getElementById('zoom-slider').value);
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
       const baseScale = Math.min(canvas.width / currentImg.width, canvas.height / currentImg.height);
       const scale = baseScale * zoom;
 
       const imgWidth = currentImg.width * scale;
       const imgHeight = currentImg.height * scale;
-
       const drawX = (canvas.width - imgWidth) / 2 + cropX;
       const drawY = (canvas.height - imgHeight) / 2 + cropY;
 
@@ -2421,43 +2321,34 @@
       return { type: 'emoji', value: defaultFallback || DEFAULT_EMOJIS[roundedStep] || '😫', isDedicated: false };
     }
 
-    function updateCalculations() {
-      const capitalInput = document.getElementById('capital-input');
-      const rawVal = capitalInput.value.trim();
-      const inputVal = rawVal !== '' ? Math.round(parseFloat(rawVal)) : 0;
-      const t = getT();
-      
-      state.capital = !isNaN(inputVal) && inputVal >= 0 ? inputVal : 0;
-      saveState();
-      
-      const monthlyCapacity = Math.round((state.capital * 0.04) / 12);
-      document.getElementById('monthly-capacity-display').innerText = `${formatNumber(monthlyCapacity)} ${state.currency}${t.perMonth}`;
-      
-      if (document.getElementById('tab2').classList.contains('active')) {
-        renderClones();
-      }
-    }
+    function openArcadeVault(cloneId) {
+      const expense = state.expenses.find(e => e.id === cloneId);
+      if (!expense) return;
 
-    // --- COFFRE À JEUX ARCADE ---
-    const ARCADE_GAMES_LIST = [
-      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
-      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 3, desc: '' },
-      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 5, desc: '' },
-      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 10, desc: '' }
-    ];
+      const allocated = Math.round(state.allocations[cloneId] || 0);
+      let percentage = Math.min(100, Math.round((allocated / expense.amount) * 100));
+      const avatar = getAvatarForClone(cloneId, percentage);
+      const origIndex = state.expenses.findIndex(e => e.id === cloneId);
+      const cloneName = getCloneName(cloneId, origIndex >= 0 ? origIndex : 0);
 
-    function openArcadeVault(cloneObj) {
-      selectedKlonForGame = cloneObj;
+      selectedKlonForGame = { id: cloneId, name: cloneName, avatar: avatar };
 
-      if (cloneObj && cloneObj.avatar && cloneObj.avatar.type === 'image') {
+      if (avatar && avatar.type === 'image') {
         headImageObj = new Image();
-        headImageObj.src = cloneObj.avatar.value;
+        headImageObj.src = avatar.value;
       } else {
         headImageObj = null;
       }
 
+      renderArcadeVaultModal();
+      document.getElementById('arcade-modal').classList.add('active');
+    }
+
+    function renderArcadeVaultModal() {
       const container = document.getElementById('arcade-games-container');
+      if (!container) return;
       container.innerHTML = '';
+      const t = getT();
 
       let completedCount = 0;
       state.expenses.forEach(e => {
@@ -2470,8 +2361,8 @@
 
         if (isUnlocked) {
           const leaderboards = getSnakeLeaderboard('snake2');
-          const top1 = leaderboards.length > 0 ? leaderboards[0] : { score: 0, klonName: '-' };
-          const hsText = top1.score > 0 ? `🏆 Record : ${top1.score} par ${top1.klonName}` : 'Pas encore de record';
+          const top1 = leaderboards.length > 0 ? leaderboards[0] : null;
+          const hsText = top1 && top1.score > 0 ? `🏆 Record : ${top1.score} par ${top1.klonName}` : 'Pas encore de record';
 
           container.innerHTML += `
             <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.id}')">
@@ -2489,14 +2380,13 @@
             <div class="arcade-game-card locked">
               <div style="font-size: 2rem;">🔒</div>
               <div style="flex: 1;">
-                <div style="font-weight: bold; color: var(--text-bright); font-size: 0.95rem;">🔒 Jeu Verrouillé</div>
+                <div style="font-weight: bold; color: var(--text-bright); font-size: 0.95rem;">${game.name}</div>
+                <div style="font-size: 0.75rem; opacity: 0.6;">${t.comingSoonText}</div>
               </div>
             </div>
           `;
         }
       });
-
-      document.getElementById('arcade-modal').classList.add('active');
     }
 
     function closeArcadeModal() {
@@ -2506,11 +2396,9 @@
     function launchArcadeGame(gameId) {
       if (gameId === 'snake2') {
         closeArcadeModal();
-
         const klonName = selectedKlonForGame ? selectedKlonForGame.name : 'Joueur';
         document.getElementById('snake-player-subtitle').innerText = `Klon en jeu : ${klonName}`;
 
-        // Mettre à jour la vignette au-dessus du score
         const headerVignette = document.getElementById('snake-klon-vignette-header');
         if (selectedKlonForGame && selectedKlonForGame.avatar) {
           if (selectedKlonForGame.avatar.type === 'image') {
@@ -2531,29 +2419,13 @@
       }
     }
 
-    // --- MOTEUR NATIVE KLON SNAKE INTÉGRÉ & LEADERBOARD AVEC AVATARS ---
-    let snakeGameTimeout = null;
-    let snake = [];
-    let snakeFood = { x: 0, y: 0, icon: '🪙' };
-    let snakeDir = 'RIGHT';
-    let nextDir = 'RIGHT';
-    let snakeScore = 0;
-    let currentSpeed = 180;
-
-    const GRID_SIZE = 14;
-    const TILE_SIZE = 20;
-
     function getSnakeLeaderboard(gameId) {
-      const data = localStorage.getItem(`klon_leaderboard_${gameId}`);
-      if (data) {
-        return JSON.parse(data);
-      }
-      return [];
+      if (!state.gameLeaderboards) state.gameLeaderboards = {};
+      return state.gameLeaderboards[gameId] || [];
     }
 
     function saveSnakeScoreToLeaderboard(gameId, score, klonName, avatarObj) {
       const nowStr = new Date().toLocaleDateString(state.lang === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
-      
       const record = { 
         score, 
         klonName, 
@@ -2566,9 +2438,10 @@
       let leaderboard = getSnakeLeaderboard(gameId);
       leaderboard.push(record);
       leaderboard.sort((a, b) => b.score - a.score);
-      leaderboard = leaderboard.slice(0, 10); // Conserver uniquement le Top 10
+      leaderboard = leaderboard.slice(0, 10);
 
-      localStorage.setItem(`klon_leaderboard_${gameId}`, JSON.stringify(leaderboard));
+      state.gameLeaderboards[gameId] = leaderboard;
+      saveState();
       return leaderboard;
     }
 
@@ -2581,7 +2454,6 @@
     function openSnakeLeaderboard() {
       const container = document.getElementById('snake-leaderboard-container');
       container.innerHTML = '';
-
       const leaderboard = getSnakeLeaderboard('snake2');
 
       if (leaderboard.length === 0) {
@@ -2593,12 +2465,9 @@
           if (idx === 1) rankMedal = '🥈';
           if (idx === 2) rankMedal = '🥉';
 
-          let avatarHTML = '';
-          if (rec.avatarType === 'image') {
-            avatarHTML = `<div class="snake-klon-avatar-vignette" style="background-image: url('${rec.avatarValue}'); width: 28px; height: 28px;"></div>`;
-          } else {
-            avatarHTML = `<div class="snake-klon-avatar-vignette" style="width: 28px; height: 28px; font-size: 1rem;">${rec.avatarValue || '👑'}</div>`;
-          }
+          let avatarHTML = rec.avatarType === 'image'
+            ? `<div class="snake-klon-avatar-vignette" style="background-image: url('${rec.avatarValue}'); width: 28px; height: 28px;"></div>`
+            : `<div class="snake-klon-avatar-vignette" style="width: 28px; height: 28px; font-size: 1rem;">${rec.avatarValue || '👑'}</div>`;
 
           container.innerHTML += `
             <div class="leaderboard-item">
@@ -2626,17 +2495,12 @@
     function closeSnakeGame() {
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
       document.getElementById('snake-modal').classList.remove('active');
-      openArcadeVault(selectedKlonForGame);
+      if (selectedKlonForGame) openArcadeVault(selectedKlonForGame.id);
     }
 
     function startSnakeGame() {
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
-
-      snake = [
-        { x: 5, y: 7 },
-        { x: 4, y: 7 },
-        { x: 3, y: 7 }
-      ];
+      snake = [ { x: 5, y: 7 }, { x: 4, y: 7 }, { x: 3, y: 7 } ];
       snakeDir = 'RIGHT';
       nextDir = 'RIGHT';
       snakeScore = 0;
@@ -2665,13 +2529,11 @@
     function spawnSnakeFood() {
       const icons = ['🪙', '💵', '💰', '✨'];
       let validPos = false;
-
       while (!validPos) {
         snakeFood.x = Math.floor(Math.random() * GRID_SIZE);
         snakeFood.y = Math.floor(Math.random() * GRID_SIZE);
         validPos = !snake.some(part => part.x === snakeFood.x && part.y === snakeFood.y);
       }
-
       snakeFood.icon = icons[Math.floor(Math.random() * icons.length)];
     }
 
@@ -2725,7 +2587,6 @@
       updateSnakeHighScoreDisplay();
 
       const isNewRecord = snakeScore > previousTop && snakeScore > 0;
-
       document.getElementById('gameover-icon').innerText = isNewRecord ? '🎉' : '💥';
       document.getElementById('gameover-title').innerText = isNewRecord ? 'NOUVEAU RECORD !' : 'Game Over !';
       document.getElementById('gameover-msg').innerText = isNewRecord 
@@ -2749,7 +2610,6 @@
       openSnakeLeaderboard();
     }
 
-    /* Rendu fluide serpentin avec affinement progressif de la queue */
     function drawSnake() {
       const canvas = document.getElementById('snake-canvas');
       const ctx = canvas.getContext('2d');
@@ -2757,7 +2617,6 @@
 
       const isColorblind = state.theme === 'colorblind';
 
-      // Grille épurée
       ctx.strokeStyle = '#161b22';
       ctx.lineWidth = 1;
       for (let i = 0; i <= GRID_SIZE; i++) {
@@ -2765,30 +2624,21 @@
         ctx.beginPath(); ctx.moveTo(0, i * TILE_SIZE); ctx.lineTo(canvas.width, i * TILE_SIZE); ctx.stroke();
       }
 
-      // Nourriture
       ctx.font = '15px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(
-        snakeFood.icon, 
-        snakeFood.x * TILE_SIZE + TILE_SIZE / 2, 
-        snakeFood.y * TILE_SIZE + TILE_SIZE / 2 + 1
-      );
+      ctx.fillText(snakeFood.icon, snakeFood.x * TILE_SIZE + TILE_SIZE / 2, snakeFood.y * TILE_SIZE + TILE_SIZE / 2 + 1);
 
-      // Couleurs serpent naturelles (ou adaptées)
       const bodyColor = isColorblind ? '#0288d1' : '#2e7d32'; 
       const strokeColor = isColorblind ? '#01579b' : '#1b5e20';
-
       const totalSegs = snake.length;
 
-      // Dessin des liaisons et des anneaux de la queue vers la tête
       for (let i = totalSegs - 1; i >= 0; i--) {
         const part = snake[i];
         const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
         const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
 
         if (i === 0) {
-          // Tête avec Avatar ou Émoji
           if (headImageObj && headImageObj.complete) {
             ctx.save();
             ctx.beginPath();
@@ -2809,24 +2659,21 @@
             ctx.fillText('👑', cx, cy);
           }
         } else {
-          // Calcul du rayon : affinement progressif sur la fin de la queue
           const distFromTail = totalSegs - 1 - i;
           let radius = (TILE_SIZE / 2) - 1.5;
-          if (distFromTail === 0) radius = (TILE_SIZE / 2) - 4.5;      // Bout de la queue
-          else if (distFromTail === 1) radius = (TILE_SIZE / 2) - 3.2; // Avant-dernier
-          else if (distFromTail === 2) radius = (TILE_SIZE / 2) - 2.2; // Avant-avant-dernier
+          if (distFromTail === 0) radius = (TILE_SIZE / 2) - 4.5;
+          else if (distFromTail === 1) radius = (TILE_SIZE / 2) - 3.2;
+          else if (distFromTail === 2) radius = (TILE_SIZE / 2) - 2.2;
 
           ctx.fillStyle = bodyColor;
           ctx.beginPath();
           ctx.arc(cx, cy, radius, 0, Math.PI * 2);
           ctx.fill();
 
-          // Contour léger pour donner du relief aux anneaux
           ctx.strokeStyle = strokeColor;
           ctx.lineWidth = 1;
           ctx.stroke();
 
-          // Jonction avec le segment précédent pour former un corps uni
           const prev = snake[i - 1];
           const prevCx = prev.x * TILE_SIZE + TILE_SIZE / 2;
           const prevCy = prev.y * TILE_SIZE + TILE_SIZE / 2;
@@ -2843,7 +2690,6 @@
       }
     }
 
-    // --- MOTEUR ENRICHI D'EXPLOSIONS & CÉLÉBRATIONS ---
     function triggerCelebration(type = 'confetti') {
       const canvas = document.getElementById('confetti-canvas');
       const ctx = canvas.getContext('2d');
@@ -2856,56 +2702,40 @@
         const icons = ['✨', '🪙', '⭐', '💫'];
         for (let i = 0; i < 60; i++) {
           particles.push({
-            x: Math.random() * canvas.width,
-            y: -20,
-            vx: (Math.random() - 0.5) * 4,
-            vy: Math.random() * 5 + 3,
-            size: Math.random() * 12 + 16,
-            icon: icons[Math.floor(Math.random() * icons.length)],
-            rotation: Math.random() * 360,
-            vRot: (Math.random() - 0.5) * 6
+            x: Math.random() * canvas.width, y: -20,
+            vx: (Math.random() - 0.5) * 4, vy: Math.random() * 5 + 3,
+            size: Math.random() * 12 + 16, icon: icons[Math.floor(Math.random() * icons.length)],
+            rotation: Math.random() * 360, vRot: (Math.random() - 0.5) * 6
           });
         }
       } else if (type === 'cash') {
         const icons = ['💵', '💸', '💰', '✨'];
         for (let i = 0; i < 50; i++) {
           particles.push({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: (Math.random() - 0.5) * 14,
-            vy: (Math.random() - 0.7) * 15,
-            size: 22,
-            icon: icons[Math.floor(Math.random() * icons.length)],
-            rotation: 0,
-            vRot: (Math.random() - 0.5) * 8
+            x: canvas.width / 2, y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 14, vy: (Math.random() - 0.7) * 15,
+            size: 22, icon: icons[Math.floor(Math.random() * icons.length)],
+            rotation: 0, vRot: (Math.random() - 0.5) * 8
           });
         }
       } else if (type === 'crowns') {
         const icons = ['👑', '⚡', '✨'];
         for (let i = 0; i < 45; i++) {
           particles.push({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: (Math.random() - 0.5) * 16,
-            vy: (Math.random() - 0.7) * 17,
-            size: 26,
-            icon: icons[Math.floor(Math.random() * icons.length)],
-            rotation: 0,
-            vRot: (Math.random() - 0.5) * 5
+            x: canvas.width / 2, y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 16, vy: (Math.random() - 0.7) * 17,
+            size: 26, icon: icons[Math.floor(Math.random() * icons.length)],
+            rotation: 0, vRot: (Math.random() - 0.5) * 5
           });
         }
       } else if (type === 'diamonds') {
         const icons = ['💎', '✨', '🪐', '🌟'];
         for (let i = 0; i < 50; i++) {
           particles.push({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: (Math.random() - 0.5) * 18,
-            vy: (Math.random() - 0.7) * 18,
-            size: 24,
-            icon: icons[Math.floor(Math.random() * icons.length)],
-            rotation: 0,
-            vRot: (Math.random() - 0.5) * 6
+            x: canvas.width / 2, y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 18, vy: (Math.random() - 0.7) * 18,
+            size: 24, icon: icons[Math.floor(Math.random() * icons.length)],
+            rotation: 0, vRot: (Math.random() - 0.5) * 6
           });
         }
       } else if (type === 'fireworks') {
@@ -2914,28 +2744,20 @@
           let angle = Math.random() * Math.PI * 2;
           let speed = Math.random() * 14 + 3;
           particles.push({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            size: Math.random() * 6 + 3,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: 0,
-            vRot: 0
+            x: canvas.width / 2, y: canvas.height / 2,
+            vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+            size: Math.random() * 6 + 3, color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: 0, vRot: 0
           });
         }
       } else {
         const colors = ['#7ee787', '#58a6ff', '#a371f7', '#f0883e', '#ffff00'];
         for (let i = 0; i < 75; i++) {
           particles.push({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: (Math.random() - 0.5) * 13,
-            vy: (Math.random() - 0.7) * 15,
-            size: Math.random() * 8 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * 360,
-            vRot: (Math.random() - 0.5) * 10
+            x: canvas.width / 2, y: canvas.height / 2,
+            vx: (Math.random() - 0.5) * 13, vy: (Math.random() - 0.7) * 15,
+            size: Math.random() * 8 + 4, color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360, vRot: (Math.random() - 0.5) * 10
           });
         }
       }
@@ -3028,19 +2850,12 @@
       let salaryAmount = Math.max(0, totalExpenses - totalAllocated);
 
       let textDesc = t.pctModalDesc0;
-      if (realAutonomyRatio > 100) {
-        textDesc = t.pctModalDescSuper;
-      } else if (coverageRatio >= 100) {
-        textDesc = t.pctModalDesc100;
-      } else if (coverageRatio >= 80) {
-        textDesc = t.pctModalDesc80;
-      } else if (coverageRatio >= 60) {
-        textDesc = t.pctModalDesc60;
-      } else if (coverageRatio >= 40) {
-        textDesc = t.pctModalDesc40;
-      } else if (coverageRatio >= 20) {
-        textDesc = t.pctModalDesc20;
-      }
+      if (realAutonomyRatio > 100) textDesc = t.pctModalDescSuper;
+      else if (coverageRatio >= 100) textDesc = t.pctModalDesc100;
+      else if (coverageRatio >= 80) textDesc = t.pctModalDesc80;
+      else if (coverageRatio >= 60) textDesc = t.pctModalDesc60;
+      else if (coverageRatio >= 40) textDesc = t.pctModalDesc40;
+      else if (coverageRatio >= 20) textDesc = t.pctModalDesc20;
 
       let breakdownHTML = `
         <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 0.85rem; text-align: left;">
@@ -3056,7 +2871,6 @@
       `;
 
       let icon = realAutonomyRatio > 100 ? '⭐' : '🎯';
-
       document.getElementById('badge-modal-icon').innerText = icon;
       document.getElementById('badge-modal-title').innerText = `${t.pctModalTitle} (${realAutonomyRatio}%)`;
       document.getElementById('badge-modal-desc').innerHTML = `${breakdownHTML}<div style="margin-top: 8px; text-align: left;">${textDesc}</div>`;
@@ -3066,10 +2880,7 @@
 
     function openClonesCounterModal(completedCount, totalCount) {
       const t = getT();
-      let desc = completedCount === 0 
-        ? t.clonesModalDescNone 
-        : t.clonesModalDescSome.replace('{0}', completedCount);
-
+      let desc = completedCount === 0 ? t.clonesModalDescNone : t.clonesModalDescSome.replace('{0}', completedCount);
       document.getElementById('badge-modal-icon').innerText = '👑';
       document.getElementById('badge-modal-title').innerText = `${t.clonesModalTitle} (${completedCount}/${totalCount})`;
       document.getElementById('badge-modal-desc').innerHTML = desc;
@@ -3099,7 +2910,6 @@
 
       if (meetsExpenseThreshold) {
         if (completedClonesCount > 0) currentlyValid.push("badge_first");
-
         for (let target = 10; target <= 90; target += 10) {
           if (coverageRatio >= target) currentlyValid.push(`badge_${target}`);
         }
@@ -3132,7 +2942,7 @@
       });
 
       if (newlyUnlockedBadgeId) {
-        localStorage.setItem('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
+        safeSet('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
         const lang = BADGE_DETAILS[state.lang] ? state.lang : 'fr';
         const animType = BADGE_DETAILS[lang][newlyUnlockedBadgeId]?.anim || 'confetti';
         triggerCelebration(animType);
@@ -3169,6 +2979,7 @@
       ];
 
       const badgesBox = document.getElementById('badges-box');
+      if (!badgesBox) return;
       badgesBox.innerHTML = '';
       
       ALL_BADGES.forEach(b => {
@@ -3192,7 +3003,6 @@
     function checkAutoHistoryRecord(currentPercentage, totalExpenses) {
       const now = Date.now();
       const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
-
       let lastRecord = state.historyRecords.length > 0 ? state.historyRecords[state.historyRecords.length - 1] : null;
 
       if (!lastRecord || (now - lastRecord.timestamp) >= THIRTY_DAYS_MS) {
@@ -3220,7 +3030,7 @@
 
       if (isManual) {
         const t = getT();
-        alert(t.historyAddedSuccess);
+        showCustomDialog('📈', 'Historique', t.historyAddedSuccess);
         renderHistoryList();
       }
     }
@@ -3229,7 +3039,6 @@
       let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
       let totalAnnuity = Math.round((state.capital * 0.04) / 12);
       let realAutonomyRatio = totalExpenses > 0 ? Math.round((totalAnnuity / totalExpenses) * 100) : 0;
-
       addHistoryRecord(realAutonomyRatio, totalExpenses, true);
     }
 
@@ -3254,6 +3063,7 @@
       const hoverInfo = document.getElementById('chart-hover-info');
       const hoverMultInfo = document.getElementById('chart-mult-hover-info');
 
+      if (!svgPct || !svgMult) return;
       svgPct.innerHTML = '';
       svgMult.innerHTML = '';
       hoverInfo.innerText = '--';
@@ -3277,17 +3087,12 @@
 
       const actualMaxPct = Math.max(...records.map(r => r.percentage));
       const minPct = 0;
-      
       let maxPct = 100;
-      if (actualMaxPct > 100 && actualMaxPct <= 200) {
-        maxPct = 200;
-      } else if (actualMaxPct > 200 && actualMaxPct <= 250) {
-        maxPct = 250;
-      } else if (actualMaxPct > 250 && actualMaxPct <= 300) {
-        maxPct = 300;
-      } else if (actualMaxPct > 300) {
-        maxPct = Math.ceil(actualMaxPct / 100) * 100;
-      }
+
+      if (actualMaxPct > 100 && actualMaxPct <= 200) maxPct = 200;
+      else if (actualMaxPct > 200 && actualMaxPct <= 250) maxPct = 250;
+      else if (actualMaxPct > 250 && actualMaxPct <= 300) maxPct = 300;
+      else if (actualMaxPct > 300) maxPct = Math.ceil(actualMaxPct / 100) * 100;
 
       const midPct = Math.round(maxPct / 2);
       const pctGridValues = [0, midPct, maxPct];
@@ -3308,9 +3113,7 @@
       });
 
       let pctPathD = `M ${pctPoints[0].x} ${pctPoints[0].y}`;
-      for (let i = 1; i < pctPoints.length; i++) {
-        pctPathD += ` L ${pctPoints[i].x} ${pctPoints[i].y}`;
-      }
+      for (let i = 1; i < pctPoints.length; i++) pctPathD += ` L ${pctPoints[i].x} ${pctPoints[i].y}`;
 
       svgPct.innerHTML += `<path d="${pctPathD}" fill="none" stroke="var(--accent-green-bright)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
       let pctAreaD = `${pctPathD} L ${pctPoints[pctPoints.length - 1].x} ${paddingTop + chartHeight} L ${pctPoints[0].x} ${paddingTop + chartHeight} Z`;
@@ -3341,12 +3144,8 @@
       let maxMult = actualMaxMult <= 2.0 ? 2.0 : Math.ceil(actualMaxMult * 1.15);
 
       let multGridValues = [1.0];
-      if (maxMult > 2.0) {
-        let midMult = Math.round((maxMult + 1.0) / 2);
-        multGridValues.push(midMult);
-      } else {
-        multGridValues.push(1.5);
-      }
+      if (maxMult > 2.0) multGridValues.push(Math.round((maxMult + 1.0) / 2));
+      else multGridValues.push(1.5);
       multGridValues.push(maxMult);
       multGridValues = [...new Set(multGridValues)].sort((a, b) => a - b);
 
@@ -3367,9 +3166,7 @@
       });
 
       let multPathD = `M ${multPoints[0].x} ${multPoints[0].y}`;
-      for (let i = 1; i < multPoints.length; i++) {
-        multPathD += ` L ${multPoints[i].x} ${multPoints[i].y}`;
-      }
+      for (let i = 1; i < multPoints.length; i++) multPathD += ` L ${multPoints[i].x} ${multPoints[i].y}`;
 
       svgMult.innerHTML += `<path d="${multPathD}" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
       let multAreaD = `${multPathD} L ${multPoints[multPoints.length - 1].x} ${paddingTop + chartHeight} L ${multPoints[0].x} ${paddingTop + chartHeight} Z`;
@@ -3398,6 +3195,7 @@
     function renderHistoryList() {
       const t = getT();
       const box = document.getElementById('history-list-box');
+      if (!box) return;
       box.innerHTML = '';
 
       renderHistoryChart();
@@ -3408,7 +3206,6 @@
       }
 
       const reversed = [...state.historyRecords].reverse();
-
       reversed.forEach(rec => {
         const recId = rec.id || rec.timestamp;
         const mult = rec.multiplier !== undefined ? rec.multiplier : calculateMultiplier(rec.capital, rec.expenses);
@@ -3437,6 +3234,8 @@
       const bossContainer = document.getElementById('tier-boss-container');
       const countersBox = document.getElementById('clone-counters-box');
       
+      if (!container || !bossContainer || !countersBox) return;
+
       container.innerHTML = '';
       bossContainer.innerHTML = '';
       countersBox.innerHTML = '';
@@ -3453,7 +3252,7 @@
 
       const remainingCapacity = Math.max(0, totalMonthlyCapacity - totalAllocated);
       const remainingDisplay = document.getElementById('remaining-capacity-display');
-      remainingDisplay.innerText = `${formatNumber(remainingCapacity)} ${state.currency}${t.perMonth}`;
+      if (remainingDisplay) remainingDisplay.innerText = `${formatNumber(remainingCapacity)} ${state.currency}${t.perMonth}`;
 
       let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
       const hasExpenses = totalExpenses > 0;
@@ -3463,24 +3262,23 @@
       const globalMultiplier = calculateMultiplier(state.capital, totalExpenses);
 
       const pctBadge = document.getElementById('global-coverage-percentage');
-      pctBadge.innerText = `${realAutonomyRatio}%`;
-      
-      if (realAutonomyRatio > 100) {
-        pctBadge.classList.add('super-percentage-badge');
-      } else {
-        pctBadge.classList.remove('super-percentage-badge');
+      if (pctBadge) {
+        pctBadge.innerText = `${realAutonomyRatio}%`;
+        if (realAutonomyRatio > 100) pctBadge.classList.add('super-percentage-badge');
+        else pctBadge.classList.remove('super-percentage-badge');
       }
 
-      document.getElementById('global-multiplier-badge').innerText = `⚡ ${globalMultiplier}x`;
+      const multBadge = document.getElementById('global-multiplier-badge');
+      if (multBadge) multBadge.innerText = `⚡ ${globalMultiplier}x`;
       
       const globalBarColor = getBarColor(realAutonomyRatio);
       const globalBarFill = document.getElementById('global-coverage-bar');
-      globalBarFill.style.width = `${Math.min(100, realAutonomyRatio)}%`;
-      globalBarFill.style.backgroundColor = globalBarColor;
-
-      if (hasExpenses) {
-        checkAutoHistoryRecord(realAutonomyRatio, totalExpenses);
+      if (globalBarFill) {
+        globalBarFill.style.width = `${Math.min(100, realAutonomyRatio)}%`;
+        globalBarFill.style.backgroundColor = globalBarColor;
       }
+
+      if (hasExpenses) checkAutoHistoryRecord(realAutonomyRatio, totalExpenses);
 
       let completedClonesCount = 0;
 
@@ -3616,7 +3414,7 @@
           const barColor = getBarColor(c.percentage);
 
           let arcadeBtnHTML = isUnlocked ? `
-            <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault({ id: ${c.id}, name: '${cloneName}', avatar: ${JSON.stringify(avatar).replace(/"/g, '&quot;')} })">🕹️</button>
+            <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault(${c.id})">🕹️</button>
           ` : '';
 
           container.innerHTML += `
@@ -3625,7 +3423,7 @@
               <div class="clone-header">
                 ${avatarHTML}
                 <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
-                  <span class="clickable-clone-name" onclick="promptEditCloneName(${c.id}, '${cloneName}')">${cloneName}</span> ${actionText}
+                  <span class="clickable-clone-name" onclick="promptEditCloneName(${c.id})">${cloneName}</span> ${actionText}
                 </div>
               </div>
               
@@ -3674,7 +3472,7 @@
                 ${avatarHTML}
                 <div style="flex: 1;">
                   <div style="color: var(--accent-purple);">
-                    <span class="clickable-clone-name" onclick="promptEditSuperCloneName('${tier.id}', '${customSuperName}')">${superDisplayName}</span> — ${tierName}
+                    <span class="clickable-clone-name" onclick="promptEditSuperCloneName('${tier.id}')">${superDisplayName}</span> — ${tierName}
                   </div>
                   <div style="font-size: 0.85rem; opacity: 0.8;">
                     ${targetText}
@@ -3695,6 +3493,7 @@
 
     function initDragAndDrop() {
       const container = document.getElementById('clones-container');
+      if (!container) return;
       const cards = container.querySelectorAll('.clone-card');
 
       cards.forEach(card => {
@@ -3710,7 +3509,7 @@
 
         let touchTimer;
         card.addEventListener('touchstart', (e) => {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('clickable-clone-name')) return;
+          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-arcade-btn')) return;
           touchTimer = setTimeout(() => {
             card.classList.add('dragging');
           }, 300);
@@ -3746,14 +3545,16 @@
 
     function saveNewOrder() {
       const container = document.getElementById('clones-container');
+      if (!container) return;
       const cardElements = container.querySelectorAll('.clone-card');
       
       state.cardsOrder = Array.from(cardElements).map(card => String(card.dataset.id));
       state.sortMode = 'manual';
 
-      localStorage.setItem('alpha_cards_order', JSON.stringify(state.cardsOrder));
-      localStorage.setItem('alpha_sort_mode', 'manual');
-      document.getElementById('sort-select').value = 'manual';
+      safeSet('alpha_cards_order', JSON.stringify(state.cardsOrder));
+      safeSet('alpha_sort_mode', 'manual');
+      const sortSelect = document.getElementById('sort-select');
+      if (sortSelect) sortSelect.value = 'manual';
 
       saveState();
     }
@@ -3762,19 +3563,156 @@
       const code = "12874482";
       navigator.clipboard.writeText(code).then(() => {
         const btn = document.getElementById('fortuneo-btn');
-        btn.innerText = state.lang === 'en' ? "✅ Code 12874482 copied!" : "✅ Code 12874482 copié !";
+        if (btn) btn.innerText = state.lang === 'en' ? "✅ Code 12874482 copied!" : "✅ Code 12874482 copié !";
         setTimeout(() => {
           window.open("https://www.fortuneo.fr", "_blank");
-          btn.innerText = "Fortuneo (Code Parrain : 12874482)";
+          if (btn) btn.innerText = "Fortuneo (Code Parrain : 12874482)";
         }, 1200);
       }).catch(() => {
         window.open("https://www.fortuneo.fr", "_blank");
       });
     }
 
-    updateCurrencyDisplay();
-    renderExpenses();
-    updateCalculations();
+    function applyTranslations() {
+      const t = getT();
+      document.getElementById('app-header-subtitle').innerText = t.appSubtitle;
+      document.getElementById('app-header-desc').innerText = t.appDesc;
+      document.getElementById('txt-nav-tab1').innerText = t.navTab1;
+      document.getElementById('txt-nav-tab2').innerText = t.navTab2;
+      document.getElementById('txt-nav-tab3').innerText = t.navTab3;
+      document.getElementById('user-firstname-input').placeholder = t.placeholderFirstname;
+      document.getElementById('lbl-capital-title').innerText = t.lblCapitalTitle;
+      document.getElementById('lbl-capital-help-text').innerHTML = t.lblCapitalHelpText;
+      document.getElementById('capital-input').placeholder = t.placeholderCapital;
+      document.getElementById('lbl-annuity-capacity').innerText = t.lblAnnuityCapacity;
+      document.getElementById('lbl-total-expenses').innerText = t.lblTotalExpenses;
+      document.getElementById('lbl-add-expense-title').innerText = t.lblAddExpenseTitle;
+      document.getElementById('expense-name').placeholder = t.placeholderExpenseName;
+      document.getElementById('expense-amount').placeholder = t.placeholderExpenseAmount;
+      document.getElementById('lbl-expenses-list-title').innerText = t.lblExpensesListTitle;
+      document.getElementById('lbl-data-management-title').innerText = t.lblDataManagementTitle;
+      document.getElementById('btn-export').innerText = t.btnExport;
+      document.getElementById('lbl-import').querySelector('span').innerText = t.lblImport;
+      document.getElementById('btn-reset').innerText = t.btnReset;
+      document.getElementById('lbl-global-progress').innerText = t.lblGlobalProgress;
+      document.getElementById('lbl-allocation-title').innerText = t.lblAllocationTitle;
+      document.getElementById('btn-modal-open').innerText = t.btnModalOpen;
+      document.getElementById('lbl-remaining-capacity').innerText = t.lblRemainingCapacity;
+      document.getElementById('lbl-sort-by').innerText = t.lblSortBy;
+      document.getElementById('opt-sort-manual').innerText = t.optSortManual;
+      document.getElementById('opt-sort-prog-desc').innerText = t.optSortProgDesc;
+      document.getElementById('opt-sort-prog-asc').innerText = t.optSortProgAsc;
+      document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
+      document.getElementById('opt-sort-amount-asc').innerText = t.optSortAmountAsc;
+      document.getElementById('lbl-eco-transparency').innerHTML = t.lblEcoTransparency;
+      document.getElementById('lbl-eco-brokers-title').innerText = t.lblEcoBrokersTitle;
+      document.getElementById('lbl-eco-crypto-title').innerText = t.lblEcoCryptoTitle;
+      document.getElementById('lbl-eco-portfolio-title').innerText = t.lblEcoPortfolioTitle;
+      document.getElementById('lbl-eco-wikifolio').innerText = t.lblEcoWikifolio;
+      document.getElementById('lbl-eco-analysis-title').innerText = t.lblEcoAnalysisTitle;
+      document.getElementById('lbl-eco-substack').innerText = t.lblEcoSubstack;
+      document.getElementById('lbl-eco-support-title').innerText = t.lblEcoSupportTitle;
+      document.getElementById('lbl-eco-support-desc').innerText = t.lblEcoSupportDesc;
+      document.getElementById('lbl-eco-paypal').innerText = t.lblEcoPaypal;
+      document.getElementById('lbl-footer-app-info').innerHTML = t.lblFooterAppInfo;
+      document.getElementById('lbl-footer-privacy-info').innerHTML = t.lblFooterPrivacyInfo;
+      document.getElementById('lbl-footer-disclaimer-info').innerHTML = t.lblFooterDisclaimerInfo;
+      document.getElementById('lbl-crop-title').innerText = t.lblCropTitle;
+      document.getElementById('lbl-crop-zoom').innerText = t.lblCropZoom;
+      document.getElementById('btn-crop-confirm').innerText = t.btnCropConfirm;
+      document.getElementById('btn-modal-close').innerText = t.btnModalClose;
+      document.getElementById('opt-theme-dark').innerText = t.optThemeDark;
+      document.getElementById('opt-theme-light').innerText = t.optThemeLight;
+      document.getElementById('opt-theme-colorblind').innerText = t.optThemeColorblind;
+      document.getElementById('history-modal-title').innerText = t.historyTitle;
+      document.getElementById('history-modal-desc').innerText = t.historyDesc;
+      document.getElementById('btn-add-history-point').innerText = t.historyBtnAdd;
+      document.getElementById('btn-history-close').innerText = t.btnModalClose;
+      document.getElementById('btn-badge-modal-close').innerText = t.btnBadgeModalClose;
+    }
+
+    function updateCurrencyDisplay() {
+      document.querySelectorAll('.dynamic-currency-symbol').forEach(el => {
+        el.innerText = state.currency;
+      });
+    }
+
+    function toggleHelp(id) {
+      const box = document.getElementById(id);
+      if (box) box.classList.toggle('active');
+    }
+
+    function exportData() {
+      try {
+        const jsonContent = JSON.stringify(state, null, 2);
+        const blob = new Blob([jsonContent], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `klon_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (err) {
+        showCustomDialog('⚠️', 'Erreur Export', err.message);
+      }
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.expenses) {
+            state = { ...state, ...imported };
+            saveState();
+            applyTranslations();
+            renderExpenses();
+            updateCalculations();
+            showCustomDialog('✅', 'Importation', 'Tes données et tes records ont été restaurés avec succès !');
+          }
+        } catch (err) {
+          showCustomDialog('⚠️', 'Erreur Import', 'Le fichier de sauvegarde est invalide ou corrompu.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function confirmResetDialog() {
+      const t = getT();
+      showCustomDialog('🗑️', 'Réinitialisation', t.confirmReset, true, () => {
+        state = {
+          expenses: [], capital: 0, currency: "€", theme: "dark", lang: state.lang,
+          allocations: {}, globalAvatars: {}, dedicatedAvatars: {}, firstname: "",
+          customCloneNames: {}, sortMode: "manual", cardsOrder: [],
+          everUnlockedBadges: [], historyRecords: [], gameLeaderboards: {}
+        };
+        saveState();
+        document.getElementById('user-firstname-input').value = "";
+        document.getElementById('capital-input').value = "";
+        renderExpenses();
+        updateCalculations();
+      });
+    }
+
+    // INITIALISATION DOM
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('user-firstname-input').value = state.firstname;
+      document.getElementById('capital-input').value = state.capital || '';
+      document.getElementById('currency-select').value = state.currency;
+      document.getElementById('theme-select').value = state.theme;
+      document.getElementById('lang-select').value = state.lang;
+      document.getElementById('sort-select').value = state.sortMode;
+      document.documentElement.setAttribute('data-theme', state.theme);
+
+      applyTranslations();
+      updateCurrencyDisplay();
+      renderExpenses();
+      updateCalculations();
+    });
   </script>
 </body>
 </html>
