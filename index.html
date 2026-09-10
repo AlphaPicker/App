@@ -856,7 +856,7 @@
       white-space: nowrap;
       flex-shrink: 0;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, color 0.3s, border-color 0.3s;
     }
 
     .progress-badge-header:hover {
@@ -869,6 +869,11 @@
 
     .progress-badge-header.percentage-badge {
       color: var(--accent-green-bright);
+    }
+
+    .progress-badge-header.super-percentage-badge {
+      color: var(--accent-purple) !important;
+      border-color: var(--accent-purple) !important;
     }
   </style>
 </head>
@@ -1359,6 +1364,7 @@
         pctModalDesc60: "La majorité de ta vie est sécurisée ! Plus de la moitié de ton coût de vie est pris en charge automatiquement. L'effet boule de neige accélère.",
         pctModalDesc80: "La dernière ligne droite vers le sommet ! Tes revenus passifs couvrent la quasi-totalité de ton quotidien. L'objectif ultime est imminent.",
         pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
+        pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
         clonesModalTitle: "Klons d'Autonomie",
         clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officially neutralisée par ta rente passive !",
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
@@ -1465,6 +1471,7 @@
         pctModalDesc60: "Most of your life is secured! Over half of your living expenses are automatically handled. Compounding speeds up.",
         pctModalDesc80: "The final stretch to the summit! Your passive income covers almost your entire lifestyle. The ultimate goal is near.",
         pctModalDesc100: "Bedrock base completely smashed! 100% of your baseline expenses are neutralized by your capital.<br><br>⚡ <strong>The real game starts now:</strong> it's time for <strong>Super Klons</strong> to work, multiplying your independence and upgrading your lifestyle!",
+        pctModalDescSuper: "⭐ <strong>Incredible! You passed 100% autonomy!</strong><br><br>Your capital generates more income than needed to cover your baseline lifestyle. You have entered the realm of <strong>Super Klons</strong>: total freedom where every extra dollar multiplies your passive living power!",
         clonesModalTitle: "Autonomy Klons",
         clonesModalDescNone: "Each Klon represents one of your monthly expenses. As soon as a Klon hits 100%, that bill is officially neutralized by your passive income!",
         clonesModalDescSome: "Your Klon army is growing! You already have {0} expense(s) fully funded by your capital. Your salary stays right in your pocket.",
@@ -1526,6 +1533,7 @@
 
     function getBarColor(percentage) {
       if (state.theme === 'colorblind') return 'var(--accent-green-bright)';
+      if (percentage > 100) return 'var(--accent-purple)';
       if (percentage >= 100) return 'var(--accent-green-bright)';
       if (percentage >= 60) return 'var(--accent-green)';
       if (percentage >= 20) return 'var(--accent-orange)';
@@ -2238,42 +2246,46 @@
     function openPercentageModal() {
       const t = getT();
       let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
-      let totalAllocated = 0;
-      state.expenses.forEach(e => {
-        totalAllocated += Math.round(state.allocations[e.id] || 0);
-      });
-      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
-      let salaryRatio = 100 - coverageRatio;
-      let salaryAmount = Math.max(0, totalExpenses - totalAllocated);
+      let totalAnnuity = Math.round((state.capital * 0.04) / 12);
+      let realAutonomyRatio = totalExpenses > 0 ? Math.round((totalAnnuity / totalExpenses) * 100) : 0;
+      
+      let klonsRatio = realAutonomyRatio;
+      let klonsAmount = totalAnnuity;
+      let salaryRatio = realAutonomyRatio >= 100 ? 0 : Math.max(0, 100 - realAutonomyRatio);
+      let salaryAmount = realAutonomyRatio >= 100 ? 0 : Math.max(0, totalExpenses - klonsAmount);
 
       let textDesc = t.pctModalDesc0;
-      if (coverageRatio >= 100) {
+      if (realAutonomyRatio > 100) {
+        textDesc = t.pctModalDescSuper;
+      } else if (realAutonomyRatio >= 100) {
         textDesc = t.pctModalDesc100;
-      } else if (coverageRatio >= 80) {
+      } else if (realAutonomyRatio >= 80) {
         textDesc = t.pctModalDesc80;
-      } else if (coverageRatio >= 60) {
+      } else if (realAutonomyRatio >= 60) {
         textDesc = t.pctModalDesc60;
-      } else if (coverageRatio >= 40) {
+      } else if (realAutonomyRatio >= 40) {
         textDesc = t.pctModalDesc40;
-      } else if (coverageRatio >= 20) {
+      } else if (realAutonomyRatio >= 20) {
         textDesc = t.pctModalDesc20;
       }
 
       let breakdownHTML = `
         <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 0.85rem; text-align: left;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <span>🤖 <strong>Klons (Rente passive) :</strong></span>
-            <strong style="color: var(--accent-green-bright);">${coverageRatio}% (${formatNumber(totalAllocated)} ${state.currency}/mois)</strong>
+            <span>🤖 <strong>Klons :</strong></span>
+            <strong style="color: var(--accent-green-bright);">${klonsRatio}% (${formatNumber(klonsAmount)} ${state.currency}/mois)</strong>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <span>💼 <strong>Ton salaire (Travail) :</strong></span>
+            <span>💼 <strong>Ton salaire :</strong></span>
             <strong style="color: var(--accent-orange);">${salaryRatio}% (${formatNumber(salaryAmount)} ${state.currency}/mois)</strong>
           </div>
         </div>
       `;
 
-      document.getElementById('badge-modal-icon').innerText = '🎯';
-      document.getElementById('badge-modal-title').innerText = `${t.pctModalTitle} (${coverageRatio}%)`;
+      let icon = realAutonomyRatio > 100 ? '⭐' : '🎯';
+
+      document.getElementById('badge-modal-icon').innerText = icon;
+      document.getElementById('badge-modal-title').innerText = `${t.pctModalTitle} (${realAutonomyRatio}%)`;
       document.getElementById('badge-modal-desc').innerHTML = `${breakdownHTML}<div style="margin-top: 8px; text-align: left;">${textDesc}</div>`;
       document.getElementById('badge-modal').classList.add('active');
     }
@@ -2437,13 +2449,10 @@
 
     function forceAddHistoryRecord() {
       let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
-      let totalAllocated = 0;
-      state.expenses.forEach(e => {
-        totalAllocated += Math.round(state.allocations[e.id] || 0);
-      });
-      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      let totalAnnuity = Math.round((state.capital * 0.04) / 12);
+      let realAutonomyRatio = totalExpenses > 0 ? Math.round((totalAnnuity / totalExpenses) * 100) : 0;
 
-      addHistoryRecord(coverageRatio, totalExpenses, true);
+      addHistoryRecord(realAutonomyRatio, totalExpenses, true);
     }
 
     function deleteHistoryRecord(recordId) {
@@ -2649,18 +2658,27 @@
       const hasExpenses = totalExpenses > 0;
 
       let coverageRatio = hasExpenses ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      let realAutonomyRatio = hasExpenses ? Math.round((totalMonthlyCapacity / totalExpenses) * 100) : 0;
       const globalMultiplier = calculateMultiplier(state.capital, totalExpenses);
 
-      document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
+      const pctBadge = document.getElementById('global-coverage-percentage');
+      pctBadge.innerText = `${realAutonomyRatio}%`;
+      
+      if (realAutonomyRatio > 100) {
+        pctBadge.classList.add('super-percentage-badge');
+      } else {
+        pctBadge.classList.remove('super-percentage-badge');
+      }
+
       document.getElementById('global-multiplier-badge').innerText = `⚡ ${globalMultiplier}x`;
       
-      const globalBarColor = getBarColor(coverageRatio);
+      const globalBarColor = getBarColor(realAutonomyRatio);
       const globalBarFill = document.getElementById('global-coverage-bar');
-      globalBarFill.style.width = `${coverageRatio}%`;
+      globalBarFill.style.width = `${Math.min(100, realAutonomyRatio)}%`;
       globalBarFill.style.backgroundColor = globalBarColor;
 
       if (hasExpenses) {
-        checkAutoHistoryRecord(coverageRatio, totalExpenses);
+        checkAutoHistoryRecord(realAutonomyRatio, totalExpenses);
       }
 
       let completedClonesCount = 0;
