@@ -497,7 +497,7 @@
       height: 100%;
       background-color: var(--accent-green-bright);
       width: 0%;
-      transition: width 0.3s ease;
+      transition: width 0.3s ease, background-color 0.3s ease;
     }
 
     .progress-bar-super {
@@ -1607,6 +1607,7 @@
       state.theme = themeName;
       localStorage.setItem('alpha_theme', themeName);
       document.documentElement.setAttribute('data-theme', themeName);
+      renderClones();
     }
 
     function updateCurrencyDisplay() {
@@ -2581,7 +2582,23 @@
 
       document.getElementById('global-coverage-percentage').innerText = `${coverageRatio}%`;
       document.getElementById('global-multiplier-badge').innerText = `⚡ ${globalMultiplier}x`;
-      document.getElementById('global-coverage-bar').style.width = `${coverageRatio}%`;
+      
+      // Couleur dynamique de la barre globale (sauf en mode daltonien)
+      let globalBarColor = 'var(--accent-green-bright)';
+      if (state.theme !== 'colorblind') {
+        if (coverageRatio >= 100) {
+          globalBarColor = 'var(--accent-green-bright)';
+        } else if (coverageRatio >= 60) {
+          globalBarColor = 'var(--accent-green)';
+        } else if (coverageRatio >= 20) {
+          globalBarColor = 'var(--accent-orange)';
+        } else {
+          globalBarColor = 'var(--accent-red)';
+        }
+      }
+      const globalBarFill = document.getElementById('global-coverage-bar');
+      globalBarFill.style.width = `${coverageRatio}%`;
+      globalBarFill.style.backgroundColor = globalBarColor;
 
       if (hasExpenses) {
         checkAutoHistoryRecord(coverageRatio, totalExpenses);
@@ -2639,6 +2656,20 @@
           .replace('{2}', formatNumber(e.amount))
           .replace('{3}', state.currency);
 
+        // Couleur dynamique de la barre individuelle (sauf en mode daltonien)
+        let barColor = 'var(--accent-green-bright)';
+        if (state.theme !== 'colorblind') {
+          if (e.percentage >= 100) {
+            barColor = 'var(--accent-green-bright)';
+          } else if (e.percentage >= 60) {
+            barColor = 'var(--accent-green)';
+          } else if (e.percentage >= 20) {
+            barColor = 'var(--accent-orange)';
+          } else {
+            barColor = 'var(--accent-red)';
+          }
+        }
+
         container.innerHTML += `
           <div class="card clone-card ${completedCardClass}">
             <div class="clone-header">
@@ -2664,7 +2695,7 @@
             </div>
 
             <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: ${Math.min(100, e.percentage)}%;"></div>
+              <div class="progress-bar-fill" style="width: ${Math.min(100, e.percentage)}%; background-color: ${barColor};"></div>
             </div>
           </div>
         `;
