@@ -1533,7 +1533,6 @@
 
     function getBarColor(percentage) {
       if (state.theme === 'colorblind') return 'var(--accent-green-bright)';
-      if (percentage > 100) return 'var(--accent-purple)';
       if (percentage >= 100) return 'var(--accent-green-bright)';
       if (percentage >= 60) return 'var(--accent-green)';
       if (percentage >= 20) return 'var(--accent-orange)';
