@@ -1,16 +1,18 @@
-<!DOCTYPE html><head>
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KLON</title>
 
-  <!-- Métadonnées Mobile / PWA -->
+  <!-- Métadonnées Mobile & App -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0d1117">
 
-  <!-- Manifest PWA Intégré (Data URL) -->
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22KLON%22,%22short_name%22:%22KLON%22,%22start_url%22:%22./index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%230d1117%22,%22theme_color%22:%22%230d1117%22,%22icons%22:[{%22src%22:%22data:image/svg%2Bxml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20fill='%232563EB'/%3E%3Ctext%20x='50'%20y='60'%20font-family='sans-serif'%20font-weight='bold'%20font-size='22'%20fill='white'%20text-anchor='middle'%3EKLON%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg%2Bxml%22}]}">
+  <!-- Manifest PWA encodé proprement -->
+  <link rel="manifest" href="data:application/json,{%22name%22:%22KLON%22,%22short_name%22:%22KLON%22,%22start_url%22:%22./index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%230d1117%22,%22theme_color%22:%22%230d1117%22,%22icons%22:[{%22src%22:%22data:image/svg%2Bxml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20fill='%232563EB'/%3E%3Ctext%20x='50'%20y='60'%20font-family='sans-serif'%20font-weight='bold'%20font-size='22'%20fill='white'%20text-anchor='middle'%3EKLON%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg%2Bxml%22}]}">
 
   <!-- Favicons -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563EB'/><text x='50' y='60' font-family='sans-serif' font-weight='bold' font-size='22' fill='white' text-anchor='middle'>KLON</text></svg>">
@@ -1110,7 +1112,7 @@
 
       <div id="crop-section" style="display: none;" class="crop-container">
         <div style="font-size: 0.9rem; font-weight: bold; color: var(--text-bright);" id="lbl-crop-title">Ajuster la photo (Glisse pour déplacer)</div>
-        canvas id="crop-canvas" width="140" height="140"></canvas>
+        <canvas id="crop-canvas" width="140" height="140"></canvas>
         
         <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 0.8rem;" id="lbl-crop-zoom">Zoom:</span>
@@ -1124,7 +1126,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIQUE DE PROGRESSION AVEC 2 GRAPHIQUES -->
+  <!-- MODAL HISTORIQUE DE PROGRESSION -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
@@ -1162,7 +1164,7 @@
     </div>
   </div>
 
-  <!-- MODAL FÉLICITATIONS BADGE OU EXPLICATION MULTIPLE -->
+  <!-- MODAL BADGES -->
   <div id="badge-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="badge-modal-header">
@@ -1191,7 +1193,7 @@
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !" },
         badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi." },
-        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de hand." },
+        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main." },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !" },
         badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont couvertes. Le socle vital est entièrement vaincu !" },
         badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !" },
@@ -2414,7 +2416,6 @@
       const chartWidth = 400 - paddingLeft - paddingRight;
       const chartHeight = 110 - paddingTop - paddingBottom;
 
-      // --- 1. Graphique d'Autonomie (%) ---
       const minPct = 0;
       const maxPct = Math.max(100, Math.max(...records.map(r => r.percentage)));
 
@@ -2463,7 +2464,6 @@
         svgPct.appendChild(circle);
       });
 
-      // --- 2. Graphique du Multiple (Jaune / Orange - Courbe descendante) ---
       const multValues = records.map(r => r.multiplier !== undefined ? r.multiplier : calculateMultiplier(r.capital, r.expenses));
       const minMult = 1.0;
       const maxMult = Math.max(2.0, Math.max(...multValues));
