@@ -1348,7 +1348,6 @@
         historyTitle: "📜 Historique de Progression",
         historyDesc: "Relevés automatiques avec un intervalle minimum de 30 jours entre deux points.",
         historyBtnAdd: "➕ Relevé aujourd'hui",
-        historyIntervalInfo: "Écart min : 30 jours",
         historyEmpty: "Aucun relevé enregistré pour le moment.",
         historyAddedSuccess: "Relevé de progression enregistré !",
         btnBadgeModalClose: "Génial !",
@@ -1455,7 +1454,6 @@
         historyTitle: "📜 Progress History",
         historyDesc: "Automatic logs with a minimum 30-day interval between points.",
         historyBtnAdd: "➕ Log today",
-        historyIntervalInfo: "Min gap: 30 days",
         historyEmpty: "No progress log recorded yet.",
         historyAddedSuccess: "Progress log recorded!",
         btnBadgeModalClose: "Awesome!",
@@ -1532,6 +1530,7 @@
 
     function getBarColor(percentage) {
       if (state.theme === 'colorblind') return 'var(--accent-green-bright)';
+      if (percentage > 100) return 'var(--accent-purple)';
       if (percentage >= 100) return 'var(--accent-green-bright)';
       if (percentage >= 60) return 'var(--accent-green)';
       if (percentage >= 20) return 'var(--accent-orange)';
@@ -1600,7 +1599,6 @@
       document.getElementById('history-modal-title').innerText = t.historyTitle;
       document.getElementById('history-modal-desc').innerText = t.historyDesc;
       document.getElementById('btn-add-history-point').innerText = t.historyBtnAdd;
-      document.getElementById('lbl-history-interval-info').innerText = t.historyIntervalInfo;
       document.getElementById('btn-history-close').innerText = t.btnModalClose;
       document.getElementById('btn-badge-modal-close').innerText = t.btnBadgeModalClose;
     }
@@ -2244,26 +2242,28 @@
     function openPercentageModal() {
       const t = getT();
       let totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+      let totalAllocated = 0;
+      state.expenses.forEach(e => {
+        totalAllocated += Math.round(state.allocations[e.id] || 0);
+      });
       let totalAnnuity = Math.round((state.capital * 0.04) / 12);
       let realAutonomyRatio = totalExpenses > 0 ? Math.round((totalAnnuity / totalExpenses) * 100) : 0;
-      
-      let klonsRatio = realAutonomyRatio;
-      let klonsAmount = totalAnnuity;
-      let salaryRatio = realAutonomyRatio >= 100 ? 0 : Math.max(0, 100 - realAutonomyRatio);
-      let salaryAmount = realAutonomyRatio >= 100 ? 0 : Math.max(0, totalExpenses - klonsAmount);
+      let coverageRatio = totalExpenses > 0 ? Math.min(100, Math.round((totalAllocated / totalExpenses) * 100)) : 0;
+      let salaryRatio = Math.max(0, 100 - coverageRatio);
+      let salaryAmount = Math.max(0, totalExpenses - totalAllocated);
 
       let textDesc = t.pctModalDesc0;
       if (realAutonomyRatio > 100) {
         textDesc = t.pctModalDescSuper;
-      } else if (realAutonomyRatio >= 100) {
+      } else if (coverageRatio >= 100) {
         textDesc = t.pctModalDesc100;
-      } else if (realAutonomyRatio >= 80) {
+      } else if (coverageRatio >= 80) {
         textDesc = t.pctModalDesc80;
-      } else if (realAutonomyRatio >= 60) {
+      } else if (coverageRatio >= 60) {
         textDesc = t.pctModalDesc60;
-      } else if (realAutonomyRatio >= 40) {
+      } else if (coverageRatio >= 40) {
         textDesc = t.pctModalDesc40;
-      } else if (realAutonomyRatio >= 20) {
+      } else if (coverageRatio >= 20) {
         textDesc = t.pctModalDesc20;
       }
 
@@ -2271,7 +2271,7 @@
         <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 0.85rem; text-align: left;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
             <span>🤖 <strong>Klons :</strong></span>
-            <strong style="color: var(--accent-green-bright);">${klonsRatio}% (${formatNumber(klonsAmount)} ${state.currency}/mois)</strong>
+            <strong style="color: var(--accent-green-bright);">${coverageRatio}% (${formatNumber(totalAllocated)} ${state.currency}/mois)</strong>
           </div>
           <div style="display: flex; justify-content: space-between;">
             <span>💼 <strong>Ton salaire :</strong></span>
