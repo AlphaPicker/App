@@ -1240,7 +1240,7 @@
     <div id="tab3" class="tab-content">
       <div class="card" style="border-left: 4px solid var(--accent-blue);">
         <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);" id="lbl-eco-transparency">
-          <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage.
+          <strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.
         </div>
       </div>
 
@@ -1276,7 +1276,7 @@
       <div class="card">
         <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
-          Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via un don.
+          Si cet outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
         </p>
         <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn link-btn-paypal" id="lbl-eco-paypal">Faire un don via PayPal</a>
       </div>
@@ -1285,18 +1285,18 @@
     <!-- FOOTER -->
     <footer class="site-footer">
       <div id="lbl-footer-app-info">
-        <strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong>.
+        <strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.
       </div>
       <div id="lbl-footer-privacy-info">
-        🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données.
+        🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.
       </div>
       <div id="lbl-footer-disclaimer-info">
-        ⚠️ <strong>Avertissement :</strong> Cet outil sert de simulation personnelle et éducative.
+        ⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.
       </div>
     </footer>
   </div>
 
-  <!-- MODAL ALERTES / CONFIRMATIONS SYSTEME PROPRES -->
+  <!-- MODAL DIALOGUE SYSTEME -->
   <div id="custom-dialog-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 380px; text-align: center;">
       <div style="font-size: 2.5rem; line-height: 1;" id="dialog-icon">ℹ️</div>
@@ -1571,6 +1571,7 @@
 
     let currentBadgeAnimType = 'confetti';
 
+    // TEXTES COMPLETS ET DÉTAILLÉS DES BADGES DE L'INITIAL
     const BADGE_DETAILS = {
       fr: {
         badge_first: { title: "Premier Klon Débloqué !", desc: "Félicitations ! Tu as entièrement financé ton premier Klon. La machine de ton indépendance financière est lancée !", anim: "crowns" },
@@ -1598,7 +1599,7 @@
         badge_super_fer: { title: "Super Klon Niveau Fer !", desc: "Super Klon Fer débloqué ! Tu as doublé la puissance de ta rente au-delà de ton socle vital.", anim: "fireworks" },
         badge_super_bronze: { title: "Super Klon Niveau Bronze !", desc: "Super Klon Bronze complété ! Ta rente génère 4x le montant de tes dépenses de base.", anim: "fireworks" },
         badge_super_argent: { title: "Super Klon Niveau Argent !", desc: "Super Klon Argent atteint ! Ta capacité financière s'élève à 8x tes charges de vie.", anim: "fireworks" },
-        badge_super_or: { title: "Super Klon Niveau Or !", desc: "Super Klon Or débloqué ! 16x tes charges covered par ta rente, une performance extraordinaire !", anim: "diamonds" },
+        badge_super_or: { title: "Super Klon Niveau Or !", desc: "Super Klon Or débloqué ! 16x tes charges couvertes par ta rente, une performance extraordinaire !", anim: "diamonds" },
         badge_super_diamant: { title: "Super Klon Niveau Diamant !", desc: "Niveau Diamant ultime atteint (32x tes charges) ! Indépendance financière absolue et définitive !", anim: "diamonds" }
       },
       en: {
@@ -1632,17 +1633,18 @@
       }
     };
 
+    // TEXTES DÉTAILLÉS INTÉGRAUX RESTAURÉS
     const I18N = {
       fr: {
         appSubtitle: "Simulateur de Liberté Financière",
-        appDesc: "Renseigne ton capital et tes charges pour calculer ta liberté financière et débloquer tes Klons d'autonomie.",
+        appDesc: "Renseigne ton capital et tes charges mensuelles pour calculer ton indépendance financière et débloquer tes Klons d'autonomie.",
         navTab1: "Charges & Capital",
         navTab2: "Klons",
         navTab3: "Écosystème",
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Capital Global Liquide",
         placeholderCapital: "Montant du capital",
-        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers. <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study).`,
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Capital Liquide & Règle des 4 % :</strong><br>Saisissez ici le montant total de votre capital disponible ou investi sur les marchés financiers (portefeuille d'actions, ETF, liquidités). <em>Ne pas inclure les biens immobiliers.</em><br><br>La <strong>règle des 4 %</strong> est un standard d'autonomie financière issu des études financières historiques (Trinity Study). Elle repose historiquement sur les performances à long terme des grands indices mondiaux comme le <strong>S&P 500</strong>, dont le rendement moyen brut s'élève à ~10 % par an sur les 20 dernières années (~7 % net d'inflation).<br><br><em>Note : Cela ne constitue pas un conseil en investissement. Chacun reste libre et responsable de la composition de son portefeuille.</em>`,
         lblAnnuityCapacity: "Rente théorique (4% / an) :",
         lblTotalExpenses: "Total Charges Mensuelles",
         lblAddExpenseTitle: "💸 Ajouter une charge mensuelle",
@@ -1663,7 +1665,7 @@
         optSortProgAsc: "À financer",
         optSortAmountDesc: "Montant max",
         optSortAmountAsc: "Montant min",
-        lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage.",
+        lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.",
         lblEcoBrokersTitle: "📈 Banques & Courtiers",
         lblEcoCryptoTitle: "🪙 Crypto & Rendement Alternatif",
         lblEcoPortfolioTitle: "Portefeuille & Performances",
@@ -1671,11 +1673,11 @@
         lblEcoAnalysisTitle: "Analyses & Thèses",
         lblEcoSubstack: "Suivre le Substack Alpha Picker",
         lblEcoSupportTitle: "Soutenir le Projet",
-        lblEcoSupportDesc: "Si l'outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet.",
+        lblEcoSupportDesc: "Si cet outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.",
         lblEcoPaypal: "Faire un don via PayPal",
-        lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong>.",
-        lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données.",
-        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative.",
+        lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.",
+        lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Avertissement :</strong> Cet outil me sert de simulation personnelle et éducative. Il ne constitue en aucun cas un conseil en investissement ou une incitation financière.",
         modalTitleDefault: "Avatars par Palier d'Avancement",
         modalDescDefault: "Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.",
         lblCropTitle: "Ajuster la photo (Glisse pour déplacer)",
@@ -1698,7 +1700,7 @@
         modalDescDedicated: "Ajuste la photo unique pour ce Klon débloqué à 100 %.",
         promptCloneName: "Saisis le prénom souhaité pour ce Klon :",
         promptSuperCloneName: "Saisis le prénom souhaité pour ce Super Klon :",
-        confirmReset: "Es-tu sûr de vouloir tout réinitialiser à zéro ?",
+        confirmReset: "Es-tu sûr de vouloir tout réinitialiser à zéro ? Toutes tes données et charges seront effacées.",
         badgeFirst: "Premier Klon",
         badgeRoche: "Socle brisé",
         badgeAnnuity5Digits: "Rente 5 chiffres",
@@ -1722,34 +1724,33 @@
         historyAddedSuccess: "Relevé de progression enregistré !",
         btnBadgeModalClose: "Génial !",
         lostBadgeTitle: "Badge temporairement perdu",
-        lostBadgeDesc: "Tu avais validé ce cap ! Réalloue ta rente ou augmente ton capital pour le réactiver !",
+        lostBadgeDesc: "Tu avais validé ce cap ! L'ajout de nouvelles charges ou la réallocation de ta rente a fait repasser ton niveau en dessous du seuil requis. Réalloue ta rente ou augmente ton capital pour le réactiver !",
         multModalTitle: "Facteur d'Effort Restant",
-        multModalDesc: "Ce facteur mesure la distance relative qu'il te reste à parcourir pour financer 100 % de tes charges.",
+        multModalDesc: "Ce facteur mesure la distance relative (le multiple de capital) qu'il te reste à parcourir pour financer 100 % de tes charges de base.<br><br>Plus ton capital grandit, plus l'effet boule de neige s'accélère et plus ce chiffre s'effondre rapidement vers <strong>1.0x</strong>.",
         pctModalTitle: "Progression de l'Autonomie",
-        pctModalDesc0: "Chaque euro investi travaille pour toi sans jamais s'arrêter. La machine est lancée !",
-        pctModalDesc20: "Le premier vrai cap est franchi !",
-        pctModalDesc40: "Le point de bascule est en vue !",
-        pctModalDesc60: "La majorité de ta vie est sécurisée !",
-        pctModalDesc80: "La dernière ligne droite vers le sommet !",
-        pctModalDesc100: "Socle de roche totalement pulvérisé !",
-        pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong>",
+        pctModalDesc0: "Au début, la montagne semble haute, mais chaque euro investi travaille pour toi sans jamais s'arrêter. La machine est lancée !",
+        pctModalDesc20: "Le premier vrai cap est franchi ! Au moins un cinquième de ton mode de vie ne sort plus de ton salaire. L'effort commence à se matérialiser.",
+        pctModalDesc40: "Le point de bascule est en vue ! Tu approches de la moitié de ton indépendance. La rente devient un bouclier concret qui paye tes factures.",
+        pctModalDesc60: "La majorité de ta vie est sécurisée ! Plus de la moitié de ton coût de vie est pris en charge automatiquement. L'effet boule de neige accélère.",
+        pctModalDesc80: "La dernière ligne droite vers le sommet ! Tes revenus passifs couvrent la quasi-totalité de ton quotidien. L'objectif ultime est imminent.",
+        pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
+        pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
         clonesModalTitle: "Klons d'Autonomie",
-        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles.",
-        clonesModalDescSome: "Ton armée de Klons prend de l'ampleur !",
+        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
+        clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
-        superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges sont vaincues.",
-        comingSoonText: "Prochainement..."
+        superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !"
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
-        appDesc: "Enter your capital and expenses to calculate your financial freedom.",
+        appDesc: "Enter your capital and expenses to calculate your financial freedom and unlock your autonomy Klons.",
         navTab1: "Expenses & Capital",
         navTab2: "Klons",
         navTab3: "Ecosystem",
         placeholderFirstname: "Ex: Alpha Picker",
         lblCapitalTitle: "Total Liquid Capital",
         placeholderCapital: "Capital amount",
-        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Liquid Capital & The 4% Rule:</strong><br>Enter total available liquid capital.`,
+        lblCapitalHelpText: `<strong style="color: var(--text-bright);">Liquid Capital & The 4% Rule:</strong><br>Enter the total amount of your capital available or invested in financial markets (stock portfolios, ETFs, cash equivalents). <em>Do not include real estate assets.</em><br><br>The <strong>4% rule</strong> is a widely recognized financial independence benchmark originating from historic financial research (Trinity Study). It relies on the long-term historical performance of major global stock indices like the <strong>S&P 500</strong>, which has delivered an average gross annual return of ~10% over the last 20 years (~7% net of inflation).<br><br><em>Note: This tool is provided for educational purposes only and does not constitute investment advice.</em>`,
         lblAnnuityCapacity: "Estimated Income (4% / yr):",
         lblTotalExpenses: "Total Monthly Expenses",
         lblAddExpenseTitle: "💸 Add a Monthly Expense",
@@ -1770,7 +1771,7 @@
         optSortProgAsc: "To fund",
         optSortAmountDesc: "Highest amount",
         optSortAmountAsc: "Lowest amount",
-        lblEcoTransparency: "<strong>🤝 Transparency & Referral:</strong> The links below are affiliate links.",
+        lblEcoTransparency: "<strong>🤝 Transparency & Referral:</strong> The links below are affiliate and referral links. By opening an account through these links, you can receive welcome bonuses offered by platforms while supporting the free development of this app.",
         lblEcoBrokersTitle: "📈 Banks & Brokers",
         lblEcoCryptoTitle: "🪙 Crypto & Alternative Yield",
         lblEcoPortfolioTitle: "Portfolio & Track Record",
@@ -1778,14 +1779,14 @@
         lblEcoAnalysisTitle: "Analysis & Investment Thesis",
         lblEcoSubstack: "Follow Substack Alpha Picker",
         lblEcoSupportTitle: "Support the Project",
-        lblEcoSupportDesc: "If this tool helps you, you can support the project.",
+        lblEcoSupportDesc: "If this tool helps you on your path to financial independence, you can support the project.",
         lblEcoPaypal: "Donate via PayPal",
-        lblFooterAppInfo: "<strong>KLON</strong> — Free & Open Source app.",
-        lblFooterPrivacyInfo: "🛡️ <strong>Privacy:</strong> No cookies, no tracking.",
-        lblFooterDisclaimerInfo: "⚠️ <strong>Disclaimer:</strong> Personal simulation tool.",
+        lblFooterAppInfo: "<strong>KLON</strong> — Free & Open Source app developed by <strong>Alpha Picker</strong> and hosted on GitHub Pages.",
+        lblFooterPrivacyInfo: "🛡️ <strong>Privacy:</strong> No tracking cookies, no data collection. All inputs are strictly saved locally within your browser.",
+        lblFooterDisclaimerInfo: "⚠️ <strong>Disclaimer:</strong> This tool is provided for educational purposes and personal simulation only. It does not constitute investment advice or financial solicitation.",
         modalTitleDefault: "Avatars by Progress Tier",
-        modalDescDefault: "Configure photos for all 6 tiers.",
-        lblCropTitle: "Adjust Photo",
+        modalDescDefault: "Configure photos for all 6 tiers. They will apply to <strong>all your Klons</strong>.",
+        lblCropTitle: "Adjust Photo (Drag to move)",
         lblCropZoom: "Zoom:",
         btnCropConfirm: "Confirm Photo",
         btnModalClose: "Close",
@@ -1794,18 +1795,18 @@
         optThemeColorblind: "👁️ Colorblind",
         btnCover: "Cover",
         lblAllocated: "Allocated:",
-        lblRockLockTitle: "🪨 Bedrock Base",
-        lblRockLockDesc: "Allocate income to cover 100% of baseline expenses.",
+        lblRockLockTitle: "🪨 Bedrock Base (In Progress)",
+        lblRockLockDesc: "Allocate your income to cover 100% of your baseline expenses ({0} {1}/mo) and break through the bedrock.",
         lblNextTierTitle: "🔒 Next Tier: Level {0}",
-        lblNextTierDesc: "Increase total capital to unlock this tier.",
-        lblPayExpense: "covers {0}% of expense: {1} ({2} {3})",
+        lblNextTierDesc: "Increase your total capital to feed the current Super Klon and unlock this tier.",
+        lblPayExpense: "covers {0}% of your expense: {1} ({2} {3})",
         lblTarget: "Target: {0} {1}/mo ({2}x expenses) — {3}%",
         lblSuperCloneName: "Super Klon",
-        modalTitleDedicated: "Dedicated Avatar",
-        modalDescDedicated: "Adjust unique photo for this Klon.",
-        promptCloneName: "Enter name for this Klon:",
-        promptSuperCloneName: "Enter name for this Super Klon:",
-        confirmReset: "Are you sure you want to reset everything?",
+        modalTitleDedicated: "Dedicated Avatar for Klon / Super Klon",
+        modalDescDedicated: "Adjust the unique photo for this 100% unlocked Klon.",
+        promptCloneName: "Enter the desired name for this Klon:",
+        promptSuperCloneName: "Enter the desired name for this Super Klon:",
+        confirmReset: "Are you sure you want to reset everything to zero? All your data and expenses will be cleared.",
         badgeFirst: "First Klon",
         badgeRoche: "Shattered Base",
         badgeAnnuity5Digits: "5-digit Income",
@@ -1823,29 +1824,28 @@
         completedCounter: "👑 {0}/{1} at 100%",
         superCompletedCounter: "⭐ {0} Super Klon{1} maxed",
         historyTitle: "📜 Progress History",
-        historyDesc: "Automatic logs.",
+        historyDesc: "Automatic logs with a minimum 30-day interval between points.",
         historyBtnAdd: "➕ Log today",
         historyEmpty: "No progress log recorded yet.",
         historyAddedSuccess: "Progress log recorded!",
         btnBadgeModalClose: "Awesome!",
         lostBadgeTitle: "Badge Temporarily Lost",
-        lostBadgeDesc: "Reallocate income or increase capital to reactivate!",
+        lostBadgeDesc: "You previously unlocked this milestone! Adding new expenses or reallocating your income dropped your progress below the required threshold. Reallocate your income or increase your capital to reactivate it!",
         multModalTitle: "Remaining Effort Factor",
-        multModalDesc: "Distance left to cover 100% expenses.",
+        multModalDesc: "This factor measures the relative distance (capital multiple) you have left to cover 100% of your baseline expenses.<br><br>As your capital grows, compounding accelerates and this number rapidly drops toward <strong>1.0x</strong>.",
         pctModalTitle: "Autonomy Progress",
-        pctModalDesc0: "Every dollar works non-stop.",
-        pctModalDesc20: "First milestone unlocked!",
-        pctModalDesc40: "Turning point in sight!",
-        pctModalDesc60: "Most of your life is secured!",
-        pctModalDesc80: "Final stretch to summit!",
-        pctModalDesc100: "Bedrock base smashed!",
-        pctModalDescSuper: "⭐ <strong>Passed 100% autonomy!</strong>",
+        pctModalDesc0: "At first, the mountain seems high, but every dollar invested works for you non-stop. The engine is running!",
+        pctModalDesc20: "The first milestone is unlocked! At least one fifth of your living costs no longer comes from your paycheck.",
+        pctModalDesc40: "The turning point is in sight! You are approaching half of total independence. Your income is a solid shield.",
+        pctModalDesc60: "Most of your life is secured! Over half of your living expenses are automatically handled. Compounding speeds up.",
+        pctModalDesc80: "The final stretch to the summit! Your passive income covers almost your entire lifestyle. The ultimate goal is near.",
+        pctModalDesc100: "Bedrock base completely smashed! 100% of your baseline expenses are neutralized by your capital.<br><br>⚡ <strong>The real game starts now:</strong> it's time for <strong>Super Klons</strong> to work, multiplying your independence and upgrading your lifestyle!",
+        pctModalDescSuper: "⭐ <strong>Incredible! You passed 100% autonomy!</strong><br><br>Your capital generates more income than needed to cover your baseline lifestyle. You have entered the realm of <strong>Super Klons</strong>: total freedom where every extra dollar multiplies your passive living power!",
         clonesModalTitle: "Autonomy Klons",
-        clonesModalDescNone: "Each Klon represents an expense.",
-        clonesModalDescSome: "Klon army is growing!",
+        clonesModalDescNone: "Each Klon represents one of your monthly expenses. As soon as a Klon hits 100%, that bill is officially neutralized by your passive income!",
+        clonesModalDescSome: "Your Klon army is growing! You already have {0} expense(s) fully funded by your capital. Your salary stays right in your pocket.",
         superModalTitle: "Power Super Klons",
-        superModalDesc: "Super Klons activate once expenses are 100% covered.",
-        comingSoonText: "Coming soon..."
+        superModalDesc: "Super Klons activate once 100% of your baseline expenses are defeated. They measure your annuity overpower (2x, 4x, 8x... your expenses) to reach complete abundance!"
       }
     };
 
