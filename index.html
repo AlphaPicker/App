@@ -1025,7 +1025,6 @@
             <option value="prog_asc" id="opt-sort-prog-asc">À financer</option>
             <option value="amount_desc" id="opt-sort-amount-desc">Montant max</option>
             <option value="amount_asc" id="opt-sort-amount-asc">Montant min</option>
-            <option value="creation" id="opt-sort-creation">Ordre d'ajout</option>
           </select>
         </div>
       </div>
@@ -1290,7 +1289,6 @@
         optSortProgAsc: "À financer",
         optSortAmountDesc: "Montant max",
         optSortAmountAsc: "Montant min",
-        optSortCreation: "Ordre d'ajout",
         lblEcoTransparency: "<strong>🤝 Transparence & Parrainage :</strong> Les liens ci-dessous sont des liens d'affiliation et de parrainage. En ouvrant un compte via ces accès, vous pouvez bénéficier des bonus de bienvenue proposés par les plateformes tout en soutenant le développement gratuit de l'application.",
         lblEcoBrokersTitle: "📈 Banques & Courtiers",
         lblEcoCryptoTitle: "🪙 Crypto & Rendement Alternatif",
@@ -1397,7 +1395,6 @@
         optSortProgAsc: "To fund",
         optSortAmountDesc: "Highest amount",
         optSortAmountAsc: "Lowest amount",
-        optSortCreation: "Order added",
         lblEcoTransparency: "<strong>🤝 Transparency & Referral:</strong> The links below are affiliate and referral links. By opening an account through these links, you can receive welcome bonuses offered by platforms while supporting the free development of this app.",
         lblEcoBrokersTitle: "📈 Banks & Brokers",
         lblEcoCryptoTitle: "🪙 Crypto & Alternative Yield",
@@ -1574,7 +1571,6 @@
       document.getElementById('opt-sort-prog-asc').innerText = t.optSortProgAsc;
       document.getElementById('opt-sort-amount-desc').innerText = t.optSortAmountDesc;
       document.getElementById('opt-sort-amount-asc').innerText = t.optSortAmountAsc;
-      document.getElementById('opt-sort-creation').innerText = t.optSortCreation;
       document.getElementById('lbl-eco-transparency').innerHTML = t.lblEcoTransparency;
       document.getElementById('lbl-eco-brokers-title').innerText = t.lblEcoBrokersTitle;
       document.getElementById('lbl-eco-crypto-title').innerText = t.lblEcoCryptoTitle;
@@ -2897,6 +2893,10 @@
           touchTimer = setTimeout(() => {
             card.classList.add('dragging');
           }, 300);
+        }, { passive: true });
+
+        card.addEventListener('touchmove', () => {
+          clearTimeout(touchTimer);
         }, { passive: true });
 
         card.addEventListener('touchend', () => {
