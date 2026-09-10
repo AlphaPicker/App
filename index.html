@@ -556,11 +556,19 @@
       width: 100%;
       max-width: 500px;
       max-height: 90vh;
-      overflow-y: auto;
+      overflow: hidden;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
+    }
+
+    .modal-body-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      padding-right: 2px;
     }
 
     .tier-grid {
@@ -766,7 +774,6 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      /* Suppression du max-height et overflow-y pour laisser toute la modale défiler */
     }
 
     .history-item {
@@ -1127,58 +1134,67 @@
         Configure les photos des 6 paliers. Elles s'appliqueront à <strong>tous tes Klons</strong>.
       </p>
 
-      <div class="tier-grid" id="modal-tier-grid"></div>
+      <div class="modal-body-scroll">
+        <div class="tier-grid" id="modal-tier-grid"></div>
 
-      <div id="crop-section" style="display: none;" class="crop-container">
-        <div style="font-size: 0.9rem; font-weight: bold; color: var(--text-bright);" id="lbl-crop-title">Ajuster la photo (Glisse pour déplacer)</div>
-        <canvas id="crop-canvas" width="140" height="140"></canvas>
-        
-        <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 0.8rem;" id="lbl-crop-zoom">Zoom:</span>
-          <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" style="flex:1;">
+        <div id="crop-section" style="display: none;" class="crop-container">
+          <div style="font-size: 0.9rem; font-weight: bold; color: var(--text-bright);" id="lbl-crop-title">Ajuster la photo (Glisse pour déplacer)</div>
+          <canvas id="crop-canvas" width="140" height="140"></canvas>
+          
+          <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.8rem;" id="lbl-crop-zoom">Zoom:</span>
+            <input type="range" id="zoom-slider" min="0.5" max="3" step="0.05" value="1" style="flex:1;">
+          </div>
+          
+          <button class="btn-primary" onclick="confirmCrop()" style="width: 100%;" id="btn-crop-confirm">Valider la photo</button>
         </div>
-        
-        <button class="btn-primary" onclick="confirmCrop()" style="width: 100%;" id="btn-crop-confirm">Valider la photo</button>
       </div>
 
-      <button class="btn-secondary" onclick="closeModal()" style="margin-top: 10px;" id="btn-modal-close">Fermer</button>
+      <button class="btn-secondary" onclick="closeModal()" style="margin-top: 4px;" id="btn-modal-close">Fermer</button>
     </div>
   </div>
 
   <!-- MODAL HISTORIQUE DE PROGRESSION -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
-      <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
-      
-      <p style="font-size: 0.85rem; opacity: 0.8;" id="history-modal-desc">
-        Relevés automatiques avec un intervalle minimum de 30 jours entre deux points.
-      </p>
+      <!-- En-tête Fixe -->
+      <div style="display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
+        <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
+        
+        <p style="font-size: 0.85rem; opacity: 0.8;" id="history-modal-desc">
+          Relevés automatiques avec un intervalle minimum de 30 jours entre deux points.
+        </p>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-        <button class="btn-secondary" onclick="forceAddHistoryRecord()" id="btn-add-history-point">➕ Relevé aujourd'hui</button>
-      </div>
-
-      <!-- Graphique 1 : Vert (Autonomie) -->
-      <div class="history-chart-container">
-        <div class="history-chart-title" style="color: var(--accent-green-bright);">
-          <span>📈 Courbe d'autonomie (%)</span>
-          <span id="chart-hover-info" style="font-weight: bold;">--</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <button class="btn-secondary" onclick="forceAddHistoryRecord()" id="btn-add-history-point">➕ Relevé aujourd'hui</button>
         </div>
-        <svg id="history-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
       </div>
 
-      <!-- Graphique 2 : Jaune/Orange (Multiple d'Effort) -->
-      <div class="history-chart-container">
-        <div class="history-chart-title" style="color: var(--accent-orange);">
-          <span>📉 Courbe d'effort restant (Multiple)</span>
-          <span id="chart-mult-hover-info" style="font-weight: bold;">--</span>
+      <!-- Corps Défilant (Graphiques + Relevés) -->
+      <div class="modal-body-scroll">
+        <!-- Graphique 1 : Vert (Autonomie) -->
+        <div class="history-chart-container">
+          <div class="history-chart-title" style="color: var(--accent-green-bright);">
+            <span>📈 Courbe d'autonomie (%)</span>
+            <span id="chart-hover-info" style="font-weight: bold;">--</span>
+          </div>
+          <svg id="history-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
         </div>
-        <svg id="history-mult-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
+
+        <!-- Graphique 2 : Jaune/Orange (Multiple d'Effort) -->
+        <div class="history-chart-container">
+          <div class="history-chart-title" style="color: var(--accent-orange);">
+            <span>📉 Courbe d'effort restant (Multiple)</span>
+            <span id="chart-mult-hover-info" style="font-weight: bold;">--</span>
+          </div>
+          <svg id="history-mult-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
+        </div>
+
+        <div class="history-list" id="history-list-box"></div>
       </div>
 
-      <div class="history-list" id="history-list-box"></div>
-
-      <button class="btn-secondary" onclick="closeHistoryModal()" style="margin-top: 10px;" id="btn-history-close">Fermer</button>
+      <!-- Pied de page Fixe -->
+      <button class="btn-secondary" onclick="closeHistoryModal()" style="margin-top: 4px; flex-shrink: 0;" id="btn-history-close">Fermer</button>
     </div>
   </div>
 
@@ -1207,11 +1223,11 @@
         badge_10: { title: "Cap des 10 % d'Autonomie !", desc: "Bravo ! Tu couvres désormais 10 % de tes charges mensuelles globales grâce à la rente de tes investissements." },
         badge_20: { title: "Cap des 20 % d'Autonomie !", desc: "20 % de tes factures ne sortent plus de ton salaire ! Ta liberté financière prend de l'ampleur." },
         badge_30: { title: "Cap des 30 % d'Autonomie !", desc: "Un tiers de ton coût de vie est sécurisé par ton capital. Ton autonomie grandit à grande vitesse !" },
-        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont covered de manière totalement passive." },
+        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont couvertes de manière totalement passive." },
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !" },
-        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi." },
-        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de hand." },
+        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges covered ! Ton capital travaille désormais plus dur que jamais pour toi." },
+        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main." },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !" },
         badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont couvertes. Le socle vital est entièrement vaincu !" },
         badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !" },
@@ -1361,7 +1377,7 @@
         pctModalDesc40: "Le point de bascule est en vue ! Tu approches de la moitié de ton indépendance. La rente devient un bouclier concret qui paye tes factures.",
         pctModalDesc60: "La majorité de ta vie est sécurisée ! Plus de la moitié de ton coût de vie est pris en charge automatiquement. L'effet boule de neige accélère.",
         pctModalDesc80: "La dernière ligne droite vers le sommet ! Tes revenus passifs couvrent la quasi-totalité de ton quotidien. L'objectif ultime est imminent.",
-        pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
+        pctModalDesc100: "Socle de roche totalmente pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
         pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
         clonesModalTitle: "Klons d'Autonomie",
         clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officially neutralisée par ta rente passive !",
@@ -2488,31 +2504,46 @@
         return;
       }
 
-      const paddingLeft = 30;
+      const paddingLeft = 35;
       const paddingRight = 20;
       const paddingTop = 15;
       const paddingBottom = 25;
       const chartWidth = 400 - paddingLeft - paddingRight;
       const chartHeight = 110 - paddingTop - paddingBottom;
 
+      // 1. GRAPHIQUE 1 : COURBE D'AUTONOMIE (%)
+      const actualMaxPct = Math.max(...records.map(r => r.percentage));
       const minPct = 0;
-      const maxPct = Math.max(100, Math.max(...records.map(r => r.percentage)));
+      
+      // Calcul du palier supérieur dynamique propre
+      let maxPct = 100;
+      if (actualMaxPct > 100 && actualMaxPct <= 200) {
+        maxPct = 200;
+      } else if (actualMaxPct > 200 && actualMaxPct <= 250) {
+        maxPct = 250;
+      } else if (actualMaxPct > 250 && actualMaxPct <= 300) {
+        maxPct = 300;
+      } else if (actualMaxPct > 300) {
+        maxPct = Math.ceil(actualMaxPct / 100) * 100;
+      }
+
+      // 3 Paliers clairs et nets : Bas (0), Milieu (50%), Haut (Max)
+      const midPct = Math.round(maxPct / 2);
+      const pctGridValues = [0, midPct, maxPct];
+
+      pctGridValues.forEach(val => {
+        const yVal = paddingTop + chartHeight - ((val - minPct) / (maxPct - minPct)) * chartHeight;
+        svgPct.innerHTML += `
+          <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
+          <text x="${paddingLeft - 6}" y="${yVal + 3}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.65">${val}%</text>
+        `;
+      });
 
       let pctPoints = [];
       records.forEach((rec, idx) => {
         const x = paddingLeft + (idx / (records.length - 1)) * chartWidth;
         const y = paddingTop + chartHeight - ((rec.percentage - minPct) / (maxPct - minPct)) * chartHeight;
         pctPoints.push({ x, y, rec });
-      });
-
-      [0, 50, 100].forEach(val => {
-        if (val <= maxPct) {
-          const yVal = paddingTop + chartHeight - ((val - minPct) / (maxPct - minPct)) * chartHeight;
-          svgPct.innerHTML += `
-            <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
-            <text x="${paddingLeft - 6}" y="${yVal + 4}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.6">${val}%</text>
-          `;
-        }
       });
 
       let pctPathD = `M ${pctPoints[0].x} ${pctPoints[0].y}`;
@@ -2543,9 +2574,29 @@
         svgPct.appendChild(circle);
       });
 
+      // 2. GRAPHIQUE 2 : COURBE D'EFFORT (MULTIPLE)
       const multValues = records.map(r => r.multiplier !== undefined ? r.multiplier : calculateMultiplier(r.capital, r.expenses));
+      const actualMaxMult = Math.max(...multValues);
       const minMult = 1.0;
-      const maxMult = Math.max(2.0, Math.max(...multValues));
+      let maxMult = actualMaxMult <= 2.0 ? 2.0 : Math.ceil(actualMaxMult * 1.15);
+
+      let multGridValues = [1.0];
+      if (maxMult > 2.0) {
+        let midMult = Math.round((maxMult + 1.0) / 2);
+        multGridValues.push(midMult);
+      } else {
+        multGridValues.push(1.5);
+      }
+      multGridValues.push(maxMult);
+      multGridValues = [...new Set(multGridValues)].sort((a, b) => a - b);
+
+      multGridValues.forEach(val => {
+        const yVal = paddingTop + chartHeight - ((val - minMult) / (maxMult - minMult)) * chartHeight;
+        svgMult.innerHTML += `
+          <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
+          <text x="${paddingLeft - 6}" y="${yVal + 3}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.65">${val}x</text>
+        `;
+      });
 
       let multPoints = [];
       records.forEach((rec, idx) => {
@@ -2553,14 +2604,6 @@
         const x = paddingLeft + (idx / (records.length - 1)) * chartWidth;
         const y = paddingTop + chartHeight - ((mVal - minMult) / (maxMult - minMult)) * chartHeight;
         multPoints.push({ x, y, rec, mVal });
-      });
-
-      [1.0, Math.round((maxMult + 1.0) / 2), Math.round(maxMult)].forEach(val => {
-        const yVal = paddingTop + chartHeight - ((val - minMult) / (maxMult - minMult)) * chartHeight;
-        svgMult.innerHTML += `
-          <line x1="${paddingLeft}" y1="${yVal}" x2="${400 - paddingRight}" y2="${yVal}" stroke="var(--border-color)" stroke-dasharray="3,3" stroke-width="1" />
-          <text x="${paddingLeft - 6}" y="${yVal + 4}" fill="var(--text-main)" font-size="9" text-anchor="end" opacity="0.6">${val}x</text>
-        `;
       });
 
       let multPathD = `M ${multPoints[0].x} ${multPoints[0].y}`;
