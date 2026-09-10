@@ -1625,12 +1625,12 @@
       const input = document.getElementById('user-firstname-input');
       state.firstname = input.value.trim();
       localStorage.setItem('alpha_firstname', state.firstname);
-      renderClones();
+      if (document.getElementById('tab2').classList.contains('active')) renderClones();
     }
 
     function changeCurrency(symbol) {
       state.currency = symbol;
-      localStorage.setItem('alpha_currency', state.currency);
+      localStorage.setItem('alpha_currency', symbol);
       updateCurrencyDisplay();
       renderExpenses();
       updateCalculations();
@@ -1640,7 +1640,7 @@
       state.theme = themeName;
       localStorage.setItem('alpha_theme', themeName);
       document.documentElement.setAttribute('data-theme', themeName);
-      renderClones();
+      if (document.getElementById('tab2').classList.contains('active')) renderClones();
     }
 
     function updateCurrencyDisplay() {
@@ -2150,7 +2150,9 @@
       const monthlyCapacity = Math.round((state.capital * 0.04) / 12);
       document.getElementById('monthly-capacity-display').innerText = `${formatNumber(monthlyCapacity)} ${state.currency}${t.perMonth}`;
       
-      renderClones();
+      if (document.getElementById('tab2').classList.contains('active')) {
+        renderClones();
+      }
     }
 
     function triggerConfetti() {
@@ -2320,14 +2322,14 @@
         unlockedSuperIds.forEach(tierId => {
           currentlyValid.push(`badge_${tierId}`);
         });
-
-        if (monthlyCapacity >= 10) currentlyValid.push("badge_10_m");
-        if (monthlyCapacity >= 50) currentlyValid.push("badge_50_m");
-        if (monthlyCapacity >= 100) currentlyValid.push("badge_100_m");
-        if (monthlyCapacity >= 500) currentlyValid.push("badge_500_m");
-        if (monthlyCapacity >= 1000) currentlyValid.push("badge_1000_m");
-        if (monthlyCapacity >= 10000) currentlyValid.push("badge_10000_m");
       }
+
+      if (monthlyCapacity >= 10) currentlyValid.push("badge_10_m");
+      if (monthlyCapacity >= 50) currentlyValid.push("badge_50_m");
+      if (monthlyCapacity >= 100) currentlyValid.push("badge_100_m");
+      if (monthlyCapacity >= 500) currentlyValid.push("badge_500_m");
+      if (monthlyCapacity >= 1000) currentlyValid.push("badge_1000_m");
+      if (monthlyCapacity >= 10000) currentlyValid.push("badge_10000_m");
 
       if (Object.keys(state.dedicatedAvatars).length > 0) currentlyValid.push("badge_artist");
       if (state.capital >= 100000) currentlyValid.push("badge_100k");
@@ -2661,11 +2663,6 @@
         checkAutoHistoryRecord(coverageRatio, totalExpenses);
       }
 
-      if (!hasExpenses) {
-        checkBadges(0, 0, false, [], totalMonthlyCapacity, 0);
-        return;
-      }
-
       let completedClonesCount = 0;
 
       let baseClones = state.expenses.map((e, idx) => {
@@ -2676,7 +2673,7 @@
         return { ...e, cardType: 'base', allocated, percentage, origIndex: idx };
       });
 
-      let allBaseCompleted = (completedClonesCount === baseClones.length);
+      let allBaseCompleted = hasExpenses && (completedClonesCount === baseClones.length);
 
       let superClones = [];
       let completedSuperClonesCount = 0;
