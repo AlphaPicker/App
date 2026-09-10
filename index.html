@@ -947,7 +947,7 @@
       cursor: not-allowed;
     }
 
-    /* --- STYLES SNAKE 2 ET VIGNETTES KLONS --- */
+    /* --- STYLES KLON SNAKE ET VIGNETTES --- */
     .snake-header-title {
       font-size: 1.15rem;
       font-weight: bold;
@@ -1398,13 +1398,22 @@
     </div>
   </div>
 
-  <!-- MODAL INTÉGRÉE DU JEU SNAKE 2 (AVEC AVATAR KLON) -->
+  <!-- MODAL INTÉGRÉE DU JEU KLON SNAKE (AVEC BOUTONS D'ACTION EN HAUT) -->
   <div id="snake-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px; padding: 12px;">
       
-      <div class="snake-header-title">🐍 Klon Snake</div>
-      <div class="snake-header-subtitle" id="snake-player-subtitle">Klon en jeu : Joueur</div>
-      
+      <!-- En-tête avec Rejouer à gauche, Titre au centre, Retour à droite -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+        <button onclick="startSnakeGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 34px; height: 34px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
+        
+        <div style="text-align: center;">
+          <div class="snake-header-title">🐍 KLON Snake</div>
+          <div class="snake-header-subtitle" id="snake-player-subtitle">Klon en jeu : Joueur</div>
+        </div>
+
+        <button onclick="closeSnakeGame()" title="Retour" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 34px; height: 34px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">↩️</button>
+      </div>
+
       <div class="snake-scores-row">
         <!-- Boîte du score avec la photo du Klon au-dessus -->
         <div class="snake-score-box">
@@ -1433,10 +1442,6 @@
         <div></div>
       </div>
 
-      <div style="display: flex; gap: 8px; margin-top: 6px;">
-        <button class="btn-primary" style="flex:1; padding: 10px;" onclick="startSnakeGame()">🔄 Rejouer</button>
-        <button class="btn-secondary" style="flex:1; padding: 10px;" onclick="closeSnakeGame()">Retour</button>
-      </div>
     </div>
   </div>
 
@@ -1458,7 +1463,7 @@
   <!-- MODAL LEADERBOARD SNAKE (TOP 10 AVEC AVATARS) -->
   <div id="snake-leaderboard-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px;">
-      <div class="card-title" style="justify-content: center;">🏆 Top 10 Records Klon Snake 2</div>
+      <div class="card-title" style="justify-content: center;">🏆 Top 10 Records KLON Snake</div>
       <p style="font-size: 0.8rem; opacity: 0.8; text-align: center; margin-bottom: 4px;">Meilleures récoltes de dividendes enregistrées</p>
 
       <div class="modal-body-scroll" style="max-height: 260px;">
@@ -1637,7 +1642,7 @@
         pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
         pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
         clonesModalTitle: "Klons d'Autonomie",
-        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officially neutralisée par ta rente passive !",
+        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
         superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !"
@@ -2435,7 +2440,7 @@
 
     // --- COFFRE À JEUX ARCADE ---
     const ARCADE_GAMES_LIST = [
-      { id: 'snake2', gameType: 'snake', name: 'Klon Snake', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
+      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
       { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 3, desc: '' },
       { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 5, desc: '' },
       { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 10, desc: '' }
@@ -2526,7 +2531,7 @@
       }
     }
 
-    // --- MOTEUR NATIVE SNAKE 2 INTÉGRÉ & RELEADERS AVEC AVATARS ---
+    // --- MOTEUR NATIVE KLON SNAKE INTÉGRÉ & LEADERBOARD AVEC AVATARS ---
     let snakeGameTimeout = null;
     let snake = [];
     let snakeFood = { x: 0, y: 0, icon: '🪙' };
