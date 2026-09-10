@@ -1,16 +1,18 @@
+const CACHE_NAME = 'klon-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json'
+];
+
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open('klon-v1').then((cache) => cache.addAll([
-      './',
-      './index.html',
-      './manifest.json',
-      './icon.svg'
-    ]))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
+    caches.match(e.request).then((res) => res || fetch(e.request))
   );
 });
