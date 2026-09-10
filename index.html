@@ -1634,7 +1634,7 @@
         multModalTitle: "Facteur d'Effort Restant",
         multModalDesc: "Ce facteur mesure la distance relative (le multiple de capital) qu'il te reste à parcourir pour financer 100 % de tes charges de base.<br><br>Plus ton capital grandit, plus l'effet boule de neige s'accélère et plus ce chiffre s'effondre rapidement vers <strong>1.0x</strong>.",
         pctModalTitle: "Progression de l'Autonomie",
-        pctModalDesc0: "Au début, la montagne semble haute, mais chaque euro investi travaille pour toi sans jamais s'arrêter. La machine est lancée !",
+        pctModalDesc0: "Au début, la montagne semble haute, mais chaque euro invested travaille pour toi sans jamais s'arrêter. La machine est lancée !",
         pctModalDesc20: "Le premier vrai cap est franchi ! Au moins un cinquième de ton mode de vie ne sort plus de ton salaire. L'effort commence à se matérialiser.",
         pctModalDesc40: "Le point de bascule est en vue ! Tu approches de la moitié de ton indépendance. La rente devient un bouclier concret qui paye tes factures.",
         pctModalDesc60: "La majorité de ta vie est sécurisée ! Plus de la moitié de ton coût de vie est pris en charge automatiquement. L'effet boule de neige accélère.",
@@ -2470,8 +2470,8 @@
 
         if (isUnlocked) {
           const leaderboards = getSnakeLeaderboard('snake2');
-          const top1 = leaderboards.length > 0 ? leaderboards[0] : { score: 0, klonName: '-', dateStr: '-' };
-          const hsText = top1.score > 0 ? `🏆 Record : ${top1.score} par ${top1.klonName} (${top1.dateStr})` : 'Pas encore de record';
+          const top1 = leaderboards.length > 0 ? leaderboards[0] : { score: 0, klonName: '-' };
+          const hsText = top1.score > 0 ? `🏆 Record : ${top1.score} par ${top1.klonName}` : 'Pas encore de record';
 
           container.innerHTML += `
             <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.id}')">
@@ -2749,7 +2749,7 @@
       openSnakeLeaderboard();
     }
 
-    /* Rendu optimisé : Formes fluides + Adaptation au Mode Daltonien */
+    /* Rendu fluide serpentin avec affinement progressif de la queue */
     function drawSnake() {
       const canvas = document.getElementById('snake-canvas');
       const ctx = canvas.getContext('2d');
@@ -2757,7 +2757,7 @@
 
       const isColorblind = state.theme === 'colorblind';
 
-      // Grille
+      // Grille épurée
       ctx.strokeStyle = '#161b22';
       ctx.lineWidth = 1;
       for (let i = 0; i <= GRID_SIZE; i++) {
@@ -2765,7 +2765,7 @@
         ctx.beginPath(); ctx.moveTo(0, i * TILE_SIZE); ctx.lineTo(canvas.width, i * TILE_SIZE); ctx.stroke();
       }
 
-      // Food
+      // Nourriture
       ctx.font = '15px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -2775,29 +2775,26 @@
         snakeFood.y * TILE_SIZE + TILE_SIZE / 2 + 1
       );
 
-      // Couleurs adaptées au thème
-      const bodyColor = isColorblind ? '#ffcc00' : '#7ee787'; // Jaune vif pour daltoniens, Vert vif en mode normal
-      const bodyBorder = isColorblind ? '#000000' : '#1d4ed8';
+      // Couleurs serpent naturelles (ou adaptées)
+      const bodyColor = isColorblind ? '#0288d1' : '#2e7d32'; 
+      const strokeColor = isColorblind ? '#01579b' : '#1b5e20';
 
-      // Rendu du Snake (du corps vers la tête)
-      for (let i = snake.length - 1; i >= 0; i--) {
+      const totalSegs = snake.length;
+
+      // Dessin des liaisons et des anneaux de la queue vers la tête
+      for (let i = totalSegs - 1; i >= 0; i--) {
         const part = snake[i];
-        const x = part.x * TILE_SIZE + 1;
-        const y = part.y * TILE_SIZE + 1;
-        const size = TILE_SIZE - 2;
-        const radius = 5;
+        const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
+        const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
 
         if (i === 0) {
           // Tête avec Avatar ou Émoji
-          const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
-          const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
-
           if (headImageObj && headImageObj.complete) {
             ctx.save();
             ctx.beginPath();
             ctx.arc(cx, cy, (TILE_SIZE / 2) - 1, 0, Math.PI * 2);
             ctx.clip();
-            ctx.drawImage(headImageObj, x, y, size, size);
+            ctx.drawImage(headImageObj, part.x * TILE_SIZE + 1, part.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
             ctx.restore();
 
             ctx.strokeStyle = bodyColor;
@@ -2812,15 +2809,36 @@
             ctx.fillText('👑', cx, cy);
           }
         } else {
-          // Corps : Rectangles arrondis continus (Segment fluide)
-          ctx.fillStyle = bodyColor;
-          ctx.strokeStyle = bodyBorder;
-          ctx.lineWidth = 1;
+          // Calcul du rayon : affinement progressif sur la fin de la queue
+          const distFromTail = totalSegs - 1 - i;
+          let radius = (TILE_SIZE / 2) - 1.5;
+          if (distFromTail === 0) radius = (TILE_SIZE / 2) - 4.5;      // Bout de la queue
+          else if (distFromTail === 1) radius = (TILE_SIZE / 2) - 3.2; // Avant-dernier
+          else if (distFromTail === 2) radius = (TILE_SIZE / 2) - 2.2; // Avant-avant-dernier
 
+          ctx.fillStyle = bodyColor;
           ctx.beginPath();
-          ctx.roundRect(x, y, size, size, radius);
+          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
           ctx.fill();
+
+          // Contour léger pour donner du relief aux anneaux
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = 1;
           ctx.stroke();
+
+          // Jonction avec le segment précédent pour former un corps uni
+          const prev = snake[i - 1];
+          const prevCx = prev.x * TILE_SIZE + TILE_SIZE / 2;
+          const prevCy = prev.y * TILE_SIZE + TILE_SIZE / 2;
+
+          if (Math.abs(prev.x - part.x) <= 1 && Math.abs(prev.y - part.y) <= 1) {
+            ctx.lineWidth = radius * 1.7;
+            ctx.strokeStyle = bodyColor;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(prevCx, prevCy);
+            ctx.stroke();
+          }
         }
       }
     }
