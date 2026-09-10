@@ -12,8 +12,8 @@
   <meta name="theme-color" content="#0d1117">
 
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icon.svg">
-  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%233B82F6'/><stop offset='100%25' stop-color='%231D4ED8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><path d='M35 25 V75 M35 50 L65 25 M45 42 L65 75' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%233B82F6'/><stop offset='100%25' stop-color='%231D4ED8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><path d='M35 25 V75 M35 50 L65 25 M45 42 L65 75' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
 
   <style>
     :root[data-theme="dark"] {
@@ -948,7 +948,6 @@
       cursor: not-allowed;
     }
 
-    /* STYLES SNAKE */
     .snake-header-title {
       font-size: 1.15rem;
       font-weight: bold;
@@ -1082,7 +1081,6 @@
 
   <div class="app-container">
     
-    <!-- EN-TÊTE -->
     <header class="app-header">
       <h1>KLON</h1>
       <div class="subtitle" id="app-header-subtitle">Simulateur de Liberté Financière</div>
@@ -1103,7 +1101,7 @@
       </button>
     </nav>
 
-    <!-- ONGLET 1 -->
+    <!-- ONGLET 1 : SAISIE DES DONNÉES -->
     <div id="tab1" class="tab-content active">
       <div class="card" style="padding: 12px 14px;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
@@ -1188,7 +1186,7 @@
       </div>
     </div>
 
-    <!-- ONGLET 2 -->
+    <!-- ONGLET 2 : RESULTAT DES KLONS -->
     <div id="tab2" class="tab-content">
       <div class="global-progress-card">
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: bold;">
@@ -1236,7 +1234,7 @@
       <div id="tier-boss-container"></div>
     </div>
 
-    <!-- ONGLET 3 -->
+    <!-- ONGLET 3 : ÉCOSYSTÈME -->
     <div id="tab3" class="tab-content">
       <div class="card" style="border-left: 4px solid var(--accent-blue);">
         <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);" id="lbl-eco-transparency">
@@ -1276,13 +1274,12 @@
       <div class="card">
         <div class="card-title" id="lbl-eco-support-title">Soutenir le Projet</div>
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
-          Si cet outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
+          Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
         </p>
         <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn link-btn-paypal" id="lbl-eco-paypal">Faire un don via PayPal</a>
       </div>
     </div>
 
-    <!-- FOOTER -->
     <footer class="site-footer">
       <div id="lbl-footer-app-info">
         <strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.
@@ -1309,7 +1306,7 @@
     </div>
   </div>
 
-  <!-- MODAL AVATARS -->
+  <!-- MODAL CONFIGURATION DES VISUELS GLOBAUX -->
   <div id="settings-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" id="modal-title-text">Avatars par Palier d'Avancement</div>
@@ -1338,7 +1335,7 @@
     </div>
   </div>
 
-  <!-- MODAL HISTORIQUE -->
+  <!-- MODAL HISTORIQUE DE PROGRESSION -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
       <div style="display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
@@ -1377,7 +1374,7 @@
     </div>
   </div>
 
-  <!-- MODAL BADGES -->
+  <!-- MODAL BADGES ET NOTIFICATIONS -->
   <div id="badge-modal" class="modal-overlay">
     <div class="modal-card">
       <button class="btn-mini-celebrate" id="btn-mini-celebrate" onclick="replayBadgeAnimation()" title="Revoir l'explosion">🎆</button>
@@ -1395,7 +1392,7 @@
     </div>
   </div>
 
-  <!-- MODAL COFFRE A JEUX -->
+  <!-- MODAL COFFRE À JEUX (KLON ARCADE) -->
   <div id="arcade-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="card-title" style="justify-content: center;">🎁 Coffre à Jeux Klon</div>
@@ -1411,7 +1408,7 @@
     </div>
   </div>
 
-  <!-- MODAL SNAKE -->
+  <!-- MODAL INTÉGRÉE DU JEU KLON SNAKE -->
   <div id="snake-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px; padding: 12px;">
       
@@ -1455,7 +1452,7 @@
     </div>
   </div>
 
-  <!-- MODAL GAME OVER SNAKE -->
+  <!-- MODAL GAME OVER NATIVE SNAKE -->
   <div id="snake-gameover-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 320px; text-align: center;">
       <div style="font-size: 3rem; line-height: 1;" id="gameover-icon">💥</div>
@@ -1487,7 +1484,7 @@
   <input type="file" id="dedicated-avatar-input" accept="image/*" style="display: none;" onchange="handleDedicatedImageSelect(event)">
 
   <script>
-    // ACCÈS SÉCURISÉ AU LOCALSTORAGE
+    // ACCÈS SÉCURISÉ AU LOCALSTORAGE (AVEC FALLBACK EN MÉMOIRE)
     const storageMem = {};
     function safeGet(key, fallback = null) {
       try {
@@ -1571,14 +1568,14 @@
 
     let currentBadgeAnimType = 'confetti';
 
-    // TEXTES COMPLETS ET DÉTAILLÉS DES BADGES DE L'INITIAL
+    // DÉFINITIONS COMPLETES ET DÉTAILLÉES DES BADGES
     const BADGE_DETAILS = {
       fr: {
         badge_first: { title: "Premier Klon Débloqué !", desc: "Félicitations ! Tu as entièrement financé ton premier Klon. La machine de ton indépendance financière est lancée !", anim: "crowns" },
         badge_10: { title: "Cap des 10 % d'Autonomie !", desc: "Bravo ! Tu couvres désormais 10 % de tes charges mensuelles globales grâce à la rente de tes investissements.", anim: "confetti" },
         badge_20: { title: "Cap des 20 % d'Autonomie !", desc: "20 % de tes factures ne sortent plus de ton salaire ! Ta liberté financière prend de l'ampleur.", anim: "cash" },
         badge_30: { title: "Cap des 30 % d'Autonomie !", desc: "Un tiers de ton coût de vie est sécurisé par ton capital. Ton autonomie grandit à grande vitesse !", anim: "confetti" },
-        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont couvertes de manière totalement passive.", anim: "cash" },
+        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont covered de manière totalement passive.", anim: "cash" },
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !", anim: "gold" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !", anim: "confetti" },
         badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
@@ -1633,7 +1630,7 @@
       }
     };
 
-    // TEXTES DÉTAILLÉS INTÉGRAUX RESTAURÉS
+    // DICTIONNAIRE I18N
     const I18N = {
       fr: {
         appSubtitle: "Simulateur de Liberté Financière",
@@ -1739,7 +1736,8 @@
         clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
-        superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !"
+        superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !",
+        comingSoonText: "Débloqué avec de futurs Klons à 100%"
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
@@ -1845,7 +1843,8 @@
         clonesModalDescNone: "Each Klon represents one of your monthly expenses. As soon as a Klon hits 100%, that bill is officially neutralized by your passive income!",
         clonesModalDescSome: "Your Klon army is growing! You already have {0} expense(s) fully funded by your capital. Your salary stays right in your pocket.",
         superModalTitle: "Power Super Klons",
-        superModalDesc: "Super Klons activate once 100% of your baseline expenses are defeated. They measure your annuity overpower (2x, 4x, 8x... your expenses) to reach complete abundance!"
+        superModalDesc: "Super Klons activate once 100% of your baseline expenses are defeated. They measure your annuity overpower (2x, 4x, 8x... your expenses) to reach complete abundance!",
+        comingSoonText: "Unlocked with future 100% Klons"
       }
     };
 
