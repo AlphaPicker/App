@@ -966,13 +966,59 @@
       cursor: not-allowed;
     }
 
-    .game-iframe-container {
-      width: 100%;
-      height: 520px;
-      border: none;
-      border-radius: 8px;
-      background: var(--bg-color);
+    /* --- STYLES INTÉGRÉS DU JEU SNAKE --- */
+    .snake-scores-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
     }
+
+    .snake-score-box {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--text-bright);
+      background: var(--bg-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      flex: 1;
+      text-align: center;
+    }
+
+    canvas#snake-canvas {
+      background-color: #010409;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .snake-dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 6px;
+      width: 170px;
+      height: 170px;
+      margin: 12px auto 0 auto;
+    }
+
+    .dpad-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-bright);
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .dpad-btn:active { background: var(--border-color); }
   </style>
 </head>
 <body>
@@ -1318,11 +1364,42 @@
     </div>
   </div>
 
-  <!-- MODAL LANCEUR DE JEU (IFRAME) -->
-  <div id="game-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 420px; padding: 12px;">
-      <iframe id="game-iframe" class="game-iframe-container" src="about:blank"></iframe>
-      <button class="btn-secondary" onclick="closeGameModal()" style="margin-top: 8px; width: 100%;">Fermer le Jeu</button>
+  <!-- MODAL INTÉGRÉE DU JEU SNAKE 2 -->
+  <div id="snake-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 380px;">
+      <div class="card-title" style="justify-content: center;">🐍 Snake 2</div>
+      <p style="font-size: 0.85rem; opacity: 0.8; text-align: center; margin-bottom: 8px;" id="snake-player-subtitle">Récolte un maximum de dividendes !</p>
+      
+      <div class="snake-scores-row">
+        <div class="snake-score-box">
+          Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙
+        </div>
+        <div class="snake-score-box">
+          Record : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong>
+        </div>
+      </div>
+
+      <div id="highscore-details" style="font-size: 0.72rem; opacity: 0.8; text-align: center; margin-bottom: 8px; min-height: 16px;"></div>
+
+      <canvas id="snake-canvas" width="280" height="280"></canvas>
+
+      <!-- Pad Mobile -->
+      <div class="snake-dpad">
+        <div></div>
+        <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
+        <div></div>
+        <button class="dpad-btn" onclick="setSnakeDir('LEFT')">◄</button>
+        <div></div>
+        <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
+        <div></div>
+        <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
+        <div></div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 12px;">
+        <button class="btn-primary" style="flex:1;" onclick="startSnakeGame()">🔄 Rejouer</button>
+        <button class="btn-secondary" style="flex:1;" onclick="closeSnakeGame()">Retour</button>
+      </div>
     </div>
   </div>
 
@@ -1341,7 +1418,7 @@
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !", anim: "gold" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !", anim: "confetti" },
         badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
-        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main.", anim: "fireworks" },
+        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de hand.", anim: "fireworks" },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !", anim: "diamonds" },
         badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont covered. Le socle vital est entièrement vaincu !", anim: "fireworks" },
         badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !", anim: "confetti" },
@@ -1634,6 +1711,7 @@
     ];
 
     let selectedKlonForGame = null;
+    let headImageObj = null;
 
     function getT() {
       return I18N[state.lang] || I18N.fr;
@@ -2293,14 +2371,22 @@
 
     // --- COFFRE À JEUX ARCADE ---
     const ARCADE_GAMES_LIST = [
-      { id: 'snake2', file: 'snake.html', name: 'Klon Snake 2', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
-      { id: 'secret1', file: '#', name: 'Jeu Mystère I', icon: '❓', reqKlons: 3, desc: '' },
-      { id: 'secret2', file: '#', name: 'Jeu Mystère II', icon: '❓', reqKlons: 5, desc: '' },
-      { id: 'secret3', file: '#', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 10, desc: '' }
+      { id: 'snake2', gameType: 'snake', name: 'Klon Snake 2', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
+      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 3, desc: '' },
+      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 5, desc: '' },
+      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 10, desc: '' }
     ];
 
     function openArcadeVault(cloneObj) {
       selectedKlonForGame = cloneObj;
+
+      if (cloneObj && cloneObj.avatar && cloneObj.avatar.type === 'image') {
+        headImageObj = new Image();
+        headImageObj.src = cloneObj.avatar.value;
+      } else {
+        headImageObj = null;
+      }
+
       const container = document.getElementById('arcade-games-container');
       container.innerHTML = '';
 
@@ -2318,7 +2404,7 @@
           const hsText = record.score > 0 ? `🏆 Record : ${record.score} par ${record.klonName} (${record.dateStr})` : 'Pas encore de record';
 
           container.innerHTML += `
-            <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.file}')">
+            <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.id}')">
               <div style="font-size: 2rem;">${game.icon}</div>
               <div style="flex: 1;">
                 <div style="font-weight: bold; color: var(--text-bright); font-size: 0.95rem;">${game.name}</div>
@@ -2329,7 +2415,6 @@
             </div>
           `;
         } else {
-          // Uniquement "🔒 Jeu Verrouillé" sans prérequis affichés
           container.innerHTML += `
             <div class="arcade-game-card locked">
               <div style="font-size: 2rem;">🔒</div>
@@ -2348,25 +2433,220 @@
       document.getElementById('arcade-modal').classList.remove('active');
     }
 
-    function launchArcadeGame(gameFile) {
-      if (gameFile === '#') return;
-      closeArcadeModal();
+    function launchArcadeGame(gameId) {
+      if (gameId === 'snake2') {
+        closeArcadeModal();
 
-      const iframe = document.getElementById('game-iframe');
-      
-      const gameParams = new URLSearchParams({
-        klonName: selectedKlonForGame ? selectedKlonForGame.name : 'Alpha Picker',
-        avatarType: selectedKlonForGame ? selectedKlonForGame.avatar.type : 'emoji',
-        avatarValue: selectedKlonForGame ? selectedKlonForGame.avatar.value : '👑'
-      });
+        const klonName = selectedKlonForGame ? selectedKlonForGame.name : 'Joueur';
+        document.getElementById('snake-player-subtitle').innerText = `Klon en jeu : ${klonName}`;
 
-      iframe.src = `${gameFile}?${gameParams.toString()}`;
-      document.getElementById('game-modal').classList.add('active');
+        updateSnakeHighScoreDisplay();
+        document.getElementById('snake-modal').classList.add('active');
+        startSnakeGame();
+      }
     }
 
-    function closeGameModal() {
-      document.getElementById('game-iframe').src = 'about:blank';
-      document.getElementById('game-modal').classList.remove('active');
+    // --- MOTEUR NATIVE SNAKE 2 INTÉGRÉ ---
+    let snakeGameTimeout = null;
+    let snake = [];
+    let snakeFood = { x: 0, y: 0, icon: '🪙' };
+    let snakeDir = 'RIGHT';
+    let nextDir = 'RIGHT';
+    let snakeScore = 0;
+    let currentSpeed = 180;
+
+    const GRID_SIZE = 14;
+    const TILE_SIZE = 20;
+
+    function getHighScoreData(gameId) {
+      return JSON.parse(localStorage.getItem(`klon_highscore_${gameId}`)) || { score: 0, klonName: '-', dateStr: '-' };
+    }
+
+    function saveHighScoreData(gameId, score, klonName) {
+      const nowStr = new Date().toLocaleDateString(state.lang === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+      const record = { score, klonName, dateStr: nowStr };
+      localStorage.setItem(`klon_highscore_${gameId}`, JSON.stringify(record));
+      return record;
+    }
+
+    function updateSnakeHighScoreDisplay() {
+      const hs = getHighScoreData('snake2');
+      document.getElementById('snake-highscore').innerText = hs.score;
+
+      const detailsEl = document.getElementById('highscore-details');
+      if (hs.score > 0) {
+        detailsEl.innerText = `👑 Record : ${hs.score} 🪙 par ${hs.klonName} le ${hs.dateStr}`;
+      } else {
+        detailsEl.innerText = 'Aucun record établi pour le moment.';
+      }
+    }
+
+    function closeSnakeGame() {
+      if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
+      document.getElementById('snake-modal').classList.remove('active');
+      openArcadeVault(selectedKlonForGame);
+    }
+
+    function startSnakeGame() {
+      if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
+
+      snake = [
+        { x: 5, y: 7 },
+        { x: 4, y: 7 },
+        { x: 3, y: 7 }
+      ];
+      snakeDir = 'RIGHT';
+      nextDir = 'RIGHT';
+      snakeScore = 0;
+      currentSpeed = 180;
+
+      document.getElementById('snake-score').innerText = snakeScore;
+      spawnSnakeFood();
+      snakeGameLoop();
+    }
+
+    function setSnakeDir(dir) {
+      if (dir === 'UP' && snakeDir !== 'DOWN') nextDir = 'UP';
+      if (dir === 'DOWN' && snakeDir !== 'UP') nextDir = 'DOWN';
+      if (dir === 'LEFT' && snakeDir !== 'RIGHT') nextDir = 'LEFT';
+      if (dir === 'RIGHT' && snakeDir !== 'LEFT') nextDir = 'RIGHT';
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (!document.getElementById('snake-modal').classList.contains('active')) return;
+      if (e.key === 'ArrowUp') { setSnakeDir('UP'); e.preventDefault(); }
+      if (e.key === 'ArrowDown') { setSnakeDir('DOWN'); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { setSnakeDir('LEFT'); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { setSnakeDir('RIGHT'); e.preventDefault(); }
+    });
+
+    function spawnSnakeFood() {
+      const icons = ['🪙', '💵', '💰', '✨'];
+      let validPos = false;
+
+      while (!validPos) {
+        snakeFood.x = Math.floor(Math.random() * GRID_SIZE);
+        snakeFood.y = Math.floor(Math.random() * GRID_SIZE);
+        validPos = !snake.some(part => part.x === snakeFood.x && part.y === snakeFood.y);
+      }
+
+      snakeFood.icon = icons[Math.floor(Math.random() * icons.length)];
+    }
+
+    function snakeGameLoop() {
+      updateSnake();
+      drawSnake();
+    }
+
+    function updateSnake() {
+      snakeDir = nextDir;
+      const head = { ...snake[0] };
+
+      if (snakeDir === 'UP') head.y--;
+      if (snakeDir === 'DOWN') head.y++;
+      if (snakeDir === 'LEFT') head.x--;
+      if (snakeDir === 'RIGHT') head.x++;
+
+      if (head.x < 0) head.x = GRID_SIZE - 1;
+      if (head.x >= GRID_SIZE) head.x = 0;
+      if (head.y < 0) head.y = GRID_SIZE - 1;
+      if (head.y >= GRID_SIZE) head.y = 0;
+
+      for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === head.x && snake[i].y === head.y) {
+          handleSnakeGameOver();
+          return;
+        }
+      }
+
+      snake.unshift(head);
+
+      if (head.x === snakeFood.x && head.y === snakeFood.y) {
+        snakeScore += 10;
+        document.getElementById('snake-score').innerText = snakeScore;
+        currentSpeed = Math.max(70, currentSpeed - 2.5);
+        spawnSnakeFood();
+      } else {
+        snake.pop();
+      }
+
+      snakeGameTimeout = setTimeout(snakeGameLoop, currentSpeed);
+    }
+
+    function handleSnakeGameOver() {
+      const currentHs = getHighScoreData('snake2');
+      const activeKlonName = selectedKlonForGame ? selectedKlonForGame.name : 'Klon';
+
+      if (snakeScore > currentHs.score) {
+        saveHighScoreData('snake2', snakeScore, activeKlonName);
+        alert(`🎉 NOUVEAU RECORD ! ${snakeScore} dividendes accumulés par ${activeKlonName} !`);
+      } else {
+        alert(`💥 Game Over ! Score final : ${snakeScore} dividendes.`);
+      }
+
+      updateSnakeHighScoreDisplay();
+      startSnakeGame();
+    }
+
+    function drawSnake() {
+      const canvas = document.getElementById('snake-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Grille
+      ctx.strokeStyle = '#161b22';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= GRID_SIZE; i++) {
+        ctx.beginPath(); ctx.moveTo(i * TILE_SIZE, 0); ctx.lineTo(i * TILE_SIZE, canvas.height); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i * TILE_SIZE); ctx.lineTo(canvas.width, i * TILE_SIZE); ctx.stroke();
+      }
+
+      // Food
+      ctx.font = '15px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(
+        snakeFood.icon, 
+        snakeFood.x * TILE_SIZE + TILE_SIZE / 2, 
+        snakeFood.y * TILE_SIZE + TILE_SIZE / 2 + 1
+      );
+
+      // Snake Body & Head
+      snake.forEach((part, idx) => {
+        const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
+        const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
+
+        if (idx === 0) {
+          if (headImageObj && headImageObj.complete) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, cy, (TILE_SIZE / 2) - 1, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(headImageObj, part.x * TILE_SIZE + 1, part.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+            ctx.restore();
+
+            ctx.strokeStyle = '#7ee787';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, (TILE_SIZE / 2) - 1, 0, Math.PI * 2);
+            ctx.stroke();
+          } else {
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('👑', cx, cy);
+          }
+        } else {
+          ctx.fillStyle = idx % 2 === 0 ? '#7ee787' : '#58a6ff';
+          ctx.strokeStyle = '#0d1117';
+          ctx.lineWidth = 1.5;
+
+          ctx.beginPath();
+          ctx.arc(cx, cy, (TILE_SIZE / 2) - 2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      });
     }
 
     // --- MOTEUR ENRICHI D'EXPLOSIONS & CÉLÉBRATIONS ---
