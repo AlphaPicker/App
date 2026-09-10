@@ -3714,5 +3714,12 @@
       updateCalculations();
     });
   </script>
+  
+  <!-- Enregistrement du Service Worker PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
 </body>
 </html>
