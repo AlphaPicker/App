@@ -429,6 +429,7 @@
       cursor: grab;
       user-select: none;
       touch-action: manipulation;
+      position: relative;
     }
 
     .clone-card:active {
@@ -454,6 +455,29 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      padding-right: 36px;
+    }
+
+    .clone-arcade-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .clone-arcade-btn:hover {
+      transform: scale(1.15);
+      border-color: var(--accent-green-bright);
     }
 
     .clone-avatar {
@@ -905,6 +929,50 @@
       color: var(--accent-purple) !important;
       border-color: var(--accent-purple) !important;
     }
+
+    /* Styles de la liste du Coffre Arcade */
+    .arcade-games-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .arcade-game-card {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .arcade-game-card.unlocked {
+      border-color: var(--accent-green-bright);
+      cursor: pointer;
+    }
+
+    .arcade-game-card.unlocked:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(126, 231, 135, 0.15);
+    }
+
+    .arcade-game-card.locked {
+      opacity: 0.65;
+      border-style: dashed;
+      cursor: not-allowed;
+    }
+
+    .game-iframe-container {
+      width: 100%;
+      height: 520px;
+      border: none;
+      border-radius: 8px;
+      background: var(--bg-color);
+    }
   </style>
 </head>
 <body>
@@ -1180,7 +1248,6 @@
   <!-- MODAL HISTORIQUE DE PROGRESSION -->
   <div id="history-modal" class="modal-overlay">
     <div class="modal-card">
-      <!-- En-tête Fixe -->
       <div style="display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
         <div class="card-title" id="history-modal-title">📜 Historique de Progression</div>
         
@@ -1193,9 +1260,7 @@
         </div>
       </div>
 
-      <!-- Corps Défilant (Graphiques + Relevés) -->
       <div class="modal-body-scroll">
-        <!-- Graphique 1 : Vert (Autonomie) -->
         <div class="history-chart-container">
           <div class="history-chart-title" style="color: var(--accent-green-bright);">
             <span>📈 Courbe d'autonomie (%)</span>
@@ -1204,7 +1269,6 @@
           <svg id="history-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
         </div>
 
-        <!-- Graphique 2 : Jaune/Orange (Multiple d'Effort) -->
         <div class="history-chart-container">
           <div class="history-chart-title" style="color: var(--accent-orange);">
             <span>📉 Courbe d'effort restant (Multiple)</span>
@@ -1216,7 +1280,6 @@
         <div class="history-list" id="history-list-box"></div>
       </div>
 
-      <!-- Pied de page Fixe -->
       <button class="btn-secondary" onclick="closeHistoryModal()" style="margin-top: 4px; flex-shrink: 0;" id="btn-history-close">Fermer</button>
     </div>
   </div>
@@ -1236,6 +1299,30 @@
       </p>
 
       <button class="btn-primary" onclick="closeBadgeModal()" style="margin-top: 6px;" id="btn-badge-modal-close">Génial !</button>
+    </div>
+  </div>
+
+  <!-- MODAL COFFRE À JEUX (KLON ARCADE) -->
+  <div id="arcade-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="card-title" style="justify-content: center;">🎁 Coffre à Jeux Klon</div>
+      <p style="font-size: 0.85rem; opacity: 0.8; text-align: center;" id="arcade-modal-subtitle">
+        Finance tes Klons d'autonomie pour débloquer de nouveaux mini-jeux secrets !
+      </p>
+
+      <div class="modal-body-scroll">
+        <div class="arcade-games-grid" id="arcade-games-container"></div>
+      </div>
+
+      <button class="btn-secondary" onclick="closeArcadeModal()" style="margin-top: 4px;">Fermer</button>
+    </div>
+  </div>
+
+  <!-- MODAL LANCEUR DE JEU (IFRAME) -->
+  <div id="game-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 420px; padding: 12px;">
+      <iframe id="game-iframe" class="game-iframe-container" src="about:blank"></iframe>
+      <button class="btn-secondary" onclick="closeGameModal()" style="margin-top: 8px; width: 100%;">Fermer le Jeu</button>
     </div>
   </div>
 
@@ -1545,6 +1632,8 @@
       { id: "super_or", nameFR: "Or", nameEN: "Gold", mult: 16, icon: "🥇" },
       { id: "super_diamant", nameFR: "Diamant", nameEN: "Diamond", mult: 32, icon: "💎" }
     ];
+
+    let selectedKlonForGame = null;
 
     function getT() {
       return I18N[state.lang] || I18N.fr;
@@ -2200,6 +2289,84 @@
       if (document.getElementById('tab2').classList.contains('active')) {
         renderClones();
       }
+    }
+
+    // --- COFFRE À JEUX ARCADE ---
+    const ARCADE_GAMES_LIST = [
+      { id: 'snake2', file: 'snake.html', name: 'Klon Snake 2', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
+      { id: 'secret1', file: '#', name: 'Jeu Mystère I', icon: '❓', reqKlons: 3, desc: '' },
+      { id: 'secret2', file: '#', name: 'Jeu Mystère II', icon: '❓', reqKlons: 5, desc: '' },
+      { id: 'secret3', file: '#', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 10, desc: '' }
+    ];
+
+    function openArcadeVault(cloneObj) {
+      selectedKlonForGame = cloneObj;
+      const container = document.getElementById('arcade-games-container');
+      container.innerHTML = '';
+
+      let completedCount = 0;
+      state.expenses.forEach(e => {
+        let alloc = Math.round(state.allocations[e.id] || 0);
+        if (e.amount > 0 && alloc >= e.amount) completedCount++;
+      });
+
+      ARCADE_GAMES_LIST.forEach(game => {
+        let isUnlocked = completedCount >= game.reqKlons;
+
+        if (isUnlocked) {
+          const record = JSON.parse(localStorage.getItem(`klon_highscore_${game.id}`)) || { score: 0, klonName: '-', dateStr: '-' };
+          const hsText = record.score > 0 ? `🏆 Record : ${record.score} par ${record.klonName} (${record.dateStr})` : 'Pas encore de record';
+
+          container.innerHTML += `
+            <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.file}')">
+              <div style="font-size: 2rem;">${game.icon}</div>
+              <div style="flex: 1;">
+                <div style="font-weight: bold; color: var(--text-bright); font-size: 0.95rem;">${game.name}</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">${game.desc}</div>
+                <div style="font-size: 0.75rem; color: var(--accent-green-bright); margin-top: 3px; font-weight: bold;">${hsText}</div>
+              </div>
+              <div style="font-size: 1.2rem;">▶️</div>
+            </div>
+          `;
+        } else {
+          // Uniquement "🔒 Jeu Verrouillé" sans prérequis affichés
+          container.innerHTML += `
+            <div class="arcade-game-card locked">
+              <div style="font-size: 2rem;">🔒</div>
+              <div style="flex: 1;">
+                <div style="font-weight: bold; color: var(--text-bright); font-size: 0.95rem;">🔒 Jeu Verrouillé</div>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      document.getElementById('arcade-modal').classList.add('active');
+    }
+
+    function closeArcadeModal() {
+      document.getElementById('arcade-modal').classList.remove('active');
+    }
+
+    function launchArcadeGame(gameFile) {
+      if (gameFile === '#') return;
+      closeArcadeModal();
+
+      const iframe = document.getElementById('game-iframe');
+      
+      const gameParams = new URLSearchParams({
+        klonName: selectedKlonForGame ? selectedKlonForGame.name : 'Alpha Picker',
+        avatarType: selectedKlonForGame ? selectedKlonForGame.avatar.type : 'emoji',
+        avatarValue: selectedKlonForGame ? selectedKlonForGame.avatar.value : '👑'
+      });
+
+      iframe.src = `${gameFile}?${gameParams.toString()}`;
+      document.getElementById('game-modal').classList.add('active');
+    }
+
+    function closeGameModal() {
+      document.getElementById('game-iframe').src = 'about:blank';
+      document.getElementById('game-modal').classList.remove('active');
     }
 
     // --- MOTEUR ENRICHI D'EXPLOSIONS & CÉLÉBRATIONS ---
@@ -2978,8 +3145,14 @@
 
           const barColor = getBarColor(c.percentage);
 
+          // Intégration du bouton Arcade 🕹️ sur les Klons financés à 100 %
+          let arcadeBtnHTML = isUnlocked ? `
+            <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault({ id: ${c.id}, name: '${cloneName}', avatar: ${JSON.stringify(avatar).replace(/"/g, '&quot;')} })">🕹️</button>
+          ` : '';
+
           container.innerHTML += `
             <div class="card clone-card ${completedCardClass}" draggable="true" data-id="${c.id}">
+              ${arcadeBtnHTML}
               <div class="clone-header">
                 ${avatarHTML}
                 <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
