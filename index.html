@@ -11,10 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0d1117">
 
-  <!-- Lien vers le fichier manifest externe -->
   <link rel="manifest" href="./manifest.json">
-
-  <!-- Favicons Stylisés K -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%233B82F6'/><stop offset='100%25' stop-color='%231D4ED8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><path d='M35 25 V75 M35 50 L65 25 M45 42 L65 75' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%233B82F6'/><stop offset='100%25' stop-color='%231D4ED8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><path d='M35 25 V75 M35 50 L65 25 M45 42 L65 75' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
 
@@ -174,7 +171,6 @@
         padding: 10px 4px;
         font-size: 0.75rem;
       }
-      
       .nav-btn .nav-icon {
         font-size: 1.25rem;
       }
@@ -432,9 +428,7 @@
       position: relative;
     }
 
-    .clone-card:active {
-      cursor: grabbing;
-    }
+    .clone-card:active { cursor: grabbing; }
 
     .clone-card.dragging {
       opacity: 0.4;
@@ -568,7 +562,7 @@
       z-index: 100;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 12px;
     }
 
     .modal-overlay.active { display: flex; }
@@ -579,19 +573,19 @@
       border-radius: 8px;
       width: 100%;
       max-width: 500px;
-      max-height: 90vh;
+      max-height: 95vh;
       overflow: hidden;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       position: relative;
     }
 
     .modal-body-scroll {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -667,9 +661,7 @@
       padding-bottom: 0;
     }
 
-    .clickable-clone-name:hover {
-      color: var(--accent-blue);
-    }
+    .clickable-clone-name:hover { color: var(--accent-blue); }
 
     .counter-badge {
       display: inline-flex;
@@ -685,9 +677,7 @@
       transition: transform 0.2s;
     }
 
-    .counter-badge:hover {
-      transform: translateY(-1px);
-    }
+    .counter-badge:hover { transform: translateY(-1px); }
 
     .global-progress-card {
       background: var(--card-bg);
@@ -735,9 +725,7 @@
       cursor: pointer;
     }
 
-    .badge-item:hover {
-      transform: translateY(-1px);
-    }
+    .badge-item:hover { transform: translateY(-1px); }
 
     .badge-item.active-unlocked {
       display: inline-flex !important;
@@ -913,24 +901,17 @@
       transition: transform 0.2s, color 0.3s, border-color 0.3s;
     }
 
-    .progress-badge-header:hover {
-      transform: translateY(-1px);
-    }
+    .progress-badge-header:hover { transform: translateY(-1px); }
 
-    .progress-badge-header.multiplier-badge {
-      color: var(--accent-orange);
-    }
+    .progress-badge-header.multiplier-badge { color: var(--accent-orange); }
 
-    .progress-badge-header.percentage-badge {
-      color: var(--accent-green-bright);
-    }
+    .progress-badge-header.percentage-badge { color: var(--accent-green-bright); }
 
     .progress-badge-header.super-percentage-badge {
       color: var(--accent-purple) !important;
       border-color: var(--accent-purple) !important;
     }
 
-    /* Styles de la liste du Coffre Arcade */
     .arcade-games-grid {
       display: flex;
       flex-direction: column;
@@ -966,16 +947,30 @@
       cursor: not-allowed;
     }
 
-    /* --- STYLES INTÉGRÉS DU JEU SNAKE --- */
+    /* --- STYLES SNAKE 2 ET VIGNETTES KLONS --- */
+    .snake-header-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--text-bright);
+      text-align: center;
+    }
+
+    .snake-header-subtitle {
+      font-size: 0.78rem;
+      opacity: 0.85;
+      text-align: center;
+      margin-top: 1px;
+    }
+
     .snake-scores-row {
       display: flex;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-top: 2px;
     }
 
     .snake-score-box {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: bold;
       color: var(--text-bright);
       background: var(--bg-color);
@@ -984,6 +979,40 @@
       border: 1px solid var(--border-color);
       flex: 1;
       text-align: center;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .snake-score-box.clickable-record {
+      cursor: pointer;
+      border-color: var(--accent-orange);
+      transition: transform 0.15s, background-color 0.15s;
+    }
+
+    .snake-score-box.clickable-record:hover {
+      transform: translateY(-1px);
+      background-color: var(--border-color);
+    }
+
+    .snake-klon-avatar-vignette {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: var(--card-bg);
+      border: 1.5px solid var(--accent-green-bright);
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      line-height: 1;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
     canvas#snake-canvas {
@@ -991,7 +1020,9 @@
       border: 2px solid var(--border-color);
       border-radius: 8px;
       display: block;
-      margin: 0 auto;
+      margin: 2px auto 0 auto;
+      max-width: 100%;
+      height: auto;
     }
 
     .snake-dpad {
@@ -999,16 +1030,16 @@
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 6px;
-      width: 170px;
-      height: 170px;
-      margin: 12px auto 0 auto;
+      width: 180px;
+      height: 180px;
+      margin: 8px auto 0 auto;
     }
 
     .dpad-btn {
       background: var(--bg-color);
       border: 1px solid var(--border-color);
       color: var(--text-bright);
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
@@ -1019,6 +1050,29 @@
     }
 
     .dpad-btn:active { background: var(--border-color); }
+
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .leaderboard-item {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .leaderboard-rank {
+      font-weight: bold;
+      width: 20px;
+      color: var(--accent-orange);
+    }
   </style>
 </head>
 <body>
@@ -1193,48 +1247,30 @@
       <div class="card">
         <div class="card-title" id="lbl-eco-brokers-title">📈 Banques & Courtiers</div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <a href="https://dub.sh/klon-traderepublic" target="_blank" rel="noopener noreferrer" class="link-btn">
-            Trade Republic
-          </a>
-          <a href="https://dub.sh/klon-ibkr" target="_blank" rel="noopener noreferrer" class="link-btn">
-            Interactive Brokers (IBKR)
-          </a>
-          <a href="https://dub.sh/klon-boursobank" target="_blank" rel="noopener noreferrer" class="link-btn">
-            BoursoBank
-          </a>
-          <button class="link-btn" id="fortuneo-btn" onclick="copyFortuneoCode()">
-            Fortuneo (Code Parrain : 12874482)
-          </button>
+          <a href="https://dub.sh/klon-traderepublic" target="_blank" rel="noopener noreferrer" class="link-btn">Trade Republic</a>
+          <a href="https://dub.sh/klon-ibkr" target="_blank" rel="noopener noreferrer" class="link-btn">Interactive Brokers (IBKR)</a>
+          <a href="https://dub.sh/klon-boursobank" target="_blank" rel="noopener noreferrer" class="link-btn">BoursoBank</a>
+          <button class="link-btn" id="fortuneo-btn" onclick="copyFortuneoCode()">Fortuneo (Code Parrain : 12874482)</button>
         </div>
       </div>
 
       <div class="card">
         <div class="card-title" id="lbl-eco-crypto-title">🪙 Crypto & Rendement Alternatif</div>
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <a href="https://dub.sh/klon-coinbase" target="_blank" rel="noopener noreferrer" class="link-btn">
-            Coinbase
-          </a>
-          <a href="https://crypto.com/app/wu2sfywjnt" target="_blank" rel="noopener noreferrer" class="link-btn">
-            Crypto.com
-          </a>
-          <a href="https://dub.sh/klon-mintos" target="_blank" rel="noopener noreferrer" class="link-btn">
-            Mintos
-          </a>
+          <a href="https://dub.sh/klon-coinbase" target="_blank" rel="noopener noreferrer" class="link-btn">Coinbase</a>
+          <a href="https://crypto.com/app/wu2sfywjnt" target="_blank" rel="noopener noreferrer" class="link-btn">Crypto.com</a>
+          <a href="https://dub.sh/klon-mintos" target="_blank" rel="noopener noreferrer" class="link-btn">Mintos</a>
         </div>
       </div>
 
       <div class="card">
         <div class="card-title" id="lbl-eco-portfolio-title">Portefeuille & Performances</div>
-        <a href="https://dub.sh/klon-wikifolio" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-wikifolio">
-          Suivre le Wikifolio Alpha Picker
-        </a>
+        <a href="https://dub.sh/klon-wikifolio" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-wikifolio">Suivre le Wikifolio Alpha Picker</a>
       </div>
 
       <div class="card">
         <div class="card-title" id="lbl-eco-analysis-title">Analyses & Thèses</div>
-        <a href="https://dub.sh/klon-substack" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-substack">
-          Suivre le Substack Alpha Picker
-        </a>
+        <a href="https://dub.sh/klon-substack" target="_blank" rel="noopener noreferrer" class="link-btn" id="lbl-eco-substack">Suivre le Substack Alpha Picker</a>
       </div>
 
       <div class="card">
@@ -1242,9 +1278,7 @@
         <p style="font-size: 0.9rem; line-height: 1.4;" id="lbl-eco-support-desc">
           Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.
         </p>
-        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn link-btn-paypal" id="lbl-eco-paypal">
-          Faire un don via PayPal
-        </a>
+        <a href="https://www.paypal.me/AlphaPicker" target="_blank" rel="noopener noreferrer" class="link-btn link-btn-paypal" id="lbl-eco-paypal">Faire un don via PayPal</a>
       </div>
     </div>
 
@@ -1364,26 +1398,29 @@
     </div>
   </div>
 
-  <!-- MODAL INTÉGRÉE DU JEU SNAKE 2 -->
+  <!-- MODAL INTÉGRÉE DU JEU SNAKE 2 (AVEC AVATAR KLON) -->
   <div id="snake-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 380px;">
-      <div class="card-title" style="justify-content: center;">🐍 Snake 2</div>
-      <p style="font-size: 0.85rem; opacity: 0.8; text-align: center; margin-bottom: 8px;" id="snake-player-subtitle">Récolte un maximum de dividendes !</p>
+    <div class="modal-card" style="max-width: 360px; padding: 12px;">
+      
+      <div class="snake-header-title">🐍 Klon Snake</div>
+      <div class="snake-header-subtitle" id="snake-player-subtitle">Klon en jeu : Joueur</div>
       
       <div class="snake-scores-row">
+        <!-- Boîte du score avec la photo du Klon au-dessus -->
         <div class="snake-score-box">
-          Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙
+          <div id="snake-klon-vignette-header" class="snake-klon-avatar-vignette">👑</div>
+          <div>Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
         </div>
-        <div class="snake-score-box">
-          Record : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong>
+
+        <div class="snake-score-box clickable-record" onclick="openSnakeLeaderboard()" title="Voir le Top 10 des records">
+          <div style="font-size: 1.2rem; line-height: 1;">🏆</div>
+          <div>Record : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong></div>
         </div>
       </div>
 
-      <div id="highscore-details" style="font-size: 0.72rem; opacity: 0.8; text-align: center; margin-bottom: 8px; min-height: 16px;"></div>
-
       <canvas id="snake-canvas" width="280" height="280"></canvas>
 
-      <!-- Pad Mobile -->
+      <!-- Pad Mobile Aéré -->
       <div class="snake-dpad">
         <div></div>
         <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
@@ -1396,10 +1433,39 @@
         <div></div>
       </div>
 
-      <div style="display: flex; gap: 8px; margin-top: 12px;">
-        <button class="btn-primary" style="flex:1;" onclick="startSnakeGame()">🔄 Rejouer</button>
-        <button class="btn-secondary" style="flex:1;" onclick="closeSnakeGame()">Retour</button>
+      <div style="display: flex; gap: 8px; margin-top: 6px;">
+        <button class="btn-primary" style="flex:1; padding: 10px;" onclick="startSnakeGame()">🔄 Rejouer</button>
+        <button class="btn-secondary" style="flex:1; padding: 10px;" onclick="closeSnakeGame()">Retour</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL GAME OVER NATIVE SNAKE -->
+  <div id="snake-gameover-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 320px; text-align: center;">
+      <div style="font-size: 3rem; line-height: 1;" id="gameover-icon">💥</div>
+      <div class="card-title" style="justify-content: center; font-size: 1.3rem;" id="gameover-title">Game Over !</div>
+      <div style="font-size: 0.95rem; margin: 6px 0;" id="gameover-msg">Score final : 0 dividendes.</div>
+      
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <button class="btn-primary" onclick="restartFromGameOver()">🔄 Rejouer de suite</button>
+        <button class="btn-secondary" onclick="openSnakeLeaderboardFromGameOver()">🏆 Voir le Classement</button>
+        <button class="btn-secondary" onclick="closeGameOverModal()">Retour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LEADERBOARD SNAKE (TOP 10 AVEC AVATARS) -->
+  <div id="snake-leaderboard-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 360px;">
+      <div class="card-title" style="justify-content: center;">🏆 Top 10 Records Klon Snake 2</div>
+      <p style="font-size: 0.8rem; opacity: 0.8; text-align: center; margin-bottom: 4px;">Meilleures récoltes de dividendes enregistrées</p>
+
+      <div class="modal-body-scroll" style="max-height: 260px;">
+        <div class="leaderboard-list" id="snake-leaderboard-container"></div>
+      </div>
+
+      <button class="btn-secondary" onclick="closeSnakeLeaderboard()" style="margin-top: 6px;">Fermer</button>
     </div>
   </div>
 
@@ -1417,8 +1483,8 @@
         badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont covered de manière totalement passive.", anim: "cash" },
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !", anim: "gold" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !", anim: "confetti" },
-        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
-        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de hand.", anim: "fireworks" },
+        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges covered ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
+        badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main.", anim: "fireworks" },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !", anim: "diamonds" },
         badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont covered. Le socle vital est entièrement vaincu !", anim: "fireworks" },
         badge_10_m: { title: "Rente de 10 € / mois !", desc: "Tes premiers euros passifs tombent chaque mois. Chaque petit pas compte !", anim: "confetti" },
@@ -1435,7 +1501,7 @@
         badge_super_fer: { title: "Super Klon Niveau Fer !", desc: "Super Klon Fer débloqué ! Tu as doublé la puissance de ta rente au-delà de ton socle vital.", anim: "fireworks" },
         badge_super_bronze: { title: "Super Klon Niveau Bronze !", desc: "Super Klon Bronze complété ! Ta rente génère 4x le montant de tes dépenses de base.", anim: "fireworks" },
         badge_super_argent: { title: "Super Klon Niveau Argent !", desc: "Super Klon Argent atteint ! Ta capacité financière s'élève à 8x tes charges de vie.", anim: "fireworks" },
-        badge_super_or: { title: "Super Klon Niveau Or !", desc: "Super Klon Or débloqué ! 16x tes charges couvertes par ta rente, une performance extraordinaire !", anim: "diamonds" },
+        badge_super_or: { title: "Super Klon Niveau Or !", desc: "Super Klon Or débloqué ! 16x tes charges covered par ta rente, une performance extraordinaire !", anim: "diamonds" },
         badge_super_diamant: { title: "Super Klon Niveau Diamant !", desc: "Niveau Diamant ultime atteint (32x tes charges) ! Indépendance financière absolue et définitive !", anim: "diamonds" }
       },
       en: {
@@ -1571,7 +1637,7 @@
         pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
         pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
         clonesModalTitle: "Klons d'Autonomie",
-        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
+        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officially neutralisée par ta rente passive !",
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
         superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !"
@@ -1713,9 +1779,7 @@
     let selectedKlonForGame = null;
     let headImageObj = null;
 
-    function getT() {
-      return I18N[state.lang] || I18N.fr;
-    }
+    function getT() { return I18N[state.lang] || I18N.fr; }
 
     function formatNumber(num) {
       const locale = state.lang === 'en' ? 'en-US' : 'fr-FR';
@@ -2371,7 +2435,7 @@
 
     // --- COFFRE À JEUX ARCADE ---
     const ARCADE_GAMES_LIST = [
-      { id: 'snake2', gameType: 'snake', name: 'Klon Snake 2', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
+      { id: 'snake2', gameType: 'snake', name: 'Klon Snake', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
       { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 3, desc: '' },
       { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 5, desc: '' },
       { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 10, desc: '' }
@@ -2400,8 +2464,9 @@
         let isUnlocked = completedCount >= game.reqKlons;
 
         if (isUnlocked) {
-          const record = JSON.parse(localStorage.getItem(`klon_highscore_${game.id}`)) || { score: 0, klonName: '-', dateStr: '-' };
-          const hsText = record.score > 0 ? `🏆 Record : ${record.score} par ${record.klonName} (${record.dateStr})` : 'Pas encore de record';
+          const leaderboards = getSnakeLeaderboard('snake2');
+          const top1 = leaderboards.length > 0 ? leaderboards[0] : { score: 0, klonName: '-', dateStr: '-' };
+          const hsText = top1.score > 0 ? `🏆 Record : ${top1.score} par ${top1.klonName} (${top1.dateStr})` : 'Pas encore de record';
 
           container.innerHTML += `
             <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.id}')">
@@ -2440,13 +2505,28 @@
         const klonName = selectedKlonForGame ? selectedKlonForGame.name : 'Joueur';
         document.getElementById('snake-player-subtitle').innerText = `Klon en jeu : ${klonName}`;
 
+        // Mettre à jour la vignette au-dessus du score
+        const headerVignette = document.getElementById('snake-klon-vignette-header');
+        if (selectedKlonForGame && selectedKlonForGame.avatar) {
+          if (selectedKlonForGame.avatar.type === 'image') {
+            headerVignette.style.backgroundImage = `url('${selectedKlonForGame.avatar.value}')`;
+            headerVignette.innerText = '';
+          } else {
+            headerVignette.style.backgroundImage = 'none';
+            headerVignette.innerText = selectedKlonForGame.avatar.value;
+          }
+        } else {
+          headerVignette.style.backgroundImage = 'none';
+          headerVignette.innerText = '👑';
+        }
+
         updateSnakeHighScoreDisplay();
         document.getElementById('snake-modal').classList.add('active');
         startSnakeGame();
       }
     }
 
-    // --- MOTEUR NATIVE SNAKE 2 INTÉGRÉ ---
+    // --- MOTEUR NATIVE SNAKE 2 INTÉGRÉ & RELEADERS AVEC AVATARS ---
     let snakeGameTimeout = null;
     let snake = [];
     let snakeFood = { x: 0, y: 0, icon: '🪙' };
@@ -2458,27 +2538,84 @@
     const GRID_SIZE = 14;
     const TILE_SIZE = 20;
 
-    function getHighScoreData(gameId) {
-      return JSON.parse(localStorage.getItem(`klon_highscore_${gameId}`)) || { score: 0, klonName: '-', dateStr: '-' };
+    function getSnakeLeaderboard(gameId) {
+      const data = localStorage.getItem(`klon_leaderboard_${gameId}`);
+      if (data) {
+        return JSON.parse(data);
+      }
+      return [];
     }
 
-    function saveHighScoreData(gameId, score, klonName) {
+    function saveSnakeScoreToLeaderboard(gameId, score, klonName, avatarObj) {
       const nowStr = new Date().toLocaleDateString(state.lang === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
-      const record = { score, klonName, dateStr: nowStr };
-      localStorage.setItem(`klon_highscore_${gameId}`, JSON.stringify(record));
-      return record;
+      
+      const record = { 
+        score, 
+        klonName, 
+        avatarType: avatarObj ? avatarObj.type : 'emoji',
+        avatarValue: avatarObj ? avatarObj.value : '👑',
+        dateStr: nowStr, 
+        timestamp: Date.now() 
+      };
+      
+      let leaderboard = getSnakeLeaderboard(gameId);
+      leaderboard.push(record);
+      leaderboard.sort((a, b) => b.score - a.score);
+      leaderboard = leaderboard.slice(0, 10); // Conserver uniquement le Top 10
+
+      localStorage.setItem(`klon_leaderboard_${gameId}`, JSON.stringify(leaderboard));
+      return leaderboard;
     }
 
     function updateSnakeHighScoreDisplay() {
-      const hs = getHighScoreData('snake2');
-      document.getElementById('snake-highscore').innerText = hs.score;
+      const leaderboard = getSnakeLeaderboard('snake2');
+      const topScore = leaderboard.length > 0 ? leaderboard[0].score : 0;
+      document.getElementById('snake-highscore').innerText = topScore;
+    }
 
-      const detailsEl = document.getElementById('highscore-details');
-      if (hs.score > 0) {
-        detailsEl.innerText = `👑 Record : ${hs.score} 🪙 par ${hs.klonName} le ${hs.dateStr}`;
+    function openSnakeLeaderboard() {
+      const container = document.getElementById('snake-leaderboard-container');
+      container.innerHTML = '';
+
+      const leaderboard = getSnakeLeaderboard('snake2');
+
+      if (leaderboard.length === 0) {
+        container.innerHTML = `<div style="text-align: center; font-size: 0.85rem; opacity: 0.7; padding: 16px;">Aucun record enregistré pour le moment.</div>`;
       } else {
-        detailsEl.innerText = 'Aucun record établi pour le moment.';
+        leaderboard.forEach((rec, idx) => {
+          let rankMedal = `${idx + 1}.`;
+          if (idx === 0) rankMedal = '🥇';
+          if (idx === 1) rankMedal = '🥈';
+          if (idx === 2) rankMedal = '🥉';
+
+          let avatarHTML = '';
+          if (rec.avatarType === 'image') {
+            avatarHTML = `<div class="snake-klon-avatar-vignette" style="background-image: url('${rec.avatarValue}'); width: 28px; height: 28px;"></div>`;
+          } else {
+            avatarHTML = `<div class="snake-klon-avatar-vignette" style="width: 28px; height: 28px; font-size: 1rem;">${rec.avatarValue || '👑'}</div>`;
+          }
+
+          container.innerHTML += `
+            <div class="leaderboard-item">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="leaderboard-rank">${rankMedal}</span>
+                ${avatarHTML}
+                <div>
+                  <strong style="color: var(--text-bright);">${rec.klonName}</strong>
+                  <div style="font-size: 0.72rem; opacity: 0.7;">${rec.dateStr}</div>
+                </div>
+              </div>
+              <strong style="color: var(--accent-green-bright); font-size: 1rem;">${rec.score} 🪙</strong>
+            </div>
+          `;
+        });
       }
+
+      document.getElementById('snake-leaderboard-modal').classList.add('active');
+    }
+
+    function closeSnakeLeaderboard() {
+      document.getElementById('snake-leaderboard-modal').classList.remove('active');
     }
 
     function closeSnakeGame() {
@@ -2574,24 +2711,46 @@
     }
 
     function handleSnakeGameOver() {
-      const currentHs = getHighScoreData('snake2');
+      const leaderboard = getSnakeLeaderboard('snake2');
+      const previousTop = leaderboard.length > 0 ? leaderboard[0].score : 0;
       const activeKlonName = selectedKlonForGame ? selectedKlonForGame.name : 'Klon';
+      const activeAvatar = selectedKlonForGame ? selectedKlonForGame.avatar : null;
 
-      if (snakeScore > currentHs.score) {
-        saveHighScoreData('snake2', snakeScore, activeKlonName);
-        alert(`🎉 NOUVEAU RECORD ! ${snakeScore} dividendes accumulés par ${activeKlonName} !`);
-      } else {
-        alert(`💥 Game Over ! Score final : ${snakeScore} dividendes.`);
-      }
-
+      saveSnakeScoreToLeaderboard('snake2', snakeScore, activeKlonName, activeAvatar);
       updateSnakeHighScoreDisplay();
+
+      const isNewRecord = snakeScore > previousTop && snakeScore > 0;
+
+      document.getElementById('gameover-icon').innerText = isNewRecord ? '🎉' : '💥';
+      document.getElementById('gameover-title').innerText = isNewRecord ? 'NOUVEAU RECORD !' : 'Game Over !';
+      document.getElementById('gameover-msg').innerText = isNewRecord 
+        ? `Félicitations ! ${snakeScore} dividendes accumulés par ${activeKlonName} !` 
+        : `Score final : ${snakeScore} dividendes accumulés par ${activeKlonName}.`;
+
+      document.getElementById('snake-gameover-modal').classList.add('active');
+    }
+
+    function closeGameOverModal() {
+      document.getElementById('snake-gameover-modal').classList.remove('active');
+    }
+
+    function restartFromGameOver() {
+      closeGameOverModal();
       startSnakeGame();
     }
 
+    function openSnakeLeaderboardFromGameOver() {
+      closeGameOverModal();
+      openSnakeLeaderboard();
+    }
+
+    /* Rendu optimisé : Formes fluides + Adaptation au Mode Daltonien */
     function drawSnake() {
       const canvas = document.getElementById('snake-canvas');
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const isColorblind = state.theme === 'colorblind';
 
       // Grille
       ctx.strokeStyle = '#161b22';
@@ -2611,22 +2770,33 @@
         snakeFood.y * TILE_SIZE + TILE_SIZE / 2 + 1
       );
 
-      // Snake Body & Head
-      snake.forEach((part, idx) => {
-        const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
-        const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
+      // Couleurs adaptées au thème
+      const bodyColor = isColorblind ? '#ffcc00' : '#7ee787'; // Jaune vif pour daltoniens, Vert vif en mode normal
+      const bodyBorder = isColorblind ? '#000000' : '#1d4ed8';
 
-        if (idx === 0) {
+      // Rendu du Snake (du corps vers la tête)
+      for (let i = snake.length - 1; i >= 0; i--) {
+        const part = snake[i];
+        const x = part.x * TILE_SIZE + 1;
+        const y = part.y * TILE_SIZE + 1;
+        const size = TILE_SIZE - 2;
+        const radius = 5;
+
+        if (i === 0) {
+          // Tête avec Avatar ou Émoji
+          const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
+          const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
+
           if (headImageObj && headImageObj.complete) {
             ctx.save();
             ctx.beginPath();
             ctx.arc(cx, cy, (TILE_SIZE / 2) - 1, 0, Math.PI * 2);
             ctx.clip();
-            ctx.drawImage(headImageObj, part.x * TILE_SIZE + 1, part.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+            ctx.drawImage(headImageObj, x, y, size, size);
             ctx.restore();
 
-            ctx.strokeStyle = '#7ee787';
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = bodyColor;
+            ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(cx, cy, (TILE_SIZE / 2) - 1, 0, Math.PI * 2);
             ctx.stroke();
@@ -2637,16 +2807,17 @@
             ctx.fillText('👑', cx, cy);
           }
         } else {
-          ctx.fillStyle = idx % 2 === 0 ? '#7ee787' : '#58a6ff';
-          ctx.strokeStyle = '#0d1117';
-          ctx.lineWidth = 1.5;
+          // Corps : Rectangles arrondis continus (Segment fluide)
+          ctx.fillStyle = bodyColor;
+          ctx.strokeStyle = bodyBorder;
+          ctx.lineWidth = 1;
 
           ctx.beginPath();
-          ctx.arc(cx, cy, (TILE_SIZE / 2) - 2, 0, Math.PI * 2);
+          ctx.roundRect(x, y, size, size, radius);
           ctx.fill();
           ctx.stroke();
         }
-      });
+      }
     }
 
     // --- MOTEUR ENRICHI D'EXPLOSIONS & CÉLÉBRATIONS ---
@@ -2783,9 +2954,7 @@
       animate();
     }
 
-    function replayBadgeAnimation() {
-      triggerCelebration(currentBadgeAnimType);
-    }
+    function replayBadgeAnimation() { triggerCelebration(currentBadgeAnimType); }
 
     function openBadgeModal(badgeId, iconStr, isActive = true) {
       const t = getT();
@@ -3083,7 +3252,6 @@
       const chartWidth = 400 - paddingLeft - paddingRight;
       const chartHeight = 110 - paddingTop - paddingBottom;
 
-      // 1. GRAPHIQUE 1 : COURBE D'AUTONOMIE (%)
       const actualMaxPct = Math.max(...records.map(r => r.percentage));
       const minPct = 0;
       
@@ -3144,7 +3312,6 @@
         svgPct.appendChild(circle);
       });
 
-      // 2. GRAPHIQUE 2 : COURBE D'EFFORT (MULTIPLE)
       const multValues = records.map(r => r.multiplier !== undefined ? r.multiplier : calculateMultiplier(r.capital, r.expenses));
       const actualMaxMult = Math.max(...multValues);
       const minMult = 1.0;
@@ -3425,7 +3592,6 @@
 
           const barColor = getBarColor(c.percentage);
 
-          // Intégration du bouton Arcade 🕹️ sur les Klons financés à 100 %
           let arcadeBtnHTML = isUnlocked ? `
             <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault({ id: ${c.id}, name: '${cloneName}', avatar: ${JSON.stringify(avatar).replace(/"/g, '&quot;')} })">🕹️</button>
           ` : '';
