@@ -620,6 +620,7 @@
       gap: 10px;
       overflow-y: auto;
       padding-right: 2px;
+      overscroll-behavior: contain;
     }
 
     .mbti-box-modal {
@@ -1891,6 +1892,7 @@
           <button class="btn-secondary" onclick="closeCustomDialog()">${t.btnCancel}</button>
         `;
         document.getElementById('custom-dialog-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
         setTimeout(() => { textInput.focus(); textInput.select(); }, 100);
       } else if (isConfirm) {
         inputContainer.style.display = 'none';
@@ -1899,18 +1901,21 @@
           <button class="btn-secondary" onclick="closeCustomDialog()">${t.btnCancel}</button>
         `;
         document.getElementById('custom-dialog-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
       } else {
         inputContainer.style.display = 'none';
         btnBox.innerHTML = `
           <button class="btn-primary" onclick="closeCustomDialog()">OK</button>
         `;
         document.getElementById('custom-dialog-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
       }
     }
 
     function closeCustomDialog() {
       document.getElementById('custom-dialog-modal').classList.remove('active');
       document.getElementById('dialog-input-container').style.display = 'none';
+      document.body.style.overflow = '';
       dialogConfirmCallback = null;
     }
 
@@ -2358,10 +2363,12 @@
       renderMbtiModalTraits();
       updateMBTIModalDisplay();
       document.getElementById('mbti-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeMbtiModal() {
       document.getElementById('mbti-modal').classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     function setMbtiTraitValue(traitId, val) {
@@ -2738,6 +2745,7 @@
           document.getElementById('modal-tier-grid').innerHTML = '';
           document.getElementById('crop-section').style.display = 'flex';
           document.getElementById('settings-modal').classList.add('active');
+          document.body.style.overflow = 'hidden';
           initCropCanvas();
         };
         currentImg.src = e.target.result;
@@ -2777,6 +2785,7 @@
 
       document.getElementById('crop-section').style.display = 'none';
       document.getElementById('settings-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function deleteGlobalAvatar(step) {
@@ -2787,6 +2796,7 @@
 
     function closeModal() {
       document.getElementById('settings-modal').classList.remove('active');
+      document.body.style.overflow = '';
       renderClones();
     }
 
@@ -2923,6 +2933,7 @@
 
       renderArcadeVaultModal();
       document.getElementById('arcade-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function renderArcadeVaultModal() {
@@ -2975,6 +2986,7 @@
 
     function closeArcadeModal() {
       document.getElementById('arcade-modal').classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     function launchArcadeGame(gameId) {
@@ -3011,6 +3023,7 @@
         updateSnakeHighScoreDisplay();
         applyKlonBoyControlsLayout();
         document.getElementById('snake-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
         startSnakeGame();
       }
     }
@@ -3082,10 +3095,14 @@
       }
 
       document.getElementById('snake-leaderboard-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeSnakeLeaderboard() {
       document.getElementById('snake-leaderboard-modal').classList.remove('active');
+      if (!document.getElementById('snake-modal').classList.contains('active')) {
+        document.body.style.overflow = '';
+      }
     }
 
     function closeSnakeGame() {
@@ -3093,6 +3110,7 @@
       isSnakePaused = false;
       document.getElementById('klonboy-pause-menu').classList.remove('active');
       document.getElementById('snake-modal').classList.remove('active');
+      document.body.style.overflow = '';
       if (isControlsCustomizeMode) toggleControlsCustomizeMode();
       if (selectedKlonForGame) openArcadeVault(selectedKlonForGame.id);
     }
@@ -3232,10 +3250,14 @@
       }
 
       document.getElementById('snake-gameover-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeGameOverModal() {
       document.getElementById('snake-gameover-modal').classList.remove('active');
+      if (!document.getElementById('snake-modal').classList.contains('active')) {
+        document.body.style.overflow = '';
+      }
     }
 
     function restartFromGameOver() {
@@ -3604,6 +3626,7 @@
         document.getElementById('badge-modal-desc').innerText = t.lostBadgeDesc;
         miniBtn.style.display = 'none';
         document.getElementById('badge-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
         return;
       }
 
@@ -3614,6 +3637,7 @@
         document.getElementById('badge-modal-desc').innerText = details.desc;
         miniBtn.style.display = 'flex';
         document.getElementById('badge-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
       }
     }
 
@@ -3624,6 +3648,7 @@
       document.getElementById('badge-modal-desc').innerHTML = t.multModalDesc;
       document.getElementById('btn-mini-celebrate').style.display = 'none';
       document.getElementById('badge-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function openPercentageModal() {
@@ -3668,6 +3693,7 @@
       document.getElementById('badge-modal-desc').innerHTML = `${breakdownHTML}<div style="margin-top: 8px; text-align: left;">${textDesc}</div>`;
       document.getElementById('btn-mini-celebrate').style.display = 'none';
       document.getElementById('badge-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function openClonesCounterModal(completedCount, totalCount) {
@@ -3678,6 +3704,7 @@
       document.getElementById('badge-modal-desc').innerHTML = desc;
       document.getElementById('btn-mini-celebrate').style.display = 'none';
       document.getElementById('badge-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function openSuperCounterModal(superCount) {
@@ -3687,10 +3714,12 @@
       document.getElementById('badge-modal-desc').innerHTML = t.superModalDesc;
       document.getElementById('btn-mini-celebrate').style.display = 'none';
       document.getElementById('badge-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeBadgeModal() {
       document.getElementById('badge-modal').classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     function checkBadges(completedClonesCount, coverageRatio, allBaseCompleted, unlockedSuperIds, monthlyCapacity, totalExpenses) {
@@ -3843,10 +3872,12 @@
     function openHistoryModal() {
       renderHistoryList();
       document.getElementById('history-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeHistoryModal() {
       document.getElementById('history-modal').classList.remove('active');
+      document.body.style.overflow = '';
     }
 
     function renderHistoryChart() {
@@ -4310,6 +4341,7 @@
       if (!container) return;
       const cards = container.querySelectorAll('.clone-card');
 
+      // --- 1. SOURIS (DESKTOP) ---
       cards.forEach(card => {
         card.addEventListener('dragstart', (e) => {
           card.classList.add('dragging');
@@ -4320,26 +4352,6 @@
           card.classList.remove('dragging');
           saveNewOrder();
         });
-
-        let touchTimer;
-        card.addEventListener('touchstart', (e) => {
-          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) return;
-          touchTimer = setTimeout(() => {
-            card.classList.add('dragging');
-          }, 300);
-        }, { passive: true });
-
-        card.addEventListener('touchmove', () => {
-          clearTimeout(touchTimer);
-        }, { passive: true });
-
-        card.addEventListener('touchend', () => {
-          clearTimeout(touchTimer);
-          if (card.classList.contains('dragging')) {
-            card.classList.remove('dragging');
-            saveNewOrder();
-          }
-        });
       });
 
       container.addEventListener('dragover', (e) => {
@@ -4347,14 +4359,59 @@
         const draggingCard = container.querySelector('.dragging');
         if (!draggingCard) return;
 
-        const siblings = [...container.querySelectorAll('.clone-card:not(.dragging)')];
-        const nextSibling = siblings.find(sibling => {
-          const box = sibling.getBoundingClientRect();
-          return e.clientY < box.top + box.height / 2;
-        });
-
-        container.insertBefore(draggingCard, nextSibling);
+        const nextSibling = getDragAfterElement(container, e.clientY);
+        if (nextSibling == null) {
+          container.appendChild(draggingCard);
+        } else {
+          container.insertBefore(draggingCard, nextSibling);
+        }
       });
+
+      // --- 2. TACTILE FLUIDE (MOBILE) ---
+      let touchCard = null;
+
+      cards.forEach(card => {
+        card.addEventListener('touchstart', (e) => {
+          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) {
+            return;
+          }
+          touchCard = card;
+          touchCard.classList.add('dragging');
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+          if (!touchCard) return;
+          const touchY = e.touches[0].clientY;
+          const nextSibling = getDragAfterElement(container, touchY);
+          
+          if (nextSibling == null) {
+            container.appendChild(touchCard);
+          } else {
+            container.insertBefore(touchCard, nextSibling);
+          }
+        }, { passive: true });
+
+        card.addEventListener('touchend', () => {
+          if (!touchCard) return;
+          touchCard.classList.remove('dragging');
+          touchCard = null;
+          saveNewOrder();
+        });
+      });
+    }
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('.clone-card:not(.dragging)')];
+
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
     function saveNewOrder() {
