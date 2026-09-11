@@ -420,7 +420,7 @@
     .clone-card {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       border-left: 4px solid var(--accent-blue);
       transition: border-color 0.3s, transform 0.15s, opacity 0.15s;
       cursor: grab;
@@ -448,21 +448,31 @@
 
     .clone-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
-      padding-right: 36px;
     }
 
-    .clone-arcade-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
+    .clone-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .clone-action-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .clone-action-btn {
       background: var(--bg-color);
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      width: 32px;
-      height: 32px;
-      font-size: 1.1rem;
+      width: 28px;
+      height: 28px;
+      font-size: 0.85rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -470,9 +480,26 @@
       transition: transform 0.2s, border-color 0.2s;
     }
 
-    .clone-arcade-btn:hover {
-      transform: scale(1.15);
-      border-color: var(--accent-green-bright);
+    .clone-action-btn:hover {
+      transform: scale(1.12);
+      border-color: var(--accent-blue);
+    }
+
+    .mbti-card-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 4px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
     }
 
     .clone-avatar {
@@ -568,7 +595,6 @@
 
     .modal-overlay.active { display: flex; }
 
-    /* Z-INDEX DÉDIÉ AUX DIALOGUES ET NOTIFICATIONS POUR SURPASSER TOUT AUTRE MODAL EN ARRIÈRE-PLAN */
     .modal-overlay.high-priority-dialog {
       z-index: 200 !important;
     }
@@ -594,6 +620,90 @@
       gap: 10px;
       overflow-y: auto;
       padding-right: 2px;
+    }
+
+    /* STYLES DE LA MODALE MBTI */
+    .mbti-box-modal {
+      background-color: var(--bg-color);
+      border: 1px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mbti-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mbti-modal-code {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      letter-spacing: 1px;
+    }
+
+    .mbti-modal-title {
+      font-size: 0.85rem;
+      font-weight: bold;
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent-blue);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .mbti-modal-desc {
+      font-size: 0.82rem;
+      color: var(--text-main);
+      line-height: 1.35;
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .traits-list-modal {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .trait-item-modal {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .trait-header-modal {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+    }
+
+    .bar-container-modal {
+      display: flex;
+      gap: 4px;
+      height: 12px;
+      cursor: pointer;
+    }
+
+    .bar-segment-modal {
+      flex: 1;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      transition: background-color 0.15s, transform 0.1s;
+    }
+
+    .bar-segment-modal.active {
+      background-color: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .bar-segment-modal:hover {
+      transform: scaleY(1.2);
     }
 
     .tier-grid {
@@ -660,11 +770,10 @@
       color: var(--text-bright);
       cursor: pointer;
       transition: color 0.2s;
-      font-weight: normal;
-      font-size: 1.15rem;
+      font-weight: bold;
+      font-size: 1.05rem;
       display: inline-block;
       border-bottom: none;
-      padding-bottom: 0;
     }
 
     .clickable-clone-name:hover { color: var(--accent-blue); }
@@ -808,7 +917,7 @@
 
     .history-item-date {
       color: var(--text-bright);
-      font-weight: normal;
+      font-weight: bold;
     }
 
     .history-item-details {
@@ -953,6 +1062,171 @@
       cursor: not-allowed;
     }
 
+    /* STYLES SPÉCIFIQUES CONSOLE KLON BOY */
+    .klonboy-shell {
+      background-color: #1f232a;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 12px 12px 50px 12px;
+      border: 3px solid #30363d;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      position: relative;
+      user-select: none;
+    }
+
+    .klonboy-screen-bezel {
+      background-color: #0d1117;
+      border: 2px solid #30363d;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .klonboy-power-led {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #da3633;
+      box-shadow: 0 0 6px #da3633;
+    }
+
+    .klonboy-screen-container {
+      position: relative;
+      width: 100%;
+      max-width: 280px;
+      margin-top: 4px;
+    }
+
+    .klonboy-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 8px;
+      padding: 0 4px;
+    }
+
+    .klonboy-brand-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #8b949e;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    .klonboy-controls-area {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
+    }
+
+    .klonboy-dpad-container {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 160px;
+      height: 160px;
+      touch-action: none;
+    }
+
+    .klonboy-dpad-container.custom-draggable,
+    .klonboy-btn-action.custom-draggable {
+      cursor: grab;
+    }
+
+    .klonboy-btn-action {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #da3633;
+      border: 2px solid #a12321;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 0 #801b19;
+      cursor: pointer;
+      touch-action: none;
+      z-index: 5;
+    }
+
+    .klonboy-btn-action:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #801b19;
+    }
+
+    .klonboy-btn-action.hidden-action {
+      display: none !important;
+    }
+
+    #btn-action-b { top: 40px; right: 65px; }
+    #btn-action-a { top: 20px; right: 15px; }
+
+    .klonboy-btn-pill {
+      background: #30363d;
+      border: 1px solid #484f58;
+      width: 42px;
+      height: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .klonboy-btn-pill:active {
+      background: #484f58;
+    }
+
+    .klonboy-pause-menu {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(1, 4, 9, 0.92);
+      border-radius: 8px;
+      z-index: 20;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .klonboy-pause-menu.active {
+      display: flex;
+    }
+
+    .klonboy-pause-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--accent-orange);
+      margin-bottom: 4px;
+    }
+
+    .klonboy-pause-btn {
+      width: 100%;
+      max-width: 200px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+
+    .customize-active-highlight {
+      outline: 2px dashed var(--accent-blue) !important;
+      outline-offset: 4px;
+    }
+
     .snake-header-title {
       font-size: 1.15rem;
       font-weight: bold;
@@ -972,6 +1246,7 @@
       justify-content: space-between;
       gap: 8px;
       margin-top: 2px;
+      width: 100%;
     }
 
     .snake-score-box {
@@ -1035,9 +1310,9 @@
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 6px;
-      width: 180px;
-      height: 180px;
-      margin: 8px auto 0 auto;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto;
     }
 
     .dpad-btn {
@@ -1298,15 +1573,43 @@
     </footer>
   </div>
 
-  <!-- MODAL DIALOGUE SYSTEME (AVEC HIGH-PRIORITY DIALOG Z-INDEX: 200) -->
+  <!-- MODAL DIALOGUE SYSTEME / SAISIE NOM -->
   <div id="custom-dialog-modal" class="modal-overlay high-priority-dialog">
     <div class="modal-card" style="max-width: 380px; text-align: center;">
       <div style="font-size: 2.5rem; line-height: 1;" id="dialog-icon">ℹ️</div>
       <div class="card-title" style="justify-content: center; font-size: 1.2rem;" id="dialog-title">Notification</div>
       <p style="font-size: 0.9rem; line-height: 1.4; color: var(--text-main);" id="dialog-message">Message ici</p>
 
+      <div id="dialog-input-container" style="display: none; width: 100%; margin-top: 8px;">
+        <input type="text" id="dialog-text-input" placeholder="Saisir un nom..." onkeydown="if(event.key==='Enter') executeDialogConfirm()">
+      </div>
+
       <div style="display: flex; gap: 8px; margin-top: 10px; justify-content: center;" id="dialog-buttons">
         <button class="btn-primary" id="dialog-btn-ok" onclick="closeCustomDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PERSONNALITÉ MBTI & STATISTIQUES DU KLON -->
+  <div id="mbti-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 420px;">
+      <div class="card-title" style="justify-content: center;">🧠 Cerveau & Profil MBTI</div>
+      
+      <div class="mbti-box-modal">
+        <div class="mbti-modal-header">
+          <span class="mbti-modal-code" id="mbtiModalCode">INTJ</span>
+          <span class="mbti-modal-title" id="mbtiModalTitle">L'Architecte</span>
+        </div>
+        <div class="mbti-modal-desc" id="mbtiModalDesc">Analyse tout, planifie à froid et agit de manière ultra-méthodique.</div>
+      </div>
+
+      <div class="modal-body-scroll">
+        <div class="traits-list-modal" id="modalTraitsContainer"></div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <button class="btn-primary" style="flex: 1;" onclick="saveKlonMBTITraits()">Enregistrer le cerveau</button>
+        <button class="btn-secondary" onclick="closeMbtiModal()">Fermer</button>
       </div>
     </div>
   </div>
@@ -1413,45 +1716,76 @@
     </div>
   </div>
 
-  <!-- MODAL INTÉGRÉE DU JEU KLON SNAKE -->
+  <!-- MODAL INTÉGRÉE CONSOLE KLON BOY -->
   <div id="snake-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 360px; padding: 12px;">
+    <div class="klonboy-shell">
       
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-        <button onclick="startSnakeGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 34px; height: 34px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
+      <div class="klonboy-screen-bezel">
+        <div class="klonboy-power-led"></div>
         
-        <div style="text-align: center;">
-          <div class="snake-header-title">🐍 KLON Snake</div>
-          <div class="snake-header-subtitle" id="snake-player-subtitle">Klon en jeu : Joueur</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px; padding: 0 4px;">
+          <button onclick="startSnakeGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 30px; height: 30px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
+          
+          <div style="text-align: center;">
+            <div class="snake-header-title" style="font-size: 1rem;">🐍 KLON Snake</div>
+            <div class="snake-header-subtitle" id="snake-player-subtitle" style="font-size: 0.7rem;">Klon : Joueur</div>
+          </div>
+
+          <button onclick="closeSnakeGame()" title="Retour" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">↩️</button>
         </div>
 
-        <button onclick="closeSnakeGame()" title="Retour" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 34px; height: 34px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">↩️</button>
+        <div class="klonboy-screen-container">
+          <div class="snake-scores-row">
+            <div class="snake-score-box">
+              <div id="snake-klon-vignette-header" class="snake-klon-avatar-vignette">👑</div>
+              <div>Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
+            </div>
+
+            <div class="snake-score-box clickable-record" onclick="openSnakeLeaderboard()" title="Voir le Top 10 des records">
+              <div style="font-size: 1.1rem; line-height: 1;">🏆</div>
+              <div>Record : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong></div>
+            </div>
+          </div>
+
+          <canvas id="snake-canvas" width="280" height="280"></canvas>
+
+          <!-- MENU PAUSE SYSTEME -->
+          <div class="klonboy-pause-menu" id="klonboy-pause-menu">
+            <div class="klonboy-pause-title">⏸️ MENU PAUSE</div>
+            <button class="btn-primary klonboy-pause-btn" onclick="toggleKlonBoyPauseMenu()">▶️ Reprendre</button>
+            <button class="btn-secondary klonboy-pause-btn" id="btn-toggle-customize" onclick="toggleControlsCustomizeMode()">🖐️ Déplacer touches</button>
+            <button class="btn-secondary klonboy-pause-btn" onclick="resetControlsLayout()">🔄 Réinitialiser touches</button>
+            <button class="btn-secondary klonboy-pause-btn" onclick="openSnakeLeaderboardFromPause()">🏆 Classement Top 10</button>
+            <button class="btn-reset klonboy-pause-btn" onclick="closeSnakeGame()">❌ Quitter console</button>
+          </div>
+        </div>
+
+        <div class="klonboy-brand-row">
+          <div class="klonboy-btn-pill" title="SELECT (Classement)" onclick="openSnakeLeaderboard()"></div>
+          <div class="klonboy-brand-title">KLON BOY</div>
+          <div class="klonboy-btn-pill" title="START (Pause)" onclick="toggleKlonBoyPauseMenu()"></div>
+        </div>
       </div>
 
-      <div class="snake-scores-row">
-        <div class="snake-score-box">
-          <div id="snake-klon-vignette-header" class="snake-klon-avatar-vignette">👑</div>
-          <div>Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
+      <div class="klonboy-controls-area" id="klonboy-controls-area">
+        
+        <div class="klonboy-dpad-container" id="klonboy-dpad-container">
+          <div class="snake-dpad">
+            <div></div>
+            <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
+            <div></div>
+            <button class="dpad-btn" onclick="setSnakeDir('LEFT')">◄</button>
+            <div></div>
+            <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
+            <div></div>
+            <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
+            <div></div>
+          </div>
         </div>
 
-        <div class="snake-score-box clickable-record" onclick="openSnakeLeaderboard()" title="Voir le Top 10 des records">
-          <div style="font-size: 1.2rem; line-height: 1;">🏆</div>
-          <div>Record : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong></div>
-        </div>
-      </div>
+        <button class="klonboy-btn-action hidden-action" id="btn-action-b" onclick="handleActionButton('B')">B</button>
+        <button class="klonboy-btn-action hidden-action" id="btn-action-a" onclick="handleActionButton('A')">A</button>
 
-      <canvas id="snake-canvas" width="280" height="280"></canvas>
-
-      <div class="snake-dpad">
-        <div></div>
-        <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
-        <div></div>
-        <button class="dpad-btn" onclick="setSnakeDir('LEFT')">◄</button>
-        <div></div>
-        <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
-        <div></div>
-        <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
-        <div></div>
       </div>
 
     </div>
@@ -1489,7 +1823,7 @@
   <input type="file" id="dedicated-avatar-input" accept="image/*" style="display: none;" onchange="handleDedicatedImageSelect(event)">
 
   <script>
-    // ACCÈS SÉCURISÉ AU LOCALSTORAGE (AVEC FALLBACK EN MÉMOIRE)
+    // ACCÈS SÉCURISÉ AU LOCALSTORAGE
     const storageMem = {};
     function safeGet(key, fallback = null) {
       try {
@@ -1528,52 +1862,70 @@
       dedicatedAvatars: safeParse('alpha_dedicated_avatars', {}),
       firstname: safeGet('alpha_firstname', ''),
       customCloneNames: safeParse('alpha_custom_clone_names', {}),
+      cloneTraits: safeParse('alpha_clone_traits', {}),
       sortMode: safeGet('alpha_sort_mode', 'manual'),
       cardsOrder: safeParse('alpha_cards_order', []),
       everUnlockedBadges: safeParse('alpha_ever_unlocked_badges', []),
       historyRecords: safeParse('alpha_history_records', []),
-      gameLeaderboards: safeParse('alpha_game_leaderboards', {})
+      gameLeaderboards: safeParse('alpha_game_leaderboards', {}),
+      klonboyControlsLayout: safeParse('alpha_klonboy_controls_layout', null)
     };
 
     let dialogConfirmCallback = null;
 
-    function showCustomDialog(icon, title, message, isConfirm = false, onConfirm = null) {
+    function showCustomDialog(icon, title, message, isConfirm = false, onConfirm = null, isInput = false, defaultValue = "") {
       document.getElementById('dialog-icon').innerText = icon || 'ℹ️';
       document.getElementById('dialog-title').innerText = title || 'Information';
       document.getElementById('dialog-message').innerText = message || '';
 
+      const inputContainer = document.getElementById('dialog-input-container');
+      const textInput = document.getElementById('dialog-text-input');
       const btnBox = document.getElementById('dialog-buttons');
+
       dialogConfirmCallback = onConfirm;
 
-      if (isConfirm) {
+      if (isInput) {
+        inputContainer.style.display = 'block';
+        textInput.value = defaultValue;
+        btnBox.innerHTML = `
+          <button class="btn-primary" onclick="executeDialogConfirm()">Valider</button>
+          <button class="btn-secondary" onclick="closeCustomDialog()">Annuler</button>
+        `;
+        document.getElementById('custom-dialog-modal').classList.add('active');
+        setTimeout(() => { textInput.focus(); textInput.select(); }, 100);
+      } else if (isConfirm) {
+        inputContainer.style.display = 'none';
         btnBox.innerHTML = `
           <button class="btn-reset" onclick="executeDialogConfirm()">Confirmer</button>
           <button class="btn-secondary" onclick="closeCustomDialog()">Annuler</button>
         `;
+        document.getElementById('custom-dialog-modal').classList.add('active');
       } else {
+        inputContainer.style.display = 'none';
         btnBox.innerHTML = `
           <button class="btn-primary" onclick="closeCustomDialog()">OK</button>
         `;
+        document.getElementById('custom-dialog-modal').classList.add('active');
       }
-
-      document.getElementById('custom-dialog-modal').classList.add('active');
     }
 
     function closeCustomDialog() {
       document.getElementById('custom-dialog-modal').classList.remove('active');
+      document.getElementById('dialog-input-container').style.display = 'none';
       dialogConfirmCallback = null;
     }
 
     function executeDialogConfirm() {
       if (typeof dialogConfirmCallback === 'function') {
-        dialogConfirmCallback();
+        const textInput = document.getElementById('dialog-text-input');
+        const isInputVisible = document.getElementById('dialog-input-container').style.display !== 'none';
+        dialogConfirmCallback(isInputVisible ? textInput.value : null);
       }
       closeCustomDialog();
     }
 
     let currentBadgeAnimType = 'confetti';
 
-    // DÉFINITIONS COMPLETES ET DÉTAILLÉES DES BADGES
     const BADGE_DETAILS = {
       fr: {
         badge_first: { title: "Premier Klon Débloqué !", desc: "Félicitations ! Tu as entièrement financé ton premier Klon. La machine de ton indépendance financière est lancée !", anim: "crowns" },
@@ -1635,7 +1987,6 @@
       }
     };
 
-    // DICTIONNAIRE I18N
     const I18N = {
       fr: {
         appSubtitle: "Simulateur de Liberté Financière",
@@ -1862,15 +2213,44 @@
       { id: "super_diamant", nameFR: "Diamant", nameEN: "Diamond", mult: 32, icon: "💎" }
     ];
 
+    const MBTI_TRAITS_CONFIG = [
+      { id: 'intelligence', label: 'Intelligence', icon: '🧠', default: 8 },
+      { id: 'nervosite', label: 'Nervosité / Réflexe', icon: '⚡', default: 3 },
+      { id: 'force', label: 'Force / Impact', icon: '💥', default: 6 },
+      { id: 'sociabilite', label: 'Sociabilité', icon: '💬', default: 2 },
+      { id: 'chance', label: 'Chance / Spontanéité', icon: '🎲', default: 4 }
+    ];
+
+    const MBTI_PROFILES = {
+      "INTJ": { title: "L'Architecte", desc: "Pensée stratégique pure. Analyse tout, planifie à froid et agit de manière ultra-méthodique." },
+      "INTP": { title: "Le Penseur", desc: "Cerveau en ébullition constante. Cherche la logique derrière chaque détail et adore résoudre des énigmes." },
+      "ENTJ": { title: "Le Commandant", desc: "Leader-né ultra efficace. Ne perd jamais de temps et optimise chaque action pour gagner." },
+      "ENTP": { title: "L'Innovateur", desc: "Esprit vif et provocateur. Adore contourner les règles, improviser et tester de nouvelles idées." },
+      "INFJ": { title: "L'Avocat", desc: "Intuition puissante et calme. Réfléchit en profondeur et agit selon des principes très stricts." },
+      "INFP": { title: "Le Médiateur", desc: "Rêveur idéaliste. Fonctionne au sentiment et privilégie l'harmonie et la créativité." },
+      "ENFJ": { title: "Le Protagoniste", desc: "Charismatique et empathique. Motive ses alliés et pousse le groupe vers le sommet." },
+      "ENFP": { title: "L'Inspirateur", desc: "Énergie débordante et spontanée. Passe d'une idée à l'autre avec un enthousiasme contagieux." },
+      "ISTJ": { title: "Le Logisticien", desc: "Esprit carré et ultra fiable. Suit la procédure à la lettre et ne laisse rien au hasard." },
+      "ISFJ": { title: "Le Défenseur", desc: "Protecteur et méticuleux. Toujours attentif aux détails et prêt à soutenir l'équipe." },
+      "ESTJ": { title: "Le Directeur", desc: "Organisateur né. Met de l'ordre dans le chaos et s'assure que tout le monde file droit." },
+      "ESFJ": { title: "Le Consul", desc: "Esprit d'équipe maximal. Sociable et bienveillant, il fait le lien entre tous les Klons." },
+      "ISTP": { title: "Virtuose", desc: "Calme sous pression. Analyse la mécanique des choses et réagit avec des réflexes fulgurants." },
+      "ISFP": { title: "L'Artiste", desc: "Spontané et flexible. Vit l'instant présent et réagit selon ses ressentis." },
+      "ESTP": { title: "L'Entrepreneur", desc: "Fonctionne à l'adrénaline. Réagit instantanément au danger sans se poser 10 000 questions." },
+      "ESFP": { title: "L'Amuseur", desc: "Spontanéité et spectacle. Adore attirer l'attention et improviser en pleine action." }
+    };
+
     const ARCADE_GAMES_LIST = [
-      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
-      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 999, desc: '' },
-      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 999, desc: '' },
-      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, desc: '' }
+      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, needsActionBtns: false, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
+      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 999, needsActionBtns: true, desc: '' },
+      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 999, needsActionBtns: true, desc: '' },
+      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, needsActionBtns: true, desc: '' }
     ];
 
     let selectedKlonForGame = null;
     let headImageObj = null;
+    let currentEditingMBTICloneId = null;
+    let tempMBTITraits = {};
 
     let activeCropContext = { mode: 'global', step: null, cloneId: null };
     let currentImg = null;
@@ -1879,6 +2259,8 @@
     let startX = 0, startY = 0;
 
     let snakeGameTimeout = null;
+    let isSnakePaused = false;
+    let isControlsCustomizeMode = false;
     let snake = [];
     let snakeFood = { x: 0, y: 0, icon: '🪙' };
     let snakeDir = 'RIGHT';
@@ -1908,6 +2290,94 @@
       return Math.max(1.0, Math.round(multiplier * 10) / 10);
     }
 
+    function calculateMBTIFromTraits(traits) {
+      if (!traits) return "INTJ";
+      const E_or_I = (traits.sociabilite || 0) > 5 ? 'E' : 'I';
+      const N_or_S = (traits.intelligence || 0) > 5 ? 'N' : 'S';
+      const T_or_F = (traits.force || 0) >= (traits.sociabilite || 0) ? 'T' : 'F';
+      const J_or_P = (traits.nervosite || 0) <= 5 ? 'J' : 'P';
+      return `${E_or_I}${N_or_S}${T_or_F}${J_or_P}`;
+    }
+
+    function openMbtiModal(cloneId) {
+      currentEditingMBTICloneId = cloneId;
+      const saved = state.cloneTraits[cloneId];
+      tempMBTITraits = {};
+
+      MBTI_TRAITS_CONFIG.forEach(t => {
+        tempMBTITraits[t.id] = (saved && saved[t.id] !== undefined) ? saved[t.id] : t.default;
+      });
+
+      renderMbtiModalTraits();
+      updateMBTIModalDisplay();
+      document.getElementById('mbti-modal').classList.add('active');
+    }
+
+    function closeMbtiModal() {
+      document.getElementById('mbti-modal').classList.remove('active');
+    }
+
+    function setMbtiTraitValue(traitId, val) {
+      if (tempMBTITraits[traitId] === val) {
+        tempMBTITraits[traitId] = val - 1;
+      } else {
+        tempMBTITraits[traitId] = val;
+      }
+      renderMbtiModalTraits();
+      updateMBTIModalDisplay();
+    }
+
+    function renderMbtiModalTraits() {
+      const container = document.getElementById('modalTraitsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      MBTI_TRAITS_CONFIG.forEach(trait => {
+        const curVal = tempMBTITraits[trait.id] || 0;
+        const item = document.createElement('div');
+        item.className = 'trait-item-modal';
+
+        const header = document.createElement('div');
+        header.className = 'trait-header-modal';
+        header.innerHTML = `
+          <span>${trait.icon} <strong>${trait.label}</strong></span>
+          <span style="color: var(--accent-blue); font-weight: bold;">${curVal} / 10</span>
+        `;
+
+        const barContainer = document.createElement('div');
+        barContainer.className = 'bar-container-modal';
+
+        for (let i = 1; i <= 10; i++) {
+          const seg = document.createElement('div');
+          seg.className = `bar-segment-modal ${i <= curVal ? 'active' : ''}`;
+          seg.onclick = () => setMbtiTraitValue(trait.id, i);
+          barContainer.appendChild(seg);
+        }
+
+        item.appendChild(header);
+        item.appendChild(barContainer);
+        container.appendChild(item);
+      });
+    }
+
+    function updateMBTIModalDisplay() {
+      const code = calculateMBTIFromTraits(tempMBTITraits);
+      const profile = MBTI_PROFILES[code] || { title: "Inconnu", desc: "Analyse du profil..." };
+
+      document.getElementById('mbtiModalCode').innerText = code;
+      document.getElementById('mbtiModalTitle').innerText = profile.title;
+      document.getElementById('mbtiModalDesc').innerText = profile.desc;
+    }
+
+    function saveKlonMBTITraits() {
+      if (currentEditingMBTICloneId) {
+        state.cloneTraits[currentEditingMBTICloneId] = { ...tempMBTITraits };
+        saveState();
+        closeMbtiModal();
+        renderClones();
+      }
+    }
+
     function getBarColor(percentage) {
       if (state.theme === 'colorblind') return 'var(--accent-green-bright)';
       if (percentage > 100) return 'var(--accent-purple)';
@@ -1928,9 +2398,11 @@
       safeSet('alpha_dedicated_avatars', JSON.stringify(state.dedicatedAvatars));
       safeSet('alpha_firstname', state.firstname);
       safeSet('alpha_custom_clone_names', JSON.stringify(state.customCloneNames));
+      safeSet('alpha_clone_traits', JSON.stringify(state.cloneTraits));
       safeSet('alpha_ever_unlocked_badges', JSON.stringify(state.everUnlockedBadges));
       safeSet('alpha_history_records', JSON.stringify(state.historyRecords));
       safeSet('alpha_game_leaderboards', JSON.stringify(state.gameLeaderboards));
+      safeSet('alpha_klonboy_controls_layout', JSON.stringify(state.klonboyControlsLayout));
       safeSet('alpha_sort_mode', state.sortMode);
       safeSet('alpha_cards_order', JSON.stringify(state.cardsOrder));
     }
@@ -1988,7 +2460,6 @@
       if (document.getElementById('tab2') && document.getElementById('tab2').classList.contains('active')) renderClones();
     }
 
-    // GENERATION DE VARIANTES : SUBSTITUTION SIMULTANEE DE TOUTES LES VOYELLES
     function generateAllUniqueVariants(baseName) {
       const fullAccentsMap = {
         'a': ['à', 'á', 'â', 'ä', 'ã', 'å', 'æ', 'ā', 'ă', 'ą', 'ª'],
@@ -2001,7 +2472,6 @@
 
       let base = (baseName || "Alpha Picker").trim();
 
-      // Repérage de toutes les voyelles du prénom
       let vowelIndices = [];
       for (let i = 0; i < base.length; i++) {
         let lower = base[i].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -2016,7 +2486,6 @@
 
       let variants = [];
 
-      // Génération systématique de combinaisons modifiant TOUTES les voyelles à la fois
       for (let shift = 1; shift <= 30; shift++) {
         let chars = base.split('');
         vowelIndices.forEach((v, idx) => {
@@ -2047,23 +2516,27 @@
       const t = getT();
       const origIndex = state.expenses.findIndex(e => e.id === id);
       const currentName = getCloneName(id, origIndex >= 0 ? origIndex : 0);
-      const newName = prompt(t.promptCloneName, currentName);
-      if (newName !== null) {
-        state.customCloneNames[id] = newName.trim();
-        saveState();
-        renderClones();
-      }
+      
+      showCustomDialog('✏️', 'Personnalisation', t.promptCloneName, false, (val) => {
+        if (val !== null) {
+          state.customCloneNames[id] = val.trim();
+          saveState();
+          renderClones();
+        }
+      }, true, currentName);
     }
 
     function promptEditSuperCloneName(tierId) {
       const t = getT();
       const currentCustomName = state.customCloneNames[tierId] || "";
-      const newName = prompt(t.promptSuperCloneName, currentCustomName);
-      if (newName !== null) {
-        state.customCloneNames[tierId] = newName.trim();
-        saveState();
-        renderClones();
-      }
+      
+      showCustomDialog('⭐', 'Personnalisation', t.promptSuperCloneName, false, (val) => {
+        if (val !== null) {
+          state.customCloneNames[tierId] = val.trim();
+          saveState();
+          renderClones();
+        }
+      }, true, currentCustomName);
     }
 
     function addExpense() {
@@ -2102,6 +2575,7 @@
       delete state.allocations[id];
       delete state.customCloneNames[id];
       delete state.dedicatedAvatars[id];
+      delete state.cloneTraits[id];
       renderExpenses();
       saveState();
       updateCalculations();
@@ -2367,7 +2841,6 @@
       return { type: 'emoji', value: defaultFallback || DEFAULT_EMOJIS[roundedStep] || '😫', isDedicated: false };
     }
 
-    // OUVERTURE DU COFFRE À JEUX (AVEC COMPATIBILITÉ KLON ET SUPER KLON)
     function openArcadeVault(cloneId) {
       let cloneName = "";
       let avatar = null;
@@ -2386,7 +2859,7 @@
         const tier = TIERS.find(tr => tr.id === cloneId);
         if (!tier) return;
         avatar = getAvatarForClone(cloneId, 100, tier.icon);
-        const customSuperName = state.customCloneNames[cloneId] ? state.customCloneNames[cloneId] : "";
+        const customSuperName = state.customCloneNames[cloneId] ? state.customCloneNames[tier.id] : "";
         cloneName = customSuperName !== "" ? `${t.lblSuperCloneName} ${customSuperName}` : `${t.lblSuperCloneName} ${state.lang === 'en' ? tier.nameEN : tier.nameFR}`;
       }
 
@@ -2455,8 +2928,9 @@
     function launchArcadeGame(gameId) {
       if (gameId === 'snake2') {
         closeArcadeModal();
+        const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === gameId);
         const klonName = selectedKlonForGame ? selectedKlonForGame.name : 'Joueur';
-        document.getElementById('snake-player-subtitle').innerText = `Klon en jeu : ${klonName}`;
+        document.getElementById('snake-player-subtitle').innerText = `Klon : ${klonName}`;
 
         const headerVignette = document.getElementById('snake-klon-vignette-header');
         if (selectedKlonForGame && selectedKlonForGame.avatar) {
@@ -2472,7 +2946,18 @@
           headerVignette.innerText = '👑';
         }
 
+        const btnA = document.getElementById('btn-action-a');
+        const btnB = document.getElementById('btn-action-b');
+        if (gameConfig && !gameConfig.needsActionBtns) {
+          btnA.classList.add('hidden-action');
+          btnB.classList.add('hidden-action');
+        } else {
+          btnA.classList.remove('hidden-action');
+          btnB.classList.remove('hidden-action');
+        }
+
         updateSnakeHighScoreDisplay();
+        applyKlonBoyControlsLayout();
         document.getElementById('snake-modal').classList.add('active');
         startSnakeGame();
       }
@@ -2553,12 +3038,39 @@
 
     function closeSnakeGame() {
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
+      isSnakePaused = false;
+      document.getElementById('klonboy-pause-menu').classList.remove('active');
       document.getElementById('snake-modal').classList.remove('active');
+      if (isControlsCustomizeMode) toggleControlsCustomizeMode();
       if (selectedKlonForGame) openArcadeVault(selectedKlonForGame.id);
+    }
+
+    function toggleKlonBoyPauseMenu() {
+      const pauseMenu = document.getElementById('klonboy-pause-menu');
+      isSnakePaused = !isSnakePaused;
+      if (isSnakePaused) {
+        pauseMenu.classList.add('active');
+      } else {
+        pauseMenu.classList.remove('active');
+        if (isControlsCustomizeMode) toggleControlsCustomizeMode();
+      }
+    }
+
+    function openSnakeLeaderboardFromPause() {
+      openSnakeLeaderboard();
+    }
+
+    function handleActionButton(btnLabel) {
+      if (isControlsCustomizeMode) return;
+      if (btnLabel === 'A' || btnLabel === 'B') {
+        if (isSnakePaused) toggleKlonBoyPauseMenu();
+      }
     }
 
     function startSnakeGame() {
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
+      isSnakePaused = false;
+      document.getElementById('klonboy-pause-menu').classList.remove('active');
       snake = [ { x: 5, y: 7 }, { x: 4, y: 7 }, { x: 3, y: 7 } ];
       snakeDir = 'RIGHT';
       nextDir = 'RIGHT';
@@ -2579,10 +3091,13 @@
 
     window.addEventListener('keydown', (e) => {
       if (!document.getElementById('snake-modal').classList.contains('active')) return;
-      if (e.key === 'ArrowUp') { setSnakeDir('UP'); e.preventDefault(); }
-      if (e.key === 'ArrowDown') { setSnakeDir('DOWN'); e.preventDefault(); }
-      if (e.key === 'ArrowLeft') { setSnakeDir('LEFT'); e.preventDefault(); }
-      if (e.key === 'ArrowRight') { setSnakeDir('RIGHT'); e.preventDefault(); }
+      const key = e.key.toLowerCase();
+      
+      if (e.key === 'ArrowUp' || key === 'w' || key === 'z') { setSnakeDir('UP'); e.preventDefault(); }
+      if (e.key === 'ArrowDown' || key === 's') { setSnakeDir('DOWN'); e.preventDefault(); }
+      if (e.key === 'ArrowLeft' || key === 'a' || key === 'q') { setSnakeDir('LEFT'); e.preventDefault(); }
+      if (e.key === 'ArrowRight' || key === 'd') { setSnakeDir('RIGHT'); e.preventDefault(); }
+      if (e.key === 'Escape' || e.key === 'Enter') { toggleKlonBoyPauseMenu(); e.preventDefault(); }
     });
 
     function spawnSnakeFood() {
@@ -2597,8 +3112,12 @@
     }
 
     function snakeGameLoop() {
-      updateSnake();
-      drawSnake();
+      if (!isSnakePaused) {
+        updateSnake();
+        drawSnake();
+      } else {
+        snakeGameTimeout = setTimeout(snakeGameLoop, 100);
+      }
     }
 
     function updateSnake() {
@@ -2747,6 +3266,157 @@
           }
         }
       }
+    }
+
+    function toggleControlsCustomizeMode() {
+      isControlsCustomizeMode = !isControlsCustomizeMode;
+      const dpadEl = document.getElementById('klonboy-dpad-container');
+      const btnA = document.getElementById('btn-action-a');
+      const btnB = document.getElementById('btn-action-b');
+      const btnCusto = document.getElementById('btn-toggle-customize');
+
+      if (isControlsCustomizeMode) {
+        dpadEl.classList.add('custom-draggable', 'customize-active-highlight');
+        btnA.classList.add('custom-draggable', 'customize-active-highlight');
+        btnB.classList.add('custom-draggable', 'customize-active-highlight');
+        
+        btnA.classList.remove('hidden-action');
+        btnB.classList.remove('hidden-action');
+
+        if (btnCusto) btnCusto.innerText = '💾 Valider positions';
+        makeKlonBoyElementDraggable(dpadEl);
+        makeKlonBoyElementDraggable(btnA);
+        makeKlonBoyElementDraggable(btnB);
+      } else {
+        dpadEl.classList.remove('custom-draggable', 'customize-active-highlight');
+        btnA.classList.remove('custom-draggable', 'customize-active-highlight');
+        btnB.classList.remove('custom-draggable', 'customize-active-highlight');
+        
+        if (selectedKlonForGame) {
+          const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === 'snake2');
+          if (gameConfig && !gameConfig.needsActionBtns) {
+            btnA.classList.add('hidden-action');
+            btnB.classList.add('hidden-action');
+          }
+        }
+
+        if (btnCusto) btnCusto.innerText = '🖐️ Déplacer touches';
+        removeKlonBoyDraggable(dpadEl);
+        removeKlonBoyDraggable(btnA);
+        removeKlonBoyDraggable(btnB);
+        saveKlonBoyControlsLayout();
+      }
+    }
+
+    function makeKlonBoyElementDraggable(elmnt) {
+      let startX = 0, startY = 0, origLeft = 0, origTop = 0;
+
+      elmnt.onmousedown = dragStart;
+      elmnt.ontouchstart = dragStart;
+
+      function dragStart(e) {
+        if (!isControlsCustomizeMode) return;
+        let event = e.type === 'touchstart' ? e.touches[0] : e;
+        startX = event.clientX;
+        startY = event.clientY;
+
+        origLeft = elmnt.offsetLeft;
+        origTop = elmnt.offsetTop;
+
+        document.onmouseup = dragEnd;
+        document.onmousemove = dragMove;
+        document.ontouchend = dragEnd;
+        document.ontouchmove = dragMove;
+      }
+
+      function dragMove(e) {
+        if (!isControlsCustomizeMode) return;
+        let event = e.type === 'touchmove' ? e.touches[0] : e;
+        
+        let deltaX = event.clientX - startX;
+        let deltaY = event.clientY - startY;
+
+        const parent = document.getElementById('klonboy-controls-area');
+        let newLeft = origLeft + deltaX;
+        let newTop = origTop + deltaY;
+
+        const maxTop = parent.offsetHeight - elmnt.offsetHeight;
+        const maxLeft = parent.offsetWidth - elmnt.offsetWidth;
+
+        newTop = Math.max(0, Math.min(newTop, maxTop));
+        newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+
+        elmnt.style.top = newTop + 'px';
+        elmnt.style.left = newLeft + 'px';
+        elmnt.style.right = 'auto';
+        elmnt.style.transform = 'none';
+      }
+
+      function dragEnd() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+      }
+    }
+
+    function removeKlonBoyDraggable(elmnt) {
+      elmnt.onmousedown = null;
+      elmnt.ontouchstart = null;
+    }
+
+    function saveKlonBoyControlsLayout() {
+      const dpadEl = document.getElementById('klonboy-dpad-container');
+      const btnA = document.getElementById('btn-action-a');
+      const btnB = document.getElementById('btn-action-b');
+
+      state.klonboyControlsLayout = {
+        dpad: { top: dpadEl.style.top, left: dpadEl.style.left },
+        btnA: { top: btnA.style.top, left: btnA.style.left },
+        btnB: { top: btnB.style.top, left: btnB.style.left }
+      };
+      saveState();
+    }
+
+    function applyKlonBoyControlsLayout() {
+      const dpadEl = document.getElementById('klonboy-dpad-container');
+      const btnA = document.getElementById('btn-action-a');
+      const btnB = document.getElementById('btn-action-b');
+
+      if (state.klonboyControlsLayout) {
+        if (state.klonboyControlsLayout.dpad && state.klonboyControlsLayout.dpad.top) {
+          dpadEl.style.top = state.klonboyControlsLayout.dpad.top;
+          dpadEl.style.left = state.klonboyControlsLayout.dpad.left;
+          dpadEl.style.right = 'auto';
+        }
+        if (state.klonboyControlsLayout.btnA && state.klonboyControlsLayout.btnA.top) {
+          btnA.style.top = state.klonboyControlsLayout.btnA.top;
+          btnA.style.left = state.klonboyControlsLayout.btnA.left;
+          btnA.style.right = 'auto';
+        }
+        if (state.klonboyControlsLayout.btnB && state.klonboyControlsLayout.btnB.top) {
+          btnB.style.top = state.klonboyControlsLayout.btnB.top;
+          btnB.style.left = state.klonboyControlsLayout.btnB.left;
+          btnB.style.right = 'auto';
+        }
+      } else {
+        resetControlsLayout();
+      }
+    }
+
+    function resetControlsLayout() {
+      const dpadEl = document.getElementById('klonboy-dpad-container');
+      const btnA = document.getElementById('btn-action-a');
+      const btnB = document.getElementById('btn-action-b');
+
+      dpadEl.style.top = ''; dpadEl.style.left = ''; dpadEl.style.right = '';
+      btnA.style.top = ''; btnA.style.left = ''; btnA.style.right = '';
+      btnB.style.top = ''; btnB.style.left = ''; btnB.style.right = '';
+
+      state.klonboyControlsLayout = null;
+      saveState();
+
+      if (isControlsCustomizeMode) toggleControlsCustomizeMode();
     }
 
     function triggerCelebration(type = 'confetti') {
@@ -3205,7 +3875,6 @@
       let multGridValues = [1.0];
       if (maxMult > 2.0) multGridValues.push(Math.round((maxMult + 1.0) / 2));
       else multGridValues.push(1.5);
-      multGridValues.push(maxMult);
       multGridValues = [...new Set(multGridValues)].sort((a, b) => a - b);
 
       multGridValues.forEach(val => {
@@ -3472,13 +4141,18 @@
 
           const barColor = getBarColor(c.percentage);
 
-          let arcadeBtnHTML = isUnlocked ? `
-            <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault(${c.id})">🕹️</button>
-          ` : '';
+          const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[c.id]);
+
+          let actionsGroupHTML = `
+            <div class="clone-action-group">
+              ${isUnlocked ? `<button class="clone-action-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault(${c.id})">🕹️</button>` : ''}
+              <button class="clone-action-btn" title="Modifier le cerveau & profil MBTI" onclick="openMbtiModal(${c.id})">🧠</button>
+              <span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="Profil MBTI actuel">${mbtiCode}</span>
+            </div>
+          `;
 
           container.innerHTML += `
             <div class="card clone-card ${completedCardClass}" draggable="true" data-id="${c.id}">
-              ${arcadeBtnHTML}
               <div class="clone-header">
                 ${avatarHTML}
                 <div style="flex: 1; font-size: 0.95rem; line-height: 1.4; color: var(--text-main);">
@@ -3486,7 +4160,7 @@
                 </div>
               </div>
               
-              <div style="display: flex; gap: 8px; align-items: center; margin: 4px 0;">
+              <div style="display: flex; gap: 8px; align-items: center; margin-top: 2px;">
                 <span style="font-size: 0.85rem; opacity: 0.8;">${t.lblAllocated}</span>
                 <input 
                   type="number" 
@@ -3501,8 +4175,11 @@
                 <button class="btn-secondary" onclick="fillRemaining(${c.id})">${t.btnCover}</button>
               </div>
 
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: ${Math.min(100, c.percentage)}%; background-color: ${barColor};"></div>
+              <div class="clone-progress-row">
+                <div class="progress-bar-bg" style="flex: 1;">
+                  <div class="progress-bar-fill" style="width: ${Math.min(100, c.percentage)}%; background-color: ${barColor};"></div>
+                </div>
+                ${actionsGroupHTML}
               </div>
             </div>
           `;
@@ -3525,13 +4202,18 @@
             .replace('{2}', tier.mult)
             .replace('{3}', c.percentage);
 
-          let arcadeBtnHTML = c.isUnlocked ? `
-            <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault('${tier.id}')">🕹️</button>
-          ` : '';
+          const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[tier.id]);
+
+          let actionsGroupHTML = `
+            <div class="clone-action-group">
+              ${c.isUnlocked ? `<button class="clone-action-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault('${tier.id}')">🕹️</button>` : ''}
+              <button class="clone-action-btn" title="Modifier le cerveau & profil MBTI" onclick="openMbtiModal('${tier.id}')">🧠</button>
+              <span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="Profil MBTI actuel">${mbtiCode}</span>
+            </div>
+          `;
 
           container.innerHTML += `
             <div class="card clone-card super-clone-card ${c.isUnlocked ? 'completed' : ''}" draggable="true" data-id="${tier.id}">
-              ${arcadeBtnHTML}
               <div class="clone-header">
                 ${avatarHTML}
                 <div style="flex: 1;">
@@ -3543,8 +4225,11 @@
                   </div>
                 </div>
               </div>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill progress-bar-super" style="width: ${Math.min(100, c.percentage)}%;"></div>
+              <div class="clone-progress-row">
+                <div class="progress-bar-bg" style="flex: 1;">
+                  <div class="progress-bar-fill progress-bar-super" style="width: ${Math.min(100, c.percentage)}%;"></div>
+                </div>
+                ${actionsGroupHTML}
               </div>
             </div>
           `;
@@ -3573,7 +4258,7 @@
 
         let touchTimer;
         card.addEventListener('touchstart', (e) => {
-          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-arcade-btn')) return;
+          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) return;
           touchTimer = setTimeout(() => {
             card.classList.add('dragging');
           }, 300);
@@ -3751,8 +4436,9 @@
         state = {
           expenses: [], capital: 0, currency: "€", theme: "dark", lang: state.lang,
           allocations: {}, globalAvatars: {}, dedicatedAvatars: {}, firstname: "",
-          customCloneNames: {}, sortMode: "manual", cardsOrder: [],
-          everUnlockedBadges: [], historyRecords: [], gameLeaderboards: {}
+          customCloneNames: {}, cloneTraits: {}, sortMode: "manual", cardsOrder: [],
+          everUnlockedBadges: [], historyRecords: [], gameLeaderboards: {},
+          klonboyControlsLayout: null
         };
         saveState();
         document.getElementById('user-firstname-input').value = "";
@@ -3768,7 +4454,6 @@
       document.getElementById('capital-input').value = state.capital || '';
       document.getElementById('currency-select').value = state.currency;
       document.getElementById('theme-select').value = state.theme;
-      document.getElementById('lang-select').value = state.lang;
       document.getElementById('sort-select').value = state.sortMode;
       document.documentElement.setAttribute('data-theme', state.theme);
 
