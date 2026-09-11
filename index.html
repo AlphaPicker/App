@@ -1792,7 +1792,7 @@
 
         <div id="crop-section" style="display: none;" class="crop-container">
           <div style="font-size: 0.9rem; font-weight: bold; color: var(--text-bright);" id="lbl-crop-title">Ajuster la photo (Glisse pour déplacer)</div>
-          <canvas id="crop-canvas" width="140" height="140"></canvas>
+          <canvas id="crop-canvas" width="280" height="280" style="width: 140px; height: 140px;"></canvas>
           
           <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 0.8rem;" id="lbl-crop-zoom">Zoom:</span>
@@ -3452,7 +3452,10 @@
 
     function confirmCrop() {
       const canvas = document.getElementById('crop-canvas');
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      let dataUrl = canvas.toDataURL('image/webp', 0.80);
+      if (!dataUrl.startsWith('data:image/webp')) {
+        dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      }
 
       if (activeCropContext.mode === 'global') {
         state.globalAvatars[activeCropContext.step] = dataUrl;
