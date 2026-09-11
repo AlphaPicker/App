@@ -1285,10 +1285,10 @@
 
     .klonboy-dpad-container {
       position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 160px;
-      height: 160px;
+      top: 10px;
+      left: 10px;
+      width: 180px;
+      height: 180px;
       touch-action: none;
     }
 
@@ -1471,14 +1471,15 @@
 
     .snake-dpad {
       display: grid;
-      grid-template-columns: repeat(3, 48px); /* Fixe des colonnes identiques */
-      grid-template-rows: repeat(3, 48px);    /* Fixe des lignes identiques */
+      grid-template-columns: repeat(3, 52px) !important; /* Force des cases plus grandes et égales */
+      grid-template-rows: repeat(3, 52px) !important;
       gap: 6px;
-      width: 156px;
-      height: 156px;
+      width: 168px;
+      height: 168px;
       margin: 0 auto;
       justify-content: center;
       align-content: center;
+      box-sizing: border-box;
     }
 
     .dpad-btn {
