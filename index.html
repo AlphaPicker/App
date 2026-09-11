@@ -568,6 +568,11 @@
 
     .modal-overlay.active { display: flex; }
 
+    /* Z-INDEX DÉDIÉ AUX DIALOGUES ET NOTIFICATIONS POUR SURPASSER TOUT AUTRE MODAL EN ARRIÈRE-PLAN */
+    .modal-overlay.high-priority-dialog {
+      z-index: 200 !important;
+    }
+
     .modal-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -1293,8 +1298,8 @@
     </footer>
   </div>
 
-  <!-- MODAL DIALOGUE SYSTEME -->
-  <div id="custom-dialog-modal" class="modal-overlay">
+  <!-- MODAL DIALOGUE SYSTEME (AVEC HIGH-PRIORITY DIALOG Z-INDEX: 200) -->
+  <div id="custom-dialog-modal" class="modal-overlay high-priority-dialog">
     <div class="modal-card" style="max-width: 380px; text-align: center;">
       <div style="font-size: 2.5rem; line-height: 1;" id="dialog-icon">ℹ️</div>
       <div class="card-title" style="justify-content: center; font-size: 1.2rem;" id="dialog-title">Notification</div>
@@ -1453,7 +1458,7 @@
   </div>
 
   <!-- MODAL GAME OVER NATIVE SNAKE -->
-  <div id="snake-gameover-modal" class="modal-overlay">
+  <div id="snake-gameover-modal" class="modal-overlay high-priority-dialog">
     <div class="modal-card" style="max-width: 320px; text-align: center;">
       <div style="font-size: 3rem; line-height: 1;" id="gameover-icon">💥</div>
       <div class="card-title" style="justify-content: center; font-size: 1.3rem;" id="gameover-title">Game Over !</div>
@@ -1575,7 +1580,7 @@
         badge_10: { title: "Cap des 10 % d'Autonomie !", desc: "Bravo ! Tu couvres désormais 10 % de tes charges mensuelles globales grâce à la rente de tes investissements.", anim: "confetti" },
         badge_20: { title: "Cap des 20 % d'Autonomie !", desc: "20 % de tes factures ne sortent plus de ton salaire ! Ta liberté financière prend de l'ampleur.", anim: "cash" },
         badge_30: { title: "Cap des 30 % d'Autonomie !", desc: "Un tiers de ton coût de vie est sécurisé par ton capital. Ton autonomie grandit à grande vitesse !", anim: "confetti" },
-        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont covered de manière totalement passive.", anim: "cash" },
+        badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont couvertes de manière totalement passive.", anim: "cash" },
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !", anim: "gold" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !", anim: "confetti" },
         badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
@@ -1983,9 +1988,50 @@
       if (document.getElementById('tab2') && document.getElementById('tab2').classList.contains('active')) renderClones();
     }
 
+    // GENERATION DE VARIANTES : SUBSTITUTION SIMULTANEE DE TOUTES LES VOYELLES
     function generateAllUniqueVariants(baseName) {
+      const fullAccentsMap = {
+        'a': ['à', 'á', 'â', 'ä', 'ã', 'å', 'æ', 'ā', 'ă', 'ą', 'ª'],
+        'e': ['é', 'è', 'ê', 'ë', 'ē', 'ė', 'ę', 'ě', 'ɇ'],
+        'i': ['î', 'ï', 'ì', 'í', 'ī', 'į', 'ĩ', 'ǐ'],
+        'o': ['ô', 'ö', 'ò', 'ó', 'õ', 'ō', 'ø', 'œ', 'º'],
+        'u': ['û', 'ü', 'ù', 'ú', 'ū', 'ų', 'ů', 'ű'],
+        'y': ['ÿ', 'ý', 'ŷ']
+      };
+
       let base = (baseName || "Alpha Picker").trim();
-      return [base, base + " 2", base + " 3", base + " 4", base + " 5"];
+
+      // Repérage de toutes les voyelles du prénom
+      let vowelIndices = [];
+      for (let i = 0; i < base.length; i++) {
+        let lower = base[i].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (fullAccentsMap[lower]) {
+          vowelIndices.push({ pos: i, origChar: base[i], key: lower });
+        }
+      }
+
+      if (vowelIndices.length === 0) {
+        return [base, base + "ª", base + "ë", base + "ï", base + "ø"];
+      }
+
+      let variants = [];
+
+      // Génération systématique de combinaisons modifiant TOUTES les voyelles à la fois
+      for (let shift = 1; shift <= 30; shift++) {
+        let chars = base.split('');
+        vowelIndices.forEach((v, idx) => {
+          let list = fullAccentsMap[v.key];
+          let chosenAccent = list[(idx + shift) % list.length];
+          let isUpper = v.origChar === v.origChar.toUpperCase();
+          chars[v.pos] = isUpper ? chosenAccent.toUpperCase() : chosenAccent;
+        });
+        let result = chars.join('');
+        if (result !== base && !variants.includes(result)) {
+          variants.push(result);
+        }
+      }
+
+      return variants.length > 0 ? variants : [base + "ë"];
     }
 
     function getCloneName(id, indexInList) {
@@ -2321,15 +2367,28 @@
       return { type: 'emoji', value: defaultFallback || DEFAULT_EMOJIS[roundedStep] || '😫', isDedicated: false };
     }
 
+    // OUVERTURE DU COFFRE À JEUX (AVEC COMPATIBILITÉ KLON ET SUPER KLON)
     function openArcadeVault(cloneId) {
-      const expense = state.expenses.find(e => e.id === cloneId);
-      if (!expense) return;
+      let cloneName = "";
+      let avatar = null;
+      let isSuper = typeof cloneId === 'string' && cloneId.startsWith('super_');
 
-      const allocated = Math.round(state.allocations[cloneId] || 0);
-      let percentage = Math.min(100, Math.round((allocated / expense.amount) * 100));
-      const avatar = getAvatarForClone(cloneId, percentage);
-      const origIndex = state.expenses.findIndex(e => e.id === cloneId);
-      const cloneName = getCloneName(cloneId, origIndex >= 0 ? origIndex : 0);
+      if (!isSuper) {
+        const expense = state.expenses.find(e => e.id === cloneId);
+        if (!expense) return;
+        const allocated = Math.round(state.allocations[cloneId] || 0);
+        let percentage = Math.min(100, Math.round((allocated / expense.amount) * 100));
+        avatar = getAvatarForClone(cloneId, percentage);
+        const origIndex = state.expenses.findIndex(e => e.id === cloneId);
+        cloneName = getCloneName(cloneId, origIndex >= 0 ? origIndex : 0);
+      } else {
+        const t = getT();
+        const tier = TIERS.find(tr => tr.id === cloneId);
+        if (!tier) return;
+        avatar = getAvatarForClone(cloneId, 100, tier.icon);
+        const customSuperName = state.customCloneNames[cloneId] ? state.customCloneNames[cloneId] : "";
+        cloneName = customSuperName !== "" ? `${t.lblSuperCloneName} ${customSuperName}` : `${t.lblSuperCloneName} ${state.lang === 'en' ? tier.nameEN : tier.nameFR}`;
+      }
 
       selectedKlonForGame = { id: cloneId, name: cloneName, avatar: avatar };
 
@@ -3466,8 +3525,13 @@
             .replace('{2}', tier.mult)
             .replace('{3}', c.percentage);
 
+          let arcadeBtnHTML = c.isUnlocked ? `
+            <button class="clone-arcade-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault('${tier.id}')">🕹️</button>
+          ` : '';
+
           container.innerHTML += `
             <div class="card clone-card super-clone-card ${c.isUnlocked ? 'completed' : ''}" draggable="true" data-id="${tier.id}">
+              ${arcadeBtnHTML}
               <div class="clone-header">
                 ${avatarHTML}
                 <div style="flex: 1;">
