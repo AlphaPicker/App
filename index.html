@@ -622,7 +622,6 @@
       padding-right: 2px;
     }
 
-    /* STYLES DE LA MODALE MBTI */
     .mbti-box-modal {
       background-color: var(--bg-color);
       border: 1px solid var(--accent-blue);
@@ -1062,7 +1061,6 @@
       cursor: not-allowed;
     }
 
-    /* STYLES SPÉCIFIQUES CONSOLE KLON BOY */
     .klonboy-shell {
       background-color: #1f232a;
       width: 100%;
@@ -1593,7 +1591,7 @@
   <!-- MODAL PERSONNALITÉ MBTI & STATISTIQUES DU KLON -->
   <div id="mbti-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 420px;">
-      <div class="card-title" style="justify-content: center;">🧠 Cerveau & Profil MBTI</div>
+      <div class="card-title" style="justify-content: center;" id="mbti-modal-title-header">🧠 Cerveau & Profil MBTI</div>
       
       <div class="mbti-box-modal">
         <div class="mbti-modal-header">
@@ -1608,8 +1606,8 @@
       </div>
 
       <div style="display: flex; gap: 8px; margin-top: 4px;">
-        <button class="btn-primary" style="flex: 1;" onclick="saveKlonMBTITraits()">Enregistrer le cerveau</button>
-        <button class="btn-secondary" onclick="closeMbtiModal()">Fermer</button>
+        <button class="btn-primary" style="flex: 1;" id="mbti-save-btn" onclick="saveKlonMBTITraits()">Enregistrer le cerveau</button>
+        <button class="btn-secondary" id="mbti-close-btn" onclick="closeMbtiModal()">Fermer</button>
       </div>
     </div>
   </div>
@@ -1661,7 +1659,7 @@
       <div class="modal-body-scroll">
         <div class="history-chart-container">
           <div class="history-chart-title" style="color: var(--accent-green-bright);">
-            <span>📈 Courbe d'autonomie (%)</span>
+            <span id="chart-pct-title">📈 Courbe d'autonomie (%)</span>
             <span id="chart-hover-info" style="font-weight: bold;">--</span>
           </div>
           <svg id="history-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
@@ -1669,7 +1667,7 @@
 
         <div class="history-chart-container">
           <div class="history-chart-title" style="color: var(--accent-orange);">
-            <span>📉 Courbe d'effort restant (Multiple)</span>
+            <span id="chart-mult-title">📉 Courbe d'effort restant (Multiple)</span>
             <span id="chart-mult-hover-info" style="font-weight: bold;">--</span>
           </div>
           <svg id="history-mult-svg-chart" width="100%" height="110" viewBox="0 0 400 110" style="overflow: visible;"></svg>
@@ -1703,7 +1701,7 @@
   <!-- MODAL COFFRE À JEUX (KLON ARCADE) -->
   <div id="arcade-modal" class="modal-overlay">
     <div class="modal-card">
-      <div class="card-title" style="justify-content: center;">🎁 Coffre à Jeux Klon</div>
+      <div class="card-title" style="justify-content: center;" id="arcade-modal-title">🎁 Coffre à Jeux Klon</div>
       <p style="font-size: 0.85rem; opacity: 0.8; text-align: center;" id="arcade-modal-subtitle">
         Finance tes Klons d'autonomie pour débloquer de nouveaux mini-jeux secrets !
       </p>
@@ -1712,7 +1710,7 @@
         <div class="arcade-games-grid" id="arcade-games-container"></div>
       </div>
 
-      <button class="btn-secondary" onclick="closeArcadeModal()" style="margin-top: 4px;">Fermer</button>
+      <button class="btn-secondary" onclick="closeArcadeModal()" style="margin-top: 4px;" id="btn-arcade-close">Fermer</button>
     </div>
   </div>
 
@@ -1738,12 +1736,12 @@
           <div class="snake-scores-row">
             <div class="snake-score-box">
               <div id="snake-klon-vignette-header" class="snake-klon-avatar-vignette">👑</div>
-              <div>Score : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
+              <div><span id="lbl-snake-score">Score</span> : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
             </div>
 
             <div class="snake-score-box clickable-record" onclick="openSnakeLeaderboard()" title="Voir le Top 10 des records">
               <div style="font-size: 1.1rem; line-height: 1;">🏆</div>
-              <div>Record : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong></div>
+              <div><span id="lbl-snake-record">Record</span> : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong></div>
             </div>
           </div>
 
@@ -1751,12 +1749,12 @@
 
           <!-- MENU PAUSE SYSTEME -->
           <div class="klonboy-pause-menu" id="klonboy-pause-menu">
-            <div class="klonboy-pause-title">⏸️ MENU PAUSE</div>
-            <button class="btn-primary klonboy-pause-btn" onclick="toggleKlonBoyPauseMenu()">▶️ Reprendre</button>
+            <div class="klonboy-pause-title" id="lbl-pause-title">⏸️ MENU PAUSE</div>
+            <button class="btn-primary klonboy-pause-btn" id="btn-pause-resume" onclick="toggleKlonBoyPauseMenu()">▶️ Reprendre</button>
             <button class="btn-secondary klonboy-pause-btn" id="btn-toggle-customize" onclick="toggleControlsCustomizeMode()">🖐️ Déplacer touches</button>
-            <button class="btn-secondary klonboy-pause-btn" onclick="resetControlsLayout()">🔄 Réinitialiser touches</button>
-            <button class="btn-secondary klonboy-pause-btn" onclick="openSnakeLeaderboardFromPause()">🏆 Classement Top 10</button>
-            <button class="btn-reset klonboy-pause-btn" onclick="closeSnakeGame()">❌ Quitter console</button>
+            <button class="btn-secondary klonboy-pause-btn" id="btn-pause-reset-controls" onclick="resetControlsLayout()">🔄 Réinitialiser touches</button>
+            <button class="btn-secondary klonboy-pause-btn" id="btn-pause-leaderboard" onclick="openSnakeLeaderboardFromPause()">🏆 Classement Top 10</button>
+            <button class="btn-reset klonboy-pause-btn" id="btn-pause-quit" onclick="closeSnakeGame()">❌ Quitter console</button>
           </div>
         </div>
 
@@ -1799,9 +1797,9 @@
       <div style="font-size: 0.95rem; margin: 6px 0;" id="gameover-msg">Score final : 0 dividendes.</div>
       
       <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-        <button class="btn-primary" onclick="restartFromGameOver()">🔄 Rejouer de suite</button>
-        <button class="btn-secondary" onclick="openSnakeLeaderboardFromGameOver()">🏆 Voir le Classement</button>
-        <button class="btn-secondary" onclick="closeGameOverModal()">Retour</button>
+        <button class="btn-primary" id="btn-gameover-replay" onclick="restartFromGameOver()">🔄 Rejouer de suite</button>
+        <button class="btn-secondary" id="btn-gameover-leaderboard" onclick="openSnakeLeaderboardFromGameOver()">🏆 Voir le Classement</button>
+        <button class="btn-secondary" id="btn-gameover-close" onclick="closeGameOverModal()">Retour</button>
       </div>
     </div>
   </div>
@@ -1809,14 +1807,14 @@
   <!-- MODAL LEADERBOARD SNAKE -->
   <div id="snake-leaderboard-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 360px;">
-      <div class="card-title" style="justify-content: center;">🏆 Top 10 Records KLON Snake</div>
-      <p style="font-size: 0.8rem; opacity: 0.8; text-align: center; margin-bottom: 4px;">Meilleures récoltes de dividendes enregistrées</p>
+      <div class="card-title" style="justify-content: center;" id="lbl-leaderboard-title">🏆 Top 10 Records KLON Snake</div>
+      <p style="font-size: 0.8rem; opacity: 0.8; text-align: center; margin-bottom: 4px;" id="lbl-leaderboard-subtitle">Meilleures récoltes de dividendes enregistrées</p>
 
       <div class="modal-body-scroll" style="max-height: 260px;">
         <div class="leaderboard-list" id="snake-leaderboard-container"></div>
       </div>
 
-      <button class="btn-secondary" onclick="closeSnakeLeaderboard()" style="margin-top: 6px;">Fermer</button>
+      <button class="btn-secondary" onclick="closeSnakeLeaderboard()" style="margin-top: 6px;" id="btn-leaderboard-close">Fermer</button>
     </div>
   </div>
 
@@ -1874,6 +1872,7 @@
     let dialogConfirmCallback = null;
 
     function showCustomDialog(icon, title, message, isConfirm = false, onConfirm = null, isInput = false, defaultValue = "") {
+      const t = getT();
       document.getElementById('dialog-icon').innerText = icon || 'ℹ️';
       document.getElementById('dialog-title').innerText = title || 'Information';
       document.getElementById('dialog-message').innerText = message || '';
@@ -1888,16 +1887,16 @@
         inputContainer.style.display = 'block';
         textInput.value = defaultValue;
         btnBox.innerHTML = `
-          <button class="btn-primary" onclick="executeDialogConfirm()">Valider</button>
-          <button class="btn-secondary" onclick="closeCustomDialog()">Annuler</button>
+          <button class="btn-primary" onclick="executeDialogConfirm()">${t.btnValidate}</button>
+          <button class="btn-secondary" onclick="closeCustomDialog()">${t.btnCancel}</button>
         `;
         document.getElementById('custom-dialog-modal').classList.add('active');
         setTimeout(() => { textInput.focus(); textInput.select(); }, 100);
       } else if (isConfirm) {
         inputContainer.style.display = 'none';
         btnBox.innerHTML = `
-          <button class="btn-reset" onclick="executeDialogConfirm()">Confirmer</button>
-          <button class="btn-secondary" onclick="closeCustomDialog()">Annuler</button>
+          <button class="btn-reset" onclick="executeDialogConfirm()">${t.btnConfirm}</button>
+          <button class="btn-secondary" onclick="closeCustomDialog()">${t.btnCancel}</button>
         `;
         document.getElementById('custom-dialog-modal').classList.add('active');
       } else {
@@ -2026,7 +2025,7 @@
         lblEcoAnalysisTitle: "Analyses & Thèses",
         lblEcoSubstack: "Suivre le Substack Alpha Picker",
         lblEcoSupportTitle: "Soutenir le Projet",
-        lblEcoSupportDesc: "Si cet outil vous aide à progresser vers votre liberté financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.",
+        lblEcoSupportDesc: "Si cet outil vous aide dans votre parcours d'autonomie financière, vous pouvez soutenir le projet via les liens ci-dessus ou par un don.",
         lblEcoPaypal: "Faire un don via PayPal",
         lblFooterAppInfo: "<strong>KLON</strong> — Application gratuite & Open Source développée par <strong>Alpha Picker</strong> et hébergée sur GitHub Pages.",
         lblFooterPrivacyInfo: "🛡️ <strong>Confidentialité :</strong> Aucun cookie de suivi, aucune collecte de données. Toutes vos saisies restent exclusivement stockées dans votre navigateur.",
@@ -2093,7 +2092,31 @@
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
         superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !",
-        comingSoonText: "Débloqué avec de futurs Klons à 100%"
+        comingSoonText: "Débloqué avec de futurs Klons à 100%",
+        mbtiModalTitleHeader: "🧠 Cerveau & Profil MBTI",
+        mbtiSaveBtn: "Enregistrer le cerveau",
+        arcadeModalTitle: "🎁 Coffre à Jeux Klon",
+        arcadeModalSubtitle: "Finance tes Klons d'autonomie pour débloquer de nouveaux mini-jeux secrets !",
+        lblSnakeScore: "Score",
+        lblSnakeRecord: "Record",
+        pauseTitle: "⏸️ MENU PAUSE",
+        pauseResume: "▶️ Reprendre",
+        pauseMoveKeys: "🖐️ Déplacer touches",
+        pauseSaveKeys: "💾 Valider positions",
+        pauseResetKeys: "🔄 Réinitialiser touches",
+        pauseLeaderboard: "🏆 Classement Top 10",
+        pauseQuit: "❌ Quitter console",
+        btnReplay: "🔄 Rejouer de suite",
+        btnLeaderboard: "🏆 Voir le Classement",
+        btnBack: "Retour",
+        leaderboardTitle: "🏆 Top 10 Records KLON Snake",
+        leaderboardSubtitle: "Meilleures récoltes de dividendes enregistrées",
+        chartPctTitle: "📈 Courbe d'autonomie (%)",
+        chartMultTitle: "📉 Courbe d'effort restant (Multiple)",
+        btnHistoryToggle: "📜 Historique",
+        btnValidate: "Valider",
+        btnCancel: "Annuler",
+        btnConfirm: "Confirmer"
       },
       en: {
         appSubtitle: "Financial Freedom Simulator",
@@ -2200,7 +2223,31 @@
         clonesModalDescSome: "Your Klon army is growing! You already have {0} expense(s) fully funded by your capital. Your salary stays right in your pocket.",
         superModalTitle: "Power Super Klons",
         superModalDesc: "Super Klons activate once 100% of your baseline expenses are defeated. They measure your annuity overpower (2x, 4x, 8x... your expenses) to reach complete abundance!",
-        comingSoonText: "Unlocked with future 100% Klons"
+        comingSoonText: "Unlocked with future 100% Klons",
+        mbtiModalTitleHeader: "🧠 Brain & MBTI Profile",
+        mbtiSaveBtn: "Save Brain",
+        arcadeModalTitle: "🎁 Klon Arcade Vault",
+        arcadeModalSubtitle: "Fund your autonomy Klons to unlock new secret mini-games!",
+        lblSnakeScore: "Score",
+        lblSnakeRecord: "Record",
+        pauseTitle: "⏸️ PAUSE MENU",
+        pauseResume: "▶️ Resume",
+        pauseMoveKeys: "🖐️ Move keys",
+        pauseSaveKeys: "💾 Save positions",
+        pauseResetKeys: "🔄 Reset keys",
+        pauseLeaderboard: "🏆 Top 10 Ranks",
+        pauseQuit: "❌ Quit console",
+        btnReplay: "🔄 Play Again",
+        btnLeaderboard: "🏆 View Ranks",
+        btnBack: "Back",
+        leaderboardTitle: "🏆 Top 10 KLON Snake Records",
+        leaderboardSubtitle: "Best passive dividend harvests recorded",
+        chartPctTitle: "📈 Autonomy Curve (%)",
+        chartMultTitle: "📉 Remaining Effort Curve (Multiple)",
+        btnHistoryToggle: "📜 History",
+        btnValidate: "Validate",
+        btnCancel: "Cancel",
+        btnConfirm: "Confirm"
       }
     };
 
@@ -2214,37 +2261,37 @@
     ];
 
     const MBTI_TRAITS_CONFIG = [
-      { id: 'intelligence', label: 'Intelligence', icon: '🧠', default: 5 },
-      { id: 'nervosite', label: 'Nervosité / Réflexe', icon: '⚡', default: 5 },
-      { id: 'force', label: 'Force / Impact', icon: '💥', default: 5 },
-      { id: 'sociabilite', label: 'Sociabilité', icon: '💬', default: 5 },
-      { id: 'chance', label: 'Chance / Spontanéité', icon: '🎲', default: 5 }
+      { id: 'intelligence', labelFR: 'Intelligence', labelEN: 'Intelligence', icon: '🧠', default: 5 },
+      { id: 'nervosite', labelFR: 'Nervosité / Réflexe', labelEN: 'Speed / Reflex', icon: '⚡', default: 5 },
+      { id: 'force', labelFR: 'Force / Impact', labelEN: 'Power / Impact', icon: '💥', default: 5 },
+      { id: 'sociabilite', labelFR: 'Sociabilité', labelEN: 'Sociability', icon: '💬', default: 5 },
+      { id: 'chance', labelFR: 'Chance / Spontanéité', labelEN: 'Luck / Spontaneity', icon: '🎲', default: 5 }
     ];
 
     const MBTI_PROFILES = {
-      "INTJ": { title: "L'Architecte", desc: "Pensée stratégique pure. Analyse tout, planifie à froid et agit de manière ultra-méthodique." },
-      "INTP": { title: "Le Penseur", desc: "Cerveau en ébullition constante. Cherche la logique derrière chaque détail et adore résoudre des énigmes." },
-      "ENTJ": { title: "Le Commandant", desc: "Leader-né ultra efficace. Ne perd jamais de temps et optimise chaque action pour gagner." },
-      "ENTP": { title: "L'Innovateur", desc: "Esprit vif et provocateur. Adore contourner les règles, improviser et tester de nouvelles idées." },
-      "INFJ": { title: "L'Avocat", desc: "Intuition puissante et calme. Réfléchit en profondeur et agit selon des principes très stricts." },
-      "INFP": { title: "Le Médiateur", desc: "Rêveur idéaliste. Fonctionne au sentiment et privilégie l'harmonie et la créativité." },
-      "ENFJ": { title: "Le Protagoniste", desc: "Charismatique et empathique. Motive ses alliés et pousse le groupe vers le sommet." },
-      "ENFP": { title: "L'Inspirateur", desc: "Énergie débordante et spontanée. Passe d'une idée à l'autre avec un enthousiasme contagieux." },
-      "ISTJ": { title: "Le Logisticien", desc: "Esprit carré et ultra fiable. Suit la procédure à la lettre et ne laisse rien au hasard." },
-      "ISFJ": { title: "Le Défenseur", desc: "Protecteur et méticuleux. Toujours attentif aux détails et prêt à soutenir l'équipe." },
-      "ESTJ": { title: "Le Directeur", desc: "Organisateur né. Met de l'ordre dans le chaos et s'assure que tout le monde file droit." },
-      "ESFJ": { title: "Le Consul", desc: "Esprit d'équipe maximal. Sociable et bienveillant, il fait le lien entre tous les Klons." },
-      "ISTP": { title: "Virtuose", desc: "Calme sous pression. Analyse la mécanique des choses et réagit avec des réflexes fulgurants." },
-      "ISFP": { title: "L'Artiste", desc: "Spontané et flexible. Vit l'instant présent et réagit selon ses ressentis." },
-      "ESTP": { title: "L'Entrepreneur", desc: "Fonctionne à l'adrénaline. Réagit instantanément au danger sans se poser 10 000 questions." },
-      "ESFP": { title: "L'Amuseur", desc: "Spontanéité et spectacle. Adore attirer l'attention et improviser en pleine action." }
+      "INTJ": { titleFR: "L'Architecte", titleEN: "The Architect", descFR: "Pensée stratégique pure. Analyse tout, planifie à froid et agit de manière ultra-méthodique.", descEN: "Pure strategic thinking. Analyzes everything, plans coolly, and acts methodically." },
+      "INTP": { titleFR: "Le Penseur", titleEN: "The Logician", descFR: "Cerveau en ébullition constante. Cherche la logique derrière chaque détail et adore résoudre des énigmes.", descEN: "Constantly innovating mind. Seeks logic behind every detail and loves solving puzzles." },
+      "ENTJ": { titleFR: "Le Commandant", titleEN: "The Commander", descFR: "Leader-né ultra efficace. Ne perd jamais de temps et optimise chaque action pour gagner.", descEN: "Born effective leader. Never wastes time and optimizes every action to win." },
+      "ENTP": { titleFR: "L'Innovateur", titleEN: "The Debater", descFR: "Esprit vif et provocateur. Adore contourner les règles, improviser et tester de nouvelles idées.", descEN: "Sharp and provocative mind. Loves bypassing rules, improvising, and testing new ideas." },
+      "INFJ": { titleFR: "L'Avocat", titleEN: "The Advocate", descFR: "Intuition puissante et calme. Réfléchit en profondeur et agit selon des principes très stricts.", descEN: "Calm and powerful intuition. Thinks deeply and operates on strict principles." },
+      "INFP": { titleFR: "Le Médiateur", titleEN: "The Mediator", descFR: "Rêveur idéaliste. Fonctionne au sentiment et privilégie l'harmonie et la créativité.", descEN: "Idealistic dreamer. Driven by feelings and prioritizes harmony and creativity." },
+      "ENFJ": { titleFR: "Le Protagoniste", titleEN: "The Protagonist", descFR: "Charismatique et empathique. Motive ses alliés et pousse le groupe vers le sommet.", descEN: "Charismatic and empathetic. Motivates allies and drives the team to the top." },
+      "ENFP": { titleFR: "L'Inspirateur", titleEN: "The Campaigner", descFR: "Énergie débordante et spontanée. Passe d'une idée à l'autre avec un enthousiasme contagieux.", descEN: "Vibrant and spontaneous energy. Moves from idea to idea with infectious enthusiasm." },
+      "ISTJ": { titleFR: "Le Logisticien", titleEN: "The Logistician", descFR: "Esprit carré et ultra fiable. Suit la procédure à la lettre et ne laisse rien au hasard.", descEN: "Solid and ultra-reliable. Follows procedure to the letter and leaves nothing to chance." },
+      "ISFJ": { titleFR: "Le Défenseur", titleEN: "The Defender", descFR: "Protecteur et méticuleux. Toujours attentif aux détails et prêt à soutenir l'équipe.", descEN: "Protective and meticulous. Always attentive to details and ready to support the team." },
+      "ESTJ": { titleFR: "Le Directeur", titleEN: "The Executive", descFR: "Organisateur né. Met de l'ordre dans le chaos et s'assure que tout le monde file droit.", descEN: "Born organizer. Brings order to chaos and ensures everyone stays on track." },
+      "ESFJ": { titleFR: "Le Consul", titleEN: "The Consul", descFR: "Esprit d'équipe maximal. Sociable et bienveillant, il fait le lien entre tous les Klons.", descEN: "Ultimate team player. Sociable and caring, connects all Klons together." },
+      "ISTP": { titleFR: "Virtuose", titleEN: "The Virtuoso", descFR: "Calme sous pression. Analyse la mécanique des choses et réagit avec des réflexes fulgurants.", descEN: "Calm under pressure. Analyzes mechanics and reacts with lightning reflexes." },
+      "ISFP": { titleFR: "L'Artiste", titleEN: "The Adventurer", descFR: "Spontané et flexible. Vit l'instant présent et réagit selon ses ressentis.", descEN: "Spontaneous and flexible. Lives in the moment and reacts on feelings." },
+      "ESTP": { titleFR: "L'Entrepreneur", titleEN: "The Entrepreneur", descFR: "Fonctionne à l'adrénaline. Réagit instantanément au danger sans se poser 10 000 questions.", descEN: "Runs on adrenaline. Reacts instantly to danger without overthinking." },
+      "ESFP": { titleFR: "L'Amuseur", titleEN: "The Entertainer", descFR: "Spontanéité et spectacle. Adore attirer l'attention et improviser en pleine action.", descEN: "Spontaneous and entertaining. Loves drawing attention and improvising in action." }
     };
 
     const ARCADE_GAMES_LIST = [
-      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, needsActionBtns: false, desc: 'Récolte tes dividendes passifs sans percuter ton propre corps !' },
-      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 999, needsActionBtns: true, desc: '' },
-      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 999, needsActionBtns: true, desc: '' },
-      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, needsActionBtns: true, desc: '' }
+      { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, needsActionBtns: false, descFR: 'Récolte tes dividendes passifs sans percuter ton propre corps !', descEN: 'Harvest your passive dividends without hitting your own tail!' },
+      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' },
+      { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' },
+      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' }
     ];
 
     let selectedKlonForGame = null;
@@ -2337,10 +2384,12 @@
         const item = document.createElement('div');
         item.className = 'trait-item-modal';
 
+        const label = state.lang === 'en' ? trait.labelEN : trait.labelFR;
+
         const header = document.createElement('div');
         header.className = 'trait-header-modal';
         header.innerHTML = `
-          <span>${trait.icon} <strong>${trait.label}</strong></span>
+          <span>${trait.icon} <strong>${label}</strong></span>
           <span style="color: var(--accent-blue); font-weight: bold;">${curVal} / 10</span>
         `;
 
@@ -2362,11 +2411,11 @@
 
     function updateMBTIModalDisplay() {
       const code = calculateMBTIFromTraits(tempMBTITraits) || "INTJ";
-      const profile = MBTI_PROFILES[code] || { title: "Inconnu", desc: "Analyse du profil..." };
+      const profile = MBTI_PROFILES[code] || { titleFR: "Inconnu", titleEN: "Unknown", descFR: "Analyse du profil...", descEN: "Analyzing profile..." };
 
       document.getElementById('mbtiModalCode').innerText = code;
-      document.getElementById('mbtiModalTitle').innerText = profile.title;
-      document.getElementById('mbtiModalDesc').innerText = profile.desc;
+      document.getElementById('mbtiModalTitle').innerText = state.lang === 'en' ? profile.titleEN : profile.titleFR;
+      document.getElementById('mbtiModalDesc').innerText = state.lang === 'en' ? profile.descEN : profile.descFR;
     }
 
     function saveKlonMBTITraits() {
@@ -2890,18 +2939,21 @@
 
       ARCADE_GAMES_LIST.forEach(game => {
         let isUnlocked = completedCount >= game.reqKlons;
+        let gameDesc = state.lang === 'en' ? game.descEN : game.descFR;
 
         if (isUnlocked) {
           const leaderboards = getSnakeLeaderboard('snake2');
           const top1 = leaderboards.length > 0 ? leaderboards[0] : null;
-          const hsText = top1 && top1.score > 0 ? `🏆 Record : ${top1.score} par ${top1.klonName}` : 'Pas encore de record';
+          const hsText = top1 && top1.score > 0 
+            ? `${state.lang === 'en' ? '🏆 Record:' : '🏆 Record :'} ${top1.score} ${state.lang === 'en' ? 'by' : 'par'} ${top1.klonName}` 
+            : (state.lang === 'en' ? 'No record yet' : 'Pas encore de record');
 
           container.innerHTML += `
             <div class="arcade-game-card unlocked" onclick="launchArcadeGame('${game.id}')">
               <div style="font-size: 2rem;">${game.icon}</div>
               <div style="flex: 1;">
                 <div style="font-weight: bold; color: var(--text-bright); font-size: 0.95rem;">${game.name}</div>
-                <div style="font-size: 0.75rem; opacity: 0.7;">${game.desc}</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">${gameDesc}</div>
                 <div style="font-size: 0.75rem; color: var(--accent-green-bright); margin-top: 3px; font-weight: bold;">${hsText}</div>
               </div>
               <div style="font-size: 1.2rem;">▶️</div>
@@ -2929,7 +2981,7 @@
       if (gameId === 'snake2') {
         closeArcadeModal();
         const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === gameId);
-        const klonName = selectedKlonForGame ? selectedKlonForGame.name : 'Joueur';
+        const klonName = selectedKlonForGame ? selectedKlonForGame.name : (state.lang === 'en' ? 'Player' : 'Joueur');
         document.getElementById('snake-player-subtitle').innerText = `Klon : ${klonName}`;
 
         const headerVignette = document.getElementById('snake-klon-vignette-header');
@@ -3001,7 +3053,7 @@
       const leaderboard = getSnakeLeaderboard('snake2');
 
       if (leaderboard.length === 0) {
-        container.innerHTML = `<div style="text-align: center; font-size: 0.85rem; opacity: 0.7; padding: 16px;">Aucun record enregistré pour le moment.</div>`;
+        container.innerHTML = `<div style="text-align: center; font-size: 0.85rem; opacity: 0.7; padding: 16px;">${state.lang === 'en' ? 'No record logged yet.' : 'Aucun record enregistré pour le moment.'}</div>`;
       } else {
         leaderboard.forEach((rec, idx) => {
           let rankMedal = `${idx + 1}.`;
@@ -3166,10 +3218,18 @@
 
       const isNewRecord = snakeScore > previousTop && snakeScore > 0;
       document.getElementById('gameover-icon').innerText = isNewRecord ? '🎉' : '💥';
-      document.getElementById('gameover-title').innerText = isNewRecord ? 'NOUVEAU RECORD !' : 'Game Over !';
-      document.getElementById('gameover-msg').innerText = isNewRecord 
-        ? `Félicitations ! ${snakeScore} dividendes accumulés par ${activeKlonName} !` 
-        : `Score final : ${snakeScore} dividendes accumulés par ${activeKlonName}.`;
+      
+      if (state.lang === 'en') {
+        document.getElementById('gameover-title').innerText = isNewRecord ? 'NEW HIGH SCORE!' : 'Game Over!';
+        document.getElementById('gameover-msg').innerText = isNewRecord 
+          ? `Congrats! ${snakeScore} dividends collected by ${activeKlonName}!` 
+          : `Final Score: ${snakeScore} dividends collected by ${activeKlonName}.`;
+      } else {
+        document.getElementById('gameover-title').innerText = isNewRecord ? 'NOUVEAU RECORD !' : 'Game Over !';
+        document.getElementById('gameover-msg').innerText = isNewRecord 
+          ? `Félicitations ! ${snakeScore} dividendes accumulés par ${activeKlonName} !` 
+          : `Score final : ${snakeScore} dividendes accumulés par ${activeKlonName}.`;
+      }
 
       document.getElementById('snake-gameover-modal').classList.add('active');
     }
@@ -3269,6 +3329,7 @@
     }
 
     function toggleControlsCustomizeMode() {
+      const t = getT();
       isControlsCustomizeMode = !isControlsCustomizeMode;
       const dpadEl = document.getElementById('klonboy-dpad-container');
       const btnA = document.getElementById('btn-action-a');
@@ -3283,7 +3344,7 @@
         btnA.classList.remove('hidden-action');
         btnB.classList.remove('hidden-action');
 
-        if (btnCusto) btnCusto.innerText = '💾 Valider positions';
+        if (btnCusto) btnCusto.innerText = t.pauseSaveKeys;
         makeKlonBoyElementDraggable(dpadEl);
         makeKlonBoyElementDraggable(btnA);
         makeKlonBoyElementDraggable(btnB);
@@ -3300,7 +3361,7 @@
           }
         }
 
-        if (btnCusto) btnCusto.innerText = '🖐️ Déplacer touches';
+        if (btnCusto) btnCusto.innerText = t.pauseMoveKeys;
         removeKlonBoyDraggable(dpadEl);
         removeKlonBoyDraggable(btnA);
         removeKlonBoyDraggable(btnB);
@@ -3586,15 +3647,17 @@
       else if (coverageRatio >= 40) textDesc = t.pctModalDesc40;
       else if (coverageRatio >= 20) textDesc = t.pctModalDesc20;
 
+      let salaryLabel = state.lang === 'en' ? 'Your salary :' : 'Ton salaire :';
+
       let breakdownHTML = `
         <div style="background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 0.85rem; text-align: left;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
             <span>🤖 <strong>Klons :</strong></span>
-            <strong style="color: var(--accent-green-bright);">${coverageRatio}% (${formatNumber(totalAllocated)} ${state.currency}/mois)</strong>
+            <strong style="color: var(--accent-green-bright);">${coverageRatio}% (${formatNumber(totalAllocated)} ${state.currency}${t.perMonth})</strong>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <span>💼 <strong>Ton salaire :</strong></span>
-            <strong style="color: var(--accent-orange);">${salaryRatio}% (${formatNumber(salaryAmount)} ${state.currency}/mois)</strong>
+            <span>💼 <strong>${salaryLabel}</strong></span>
+            <strong style="color: var(--accent-orange);">${salaryRatio}% (${formatNumber(salaryAmount)} ${state.currency}${t.perMonth})</strong>
           </div>
         </div>
       `;
@@ -3759,7 +3822,7 @@
 
       if (isManual) {
         const t = getT();
-        showCustomDialog('📈', 'Historique', t.historyAddedSuccess);
+        showCustomDialog('📈', state.lang === 'en' ? 'History' : 'Historique', t.historyAddedSuccess);
         renderHistoryList();
       }
     }
@@ -3911,7 +3974,7 @@
         circle.style.cursor = "pointer";
 
         const updateHover = () => {
-          hoverMultInfo.innerText = `${p.rec.dateStr} : ${p.mVal}x effort`;
+          hoverMultInfo.innerText = `${p.rec.dateStr} : ${p.mVal}x ${state.lang === 'en' ? 'effort' : 'effort'}`;
         };
 
         circle.addEventListener("mouseenter", updateHover);
@@ -3943,13 +4006,13 @@
             <div>
               <div class="history-item-date">📅 ${rec.dateStr}</div>
               <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 2px;">
-                💰 ${formatNumber(rec.capital)} ${rec.currency || state.currency} | 💸 ${formatNumber(rec.expenses)} ${rec.currency || state.currency}/mo
+                💰 ${formatNumber(rec.capital)} ${rec.currency || state.currency} | 💸 ${formatNumber(rec.expenses)} ${rec.currency || state.currency}${t.perMonth}
               </div>
             </div>
             <div class="history-item-details">
               <span class="history-item-percentage">${rec.percentage}%</span>
               <span class="history-item-multiplier">${mult}x</span>
-              <button class="btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteHistoryRecord(${recId})" title="Supprimer ce relevé">🗑️</button>
+              <button class="btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteHistoryRecord(${recId})" title="Delete">🗑️</button>
             </div>
           </div>
         `;
@@ -4142,12 +4205,12 @@
           const barColor = getBarColor(c.percentage);
 
           const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[c.id]);
-          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="Profil MBTI actuel">${mbtiCode}</span>` : '';
+          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="MBTI">${mbtiCode}</span>` : '';
 
           let actionsGroupHTML = `
             <div class="clone-action-group">
-              ${isUnlocked ? `<button class="clone-action-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault(${c.id})">🕹️</button>` : ''}
-              <button class="clone-action-btn" title="Modifier le cerveau & profil MBTI" onclick="openMbtiModal(${c.id})">🧠</button>
+              ${isUnlocked ? `<button class="clone-action-btn" title="Arcade" onclick="openArcadeVault(${c.id})">🕹️</button>` : ''}
+              <button class="clone-action-btn" title="Brain / MBTI" onclick="openMbtiModal(${c.id})">🧠</button>
               ${mbtiBadgeHTML}
             </div>
           `;
@@ -4204,12 +4267,12 @@
             .replace('{3}', c.percentage);
 
           const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[tier.id]);
-          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="Profil MBTI actuel">${mbtiCode}</span>` : '';
+          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="MBTI">${mbtiCode}</span>` : '';
 
           let actionsGroupHTML = `
             <div class="clone-action-group">
-              ${c.isUnlocked ? `<button class="clone-action-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault('${tier.id}')">🕹️</button>` : ''}
-              <button class="clone-action-btn" title="Modifier le cerveau & profil MBTI" onclick="openMbtiModal('${tier.id}')">🧠</button>
+              ${c.isUnlocked ? `<button class="clone-action-btn" title="Arcade" onclick="openArcadeVault('${tier.id}')">🕹️</button>` : ''}
+              <button class="clone-action-btn" title="Brain / MBTI" onclick="openMbtiModal('${tier.id}')">🧠</button>
               ${mbtiBadgeHTML}
             </div>
           `;
@@ -4380,6 +4443,30 @@
       document.getElementById('btn-add-history-point').innerText = t.historyBtnAdd;
       document.getElementById('btn-history-close').innerText = t.btnModalClose;
       document.getElementById('btn-badge-modal-close').innerText = t.btnBadgeModalClose;
+      document.getElementById('mbti-modal-title-header').innerText = t.mbtiModalTitleHeader;
+      document.getElementById('mbti-save-btn').innerText = t.mbtiSaveBtn;
+      document.getElementById('mbti-close-btn').innerText = t.btnModalClose;
+      document.getElementById('arcade-modal-title').innerText = t.arcadeModalTitle;
+      document.getElementById('arcade-modal-subtitle').innerText = t.arcadeModalSubtitle;
+      document.getElementById('btn-arcade-close').innerText = t.btnModalClose;
+      document.getElementById('lbl-snake-score').innerText = t.lblSnakeScore;
+      document.getElementById('lbl-snake-record').innerText = t.lblSnakeRecord;
+      document.getElementById('lbl-pause-title').innerText = t.pauseTitle;
+      document.getElementById('btn-pause-resume').innerText = t.pauseResume;
+      document.getElementById('btn-toggle-customize').innerText = isControlsCustomizeMode ? t.pauseSaveKeys : t.pauseMoveKeys;
+      document.getElementById('btn-pause-reset-controls').innerText = t.pauseResetKeys;
+      document.getElementById('btn-pause-leaderboard').innerText = t.pauseLeaderboard;
+      document.getElementById('btn-pause-quit').innerText = t.pauseQuit;
+      document.getElementById('btn-gameover-replay').innerText = t.btnReplay;
+      document.getElementById('btn-gameover-leaderboard').innerText = t.btnLeaderboard;
+      document.getElementById('btn-gameover-close').innerText = t.btnBack;
+      document.getElementById('lbl-leaderboard-title').innerText = t.leaderboardTitle;
+      document.getElementById('lbl-leaderboard-subtitle').innerText = t.leaderboardSubtitle;
+      document.getElementById('btn-leaderboard-close').innerText = t.btnModalClose;
+      document.getElementById('chart-pct-title').innerText = t.chartPctTitle;
+      document.getElementById('chart-mult-title').innerText = t.chartMultTitle;
+      document.getElementById('btn-history-toggle').innerText = t.btnHistoryToggle;
+      document.getElementById('lang-select').value = state.lang;
     }
 
     function updateCurrencyDisplay() {
@@ -4405,7 +4492,7 @@
         a.click();
         document.body.removeChild(a);
       } catch (err) {
-        showCustomDialog('⚠️', 'Erreur Export', err.message);
+        showCustomDialog('⚠️', 'Export', err.message);
       }
     }
 
@@ -4423,10 +4510,10 @@
             applyTranslations();
             renderExpenses();
             updateCalculations();
-            showCustomDialog('✅', 'Importation', 'Tes données et tes records ont été restaurés avec succès !');
+            showCustomDialog('✅', 'Import', state.lang === 'en' ? 'Data restored successfully!' : 'Données restaurées avec succès !');
           }
         } catch (err) {
-          showCustomDialog('⚠️', 'Erreur Import', 'Le fichier de sauvegarde est invalide ou corrompu.');
+          showCustomDialog('⚠️', 'Import', state.lang === 'en' ? 'Backup file is invalid.' : 'Le fichier de sauvegarde est invalide.');
         }
       };
       reader.readAsText(file);
@@ -4434,7 +4521,7 @@
 
     function confirmResetDialog() {
       const t = getT();
-      showCustomDialog('🗑️', 'Réinitialisation', t.confirmReset, true, () => {
+      showCustomDialog('🗑️', state.lang === 'en' ? 'Reset' : 'Réinitialisation', t.confirmReset, true, () => {
         state = {
           expenses: [], capital: 0, currency: "€", theme: "dark", lang: state.lang,
           allocations: {}, globalAvatars: {}, dedicatedAvatars: {}, firstname: "",
