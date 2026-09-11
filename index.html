@@ -1768,11 +1768,11 @@
     <div class="avatar-detail-card">
       <div class="avatar-large-display" id="avatarDetailDisplay">👑</div>
       <div>
-        <h3 style="color: var(--accent-blue); font-size: 1.25rem; font-weight: 800;" id="avatarDetailCodeTitle">INTJ-A — L'Architecte</h3>
-        <p style="font-size: 0.85rem; opacity: 0.75; font-weight: bold; margin-top: 2px;" id="avatarDetailSubtitle">Profil Stratège & Analyticien</p>
+        <p style="font-size: 0.78rem; opacity: 0.75; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;" id="avatarDetailSubtitle">Profil mental du Klon</p>
+        <h3 style="color: var(--accent-blue); font-size: 1.25rem; font-weight: 800;" id="avatarDetailCodeTitle">--</h3>
       </div>
       <div class="avatar-detail-text" id="avatarDetailDescriptionText">
-        Description complète du profil MBTI.
+        Chargement...
       </div>
       <button class="btn-secondary" style="width: 100%;" onclick="closeAvatarDetailModal()" id="btn-avatar-detail-close">Retour aux réglages</button>
     </div>
@@ -2809,6 +2809,26 @@
 
         renderMbtiModalTraits();
         updateMBTIModalDisplay();
+
+        // Récupère le nom du Klon pour personnaliser le titre de l'en-tête
+        let cloneName = "";
+        const isSuper = typeof cloneId === 'string' && cloneId.startsWith('super_');
+        if (!isSuper) {
+          const idx = state.expenses.findIndex(e => e.id === cloneId || String(e.id) === String(cloneId));
+          cloneName = getCloneName(cloneId, idx >= 0 ? idx : 0);
+        } else {
+          const tier = TIERS.find(tr => tr.id === cloneId);
+          const customSuperName = state.customCloneNames[cloneId] || "";
+          cloneName = customSuperName !== "" ? `Super Klon ${customSuperName}` : `Super Klon ${state.lang === 'en' ? tier?.nameEN : tier?.nameFR}`;
+        }
+
+        const headerTitleEl = document.getElementById('mbti-modal-title-header');
+        if (headerTitleEl) {
+          headerTitleEl.innerText = state.lang === 'en' 
+            ? `🧠 Mind Profile: Klon ${cloneName}` 
+            : `🧠 Profil mental du Klon ${cloneName}`;
+        }
+
         const modal = document.getElementById('mbti-modal');
         if (modal) modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -2855,8 +2875,23 @@
       const subEl = document.getElementById('avatarDetailSubtitle');
       const textEl = document.getElementById('avatarDetailDescriptionText');
 
+      // Récupère le nom du Klon pour le sous-titre du zoom
+      let detailName = "";
+      if (!isSuper) {
+        const idx = state.expenses.findIndex(e => e.id === currentEditingMBTICloneId || String(e.id) === String(currentEditingMBTICloneId));
+        detailName = getCloneName(currentEditingMBTICloneId, idx >= 0 ? idx : 0);
+      } else {
+        const tier = TIERS.find(tr => tr.id === currentEditingMBTICloneId);
+        const customSuperName = state.customCloneNames[currentEditingMBTICloneId] || "";
+        detailName = customSuperName !== "" ? `Super Klon ${customSuperName}` : `Super Klon ${state.lang === 'en' ? tier?.nameEN : tier?.nameFR}`;
+      }
+
       if (titleEl) titleEl.innerText = `${info.code} — ${info.title}`;
-      if (subEl) subEl.innerText = state.lang === 'en' ? "Klon Mental Profile" : "Profil Mental du Klon";
+      if (subEl) {
+        subEl.innerText = state.lang === 'en'
+          ? `Mind profile of Klon ${detailName}`
+          : `Profil mental du Klon ${detailName}`;
+      }
       if (textEl) textEl.innerText = info.desc;
 
       const modal = document.getElementById('avatar-detail-modal');
