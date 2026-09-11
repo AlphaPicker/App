@@ -437,6 +437,13 @@
       transform: scale(0.98);
     }
 
+    .clone-card.long-pressing {
+      transform: scale(0.98);
+      opacity: 0.7;
+      border-color: var(--accent-blue) !important;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
     .clone-card.completed {
       border-left: 4px solid var(--accent-green-bright) !important;
     }
@@ -4392,36 +4399,73 @@
         }
       });
 
-      // --- 2. TACTILE FLUIDE (MOBILE) ---
+      // --- 2. TACTILE AVEC APPUI LONG (MOBILE) ---
       let touchCard = null;
+      let longPressTimer = null;
+      let isDraggingTouch = false;
+      let startY = 0;
 
       cards.forEach(card => {
         card.addEventListener('touchstart', (e) => {
+          // Annule si l'utilisateur touche un champ texte, bouton ou zone cliquable
           if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) {
             return;
           }
+
+          startY = e.touches[0].clientY;
           touchCard = card;
-          touchCard.classList.add('dragging');
+
+          // Déclenche le déplacement uniquement après 300 ms de pression continue
+          longPressTimer = setTimeout(() => {
+            isDraggingTouch = true;
+            touchCard.classList.add('dragging', 'long-pressing');
+            if (navigator.vibrate) navigator.vibrate(40); // Petite vibration de confirmation si supportée
+          }, 300);
         }, { passive: true });
 
         card.addEventListener('touchmove', (e) => {
           if (!touchCard) return;
-          const touchY = e.touches[0].clientY;
-          const nextSibling = getDragAfterElement(container, touchY);
-          
-          if (nextSibling == null) {
-            container.appendChild(touchCard);
-          } else {
-            container.insertBefore(touchCard, nextSibling);
-          }
-        }, { passive: true });
 
-        card.addEventListener('touchend', () => {
-          if (!touchCard) return;
-          touchCard.classList.remove('dragging');
+          const currentY = e.touches[0].clientY;
+          const moveDistance = Math.abs(currentY - startY);
+
+          // Si le doigt bouge avant la fin des 300ms, c'est un scroll classique : on annule l'appui long
+          if (!isDraggingTouch && moveDistance > 8) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+            touchCard = null;
+            return;
+          }
+
+          // Si l'appui long est validé, on gère le réordonnancement
+          if (isDraggingTouch) {
+            if (e.cancelable) e.preventDefault();
+            const nextSibling = getDragAfterElement(container, currentY);
+            if (nextSibling == null) {
+              container.appendChild(touchCard);
+            } else {
+              container.insertBefore(touchCard, nextSibling);
+            }
+          }
+        }, { passive: false });
+
+        const cancelTouch = () => {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+
+          if (touchCard) {
+            touchCard.classList.remove('dragging', 'long-pressing');
+            if (isDraggingTouch) {
+              saveNewOrder();
+            }
+          }
+
           touchCard = null;
-          saveNewOrder();
-        });
+          isDraggingTouch = false;
+        };
+
+        card.addEventListener('touchend', cancelTouch);
+        card.addEventListener('touchcancel', cancelTouch);
       });
     }
 
