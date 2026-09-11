@@ -2214,11 +2214,11 @@
     ];
 
     const MBTI_TRAITS_CONFIG = [
-      { id: 'intelligence', label: 'Intelligence', icon: '🧠', default: 8 },
-      { id: 'nervosite', label: 'Nervosité / Réflexe', icon: '⚡', default: 3 },
-      { id: 'force', label: 'Force / Impact', icon: '💥', default: 6 },
-      { id: 'sociabilite', label: 'Sociabilité', icon: '💬', default: 2 },
-      { id: 'chance', label: 'Chance / Spontanéité', icon: '🎲', default: 4 }
+      { id: 'intelligence', label: 'Intelligence', icon: '🧠', default: 5 },
+      { id: 'nervosite', label: 'Nervosité / Réflexe', icon: '⚡', default: 5 },
+      { id: 'force', label: 'Force / Impact', icon: '💥', default: 5 },
+      { id: 'sociabilite', label: 'Sociabilité', icon: '💬', default: 5 },
+      { id: 'chance', label: 'Chance / Spontanéité', icon: '🎲', default: 5 }
     ];
 
     const MBTI_PROFILES = {
@@ -2291,7 +2291,7 @@
     }
 
     function calculateMBTIFromTraits(traits) {
-      if (!traits) return "INTJ";
+      if (!traits) return null;
       const E_or_I = (traits.sociabilite || 0) > 5 ? 'E' : 'I';
       const N_or_S = (traits.intelligence || 0) > 5 ? 'N' : 'S';
       const T_or_F = (traits.force || 0) >= (traits.sociabilite || 0) ? 'T' : 'F';
@@ -2361,7 +2361,7 @@
     }
 
     function updateMBTIModalDisplay() {
-      const code = calculateMBTIFromTraits(tempMBTITraits);
+      const code = calculateMBTIFromTraits(tempMBTITraits) || "INTJ";
       const profile = MBTI_PROFILES[code] || { title: "Inconnu", desc: "Analyse du profil..." };
 
       document.getElementById('mbtiModalCode').innerText = code;
@@ -4142,12 +4142,13 @@
           const barColor = getBarColor(c.percentage);
 
           const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[c.id]);
+          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="Profil MBTI actuel">${mbtiCode}</span>` : '';
 
           let actionsGroupHTML = `
             <div class="clone-action-group">
               ${isUnlocked ? `<button class="clone-action-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault(${c.id})">🕹️</button>` : ''}
               <button class="clone-action-btn" title="Modifier le cerveau & profil MBTI" onclick="openMbtiModal(${c.id})">🧠</button>
-              <span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="Profil MBTI actuel">${mbtiCode}</span>
+              ${mbtiBadgeHTML}
             </div>
           `;
 
@@ -4203,12 +4204,13 @@
             .replace('{3}', c.percentage);
 
           const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[tier.id]);
+          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="Profil MBTI actuel">${mbtiCode}</span>` : '';
 
           let actionsGroupHTML = `
             <div class="clone-action-group">
               ${c.isUnlocked ? `<button class="clone-action-btn" title="Ouvrir le Coffre à Jeux Klon" onclick="openArcadeVault('${tier.id}')">🕹️</button>` : ''}
               <button class="clone-action-btn" title="Modifier le cerveau & profil MBTI" onclick="openMbtiModal('${tier.id}')">🧠</button>
-              <span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="Profil MBTI actuel">${mbtiCode}</span>
+              ${mbtiBadgeHTML}
             </div>
           `;
 
