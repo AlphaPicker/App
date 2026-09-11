@@ -1382,13 +1382,13 @@
     .snake-header-title {
       font-size: 1.15rem;
       font-weight: bold;
-      color: var(--text-bright);
+      color: #f0f6fc; /* Maintient le blanc lumineux quel que soit le thème */
       text-align: center;
     }
 
     .snake-header-subtitle {
       font-size: 0.78rem;
-      opacity: 0.85;
+      color: #8b949e; /* Gris clair pour le sous-titre */
       text-align: center;
       margin-top: 1px;
     }
@@ -1907,14 +1907,14 @@
         <div class="klonboy-power-led"></div>
         
         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px; padding: 0 4px;">
-          <button onclick="restartActiveGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 30px; height: 30px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
+          <button onclick="restartActiveGame()" title="Rejouer" style="background: #0d1117; border: 1px solid #30363d; color: #f0f6fc; border-radius: 6px; width: 30px; height: 30px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
           
           <div style="text-align: center;">
-            <div class="snake-header-title" style="font-size: 1rem;" id="klonboy-game-title">🐍 KLON Snake</div>
-            <div class="snake-header-subtitle" id="snake-player-subtitle" style="font-size: 0.7rem;">Klon : Joueur</div>
+            <div class="snake-header-title" style="font-size: 1rem; color: #f0f6fc;" id="klonboy-game-title">🐍 KLON Snake</div>
+            <div class="snake-header-subtitle" id="snake-player-subtitle" style="font-size: 0.7rem; color: #8b949e;">Klon : Joueur</div>
           </div>
 
-          <button onclick="closeSnakeGame()" title="Retour" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">↩️</button>
+          <button onclick="closeSnakeGame()" title="Retour" style="background: #0d1117; border: 1px solid #30363d; color: #f0f6fc; border-radius: 6px; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">↩️</button>
         </div>
 
         <div class="klonboy-screen-container">
