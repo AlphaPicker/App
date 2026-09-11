@@ -33,6 +33,12 @@
       --btn-paypal-bg: #238636;
       --btn-paypal-text: #ffffff;
       --badge-inactive-color: #f0883e;
+
+      /* GRADIENTS & GLOWS POUR JAUGES DYNAMIQUES */
+      --grad-left: linear-gradient(180deg, #388bfd 0%, #1f6beb 100%);
+      --glow-left: 0 0 6px rgba(56, 139, 253, 0.4);
+      --grad-right: linear-gradient(180deg, #bc8cff 0%, #8957e5 100%);
+      --glow-right: 0 0 6px rgba(188, 140, 255, 0.4);
     }
 
     :root[data-theme="light"] {
@@ -52,6 +58,11 @@
       --btn-paypal-bg: #1f883d;
       --btn-paypal-text: #ffffff;
       --badge-inactive-color: #bc4c00;
+
+      --grad-left: linear-gradient(180deg, #0969da 0%, #054da7 100%);
+      --glow-left: 0 0 6px rgba(9, 105, 218, 0.3);
+      --grad-right: linear-gradient(180deg, #8250df 0%, #6639ba 100%);
+      --glow-right: 0 0 6px rgba(130, 80, 223, 0.3);
     }
 
     :root[data-theme="colorblind"] {
@@ -71,6 +82,11 @@
       --btn-paypal-bg: #0d6efd;
       --btn-paypal-text: #ffffff;
       --badge-inactive-color: #a0a0a0;
+
+      --grad-left: linear-gradient(180deg, #00ffff 0%, #008b8b 100%);
+      --glow-left: 0 0 8px rgba(0, 255, 255, 0.5);
+      --grad-right: linear-gradient(180deg, #ffff00 0%, #b8860b 100%);
+      --glow-right: 0 0 8px rgba(255, 255, 0, 0.5);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -609,19 +625,18 @@
     .modal-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 12px;
       width: 100%;
       max-width: 500px;
       max-height: 95vh;
       overflow: hidden;
-      padding: 16px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       position: relative;
     }
 
-    /* VERROUILLAGE SCROLL ARRIÈRE-PLAN SUR TOUS LES CONTENEURS INTERNES */
     .modal-body-scroll,
     .traits-list-modal,
     .modal-card {
@@ -640,88 +655,201 @@
       background-color: var(--bg-color);
       border: 1px solid var(--accent-blue);
       border-radius: 8px;
-      padding: 12px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
-    .mbti-modal-header {
+    .mbti-modal-top-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 8px;
+    }
+
+    .mbti-avatar-vignette {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background-color: var(--card-bg);
+      border: 2px solid var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .mbti-avatar-vignette::after {
+      content: "🔍";
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      font-size: 0.65rem;
+      background: var(--card-bg);
+      border-radius: 50%;
+      padding: 1px;
+      border: 1px solid var(--border-color);
     }
 
     .mbti-modal-code {
-      font-size: 1.2rem;
+      font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-blue);
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     .mbti-modal-title {
-      font-size: 0.85rem;
+      font-size: 0.72rem;
       font-weight: bold;
       background: rgba(88, 166, 255, 0.15);
       color: var(--accent-blue);
-      padding: 3px 8px;
-      border-radius: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
     }
 
     .mbti-modal-desc {
-      font-size: 0.82rem;
+      font-size: 0.72rem;
       color: var(--text-main);
-      line-height: 1.35;
+      line-height: 1.2;
       font-style: italic;
-      margin-top: 2px;
+    }
+
+    .mbti-budget-counter {
+      font-size: 0.72rem;
+      font-weight: bold;
+      color: var(--accent-green-bright);
+      text-align: right;
     }
 
     .traits-list-modal {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 4px;
-      overflow-y: auto;
-      overflow-x: hidden; /* Empêche tout déclenchement horizontal intempestif */
-      max-height: 320px;
-      padding-right: 4px;
-      padding-bottom: 8px; /* Laisse de l'espace pour l'effet de survol (scaleY) sur la dernière ligne */
+      gap: 6px;
+      margin-top: 2px;
+      overflow-y: visible;
+      padding-right: 0;
+      padding-bottom: 0;
     }
 
     .trait-item-modal {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
+      background: transparent;
+      border: none;
+      padding: 2px 0;
     }
 
     .trait-header-modal {
       display: flex;
       justify-content: space-between;
-      font-size: 0.82rem;
+      align-items: center;
+      font-size: 0.8rem;
     }
 
-    .bar-container-modal {
+    /* BARRES DE COMPTEURS AVEC GRADIENTS & GLOWS */
+    .dual-positive-bars {
       display: flex;
-      gap: 4px;
-      height: 12px;
-      cursor: pointer;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
     }
 
-    .bar-segment-modal {
+    .side-bar-box {
       flex: 1;
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      border-radius: 3px;
-      transition: background-color 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 18px;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
     }
 
-    .bar-segment-modal.active {
-      background-color: var(--accent-blue);
+    .side-seg {
+      flex: 1;
+      height: 16px;
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .side-seg:hover {
       border-color: var(--accent-blue);
     }
 
-    .bar-segment-modal:hover {
-      transform: scaleY(1.2);
+    .side-seg.left-active {
+      background: var(--grad-left);
+      border-color: #388bfd;
+      box-shadow: var(--glow-left);
+    }
+
+    .side-seg.right-active {
+      background: var(--grad-right);
+      border-color: #bc8cff;
+      box-shadow: var(--glow-right);
+    }
+
+    .center-separator-glow {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: #388bfd;
+      box-shadow: 0 0 6px #388bfd;
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+
+    .avatar-detail-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .avatar-large-display {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background-color: var(--bg-color);
+      border: 3px solid var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.8rem;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .avatar-detail-text {
+      font-size: 1.05rem;
+      color: var(--text-bright);
+      line-height: 1.6;
+      text-align: left;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      width: 100%;
     }
 
     .tier-grid {
@@ -1609,23 +1737,44 @@
 
   <!-- MODAL PERSONNALITÉ MBTI & STATISTIQUES DU KLON -->
   <div id="mbti-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 420px;">
-      <div class="card-title" style="justify-content: center;" id="mbti-modal-title-header">🧠 Cerveau & Profil MBTI</div>
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="card-title" style="justify-content: center; margin-bottom: 2px;" id="mbti-modal-title-header">🧠 Profil Mental du Klon</div>
       
       <div class="mbti-box-modal">
-        <div class="mbti-modal-header">
-          <span class="mbti-modal-code" id="mbtiModalCode">INTJ</span>
-          <span class="mbti-modal-title" id="mbtiModalTitle">L'Architecte</span>
+        <div class="mbti-modal-top-row">
+          <div id="mbtiAvatarVignette" class="mbti-avatar-vignette" onclick="openAvatarDetailModal()">👑</div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 1px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="mbti-modal-code" id="mbtiModalCode">INTJ-A</span>
+              <span class="mbti-modal-title" id="mbtiModalTitle">L'Architecte</span>
+            </div>
+            <div class="mbti-modal-desc" id="mbtiModalDesc">Analyse tout, planifie à froid et agit avec méthode.</div>
+          </div>
         </div>
-        <div class="mbti-modal-desc" id="mbtiModalDesc">Analyse tout, planifie à froid et agit de manière ultra-méthodique.</div>
+        <div class="mbti-budget-counter" id="mbtiBudgetCounter">Points : 0 / 0 débloqués</div>
       </div>
 
       <div class="traits-list-modal" id="modalTraitsContainer"></div>
 
-      <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <button class="btn-primary" style="flex: 1;" id="mbti-save-btn" onclick="saveKlonMBTITraits()">Enregistrer le cerveau</button>
-        <button class="btn-secondary" id="mbti-close-btn" onclick="closeMbtiModal()">Fermer</button>
+      <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <button class="btn-primary" style="flex: 1; padding: 10px;" id="mbti-save-btn" onclick="saveKlonMBTITraits()">Enregistrer le cerveau</button>
+        <button class="btn-secondary" style="padding: 10px;" id="mbti-close-btn" onclick="closeMbtiModal()">Fermer</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL DETAIL MBTI / AVATAR (AVEC GRAND TEXTE ENRICHI) -->
+  <div id="avatar-detail-modal" class="modal-overlay" style="z-index: 110;">
+    <div class="avatar-detail-card">
+      <div class="avatar-large-display" id="avatarDetailDisplay">👑</div>
+      <div>
+        <h3 style="color: var(--accent-blue); font-size: 1.25rem; font-weight: 800;" id="avatarDetailCodeTitle">INTJ-A — L'Architecte</h3>
+        <p style="font-size: 0.85rem; opacity: 0.75; font-weight: bold; margin-top: 2px;" id="avatarDetailSubtitle">Profil Stratège & Analyticien</p>
+      </div>
+      <div class="avatar-detail-text" id="avatarDetailDescriptionText">
+        Description complète du profil MBTI.
+      </div>
+      <button class="btn-secondary" style="width: 100%;" onclick="closeAvatarDetailModal()" id="btn-avatar-detail-close">Retour aux réglages</button>
     </div>
   </div>
 
@@ -1955,7 +2104,7 @@
         badge_40: { title: "Cap des 40 % d'Autonomie !", desc: "Impressionnant ! 40 % de tes dépenses sont couvertes de manière totalement passive.", anim: "cash" },
         badge_50: { title: "Équilibre Parfait (50 %) !", desc: "Cap symbolique franchi ! Ta rente paye exactement la moitié de ton mode de vie complet !", anim: "gold" },
         badge_60: { title: "Cap des 60 % d'Autonomie !", desc: "Plus de la moitié de ta vie est financée par tes revenus passifs. Tu approches à grands pas de la liberté absolue !", anim: "confetti" },
-        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges couvertes ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
+        badge_70: { title: "Cap des 70 % d'Autonomie !", desc: "70 % de charges covered ! Ton capital travaille désormais plus dur que jamais pour toi.", anim: "fireworks" },
         badge_80: { title: "Cap des 80 % d'Autonomie !", desc: "80 % d'indépendance financière ! L'objectif ultime est désormais à portée de main.", anim: "fireworks" },
         badge_90: { title: "Cap des 90 % d'Autonomie !", desc: "90 % d'autonomie ! Tu es à deux doigts d'anéantir totalement l'ensemble de tes charges !", anim: "diamonds" },
         badge_roche: { title: "Le Socle de Roche Brisé !", desc: "Épique ! 100 % de tes charges de base sont couvertes. Le socle vital est entièrement vaincu !", anim: "fireworks" },
@@ -2109,12 +2258,12 @@
         pctModalDesc100: "Socle de roche totalement pulvérisé ! 100 % de tes charges de base sont neutralisées par ton capital. Ton salaire reste dans ta poche.<br><br>⚡ <strong>Le vrai jeu commence maintenant :</strong> c'est au tour des <strong>Super Klons</strong> de bosser pour démultiplier la sécurité de ton indépendance et élever ton train de vie !",
         pctModalDescSuper: "⭐ <strong>Incroyable ! Tu as dépassé les 100 % d'autonomie !</strong><br><br>Ton capital produit plus de rente que nécessaire pour couvrir ton mode de vie de base. Tu es entré dans le règne des <strong>Super Klons</strong> : ta liberté est totale et chaque euro supplémentaire démultiplie ton pouvoir d'achat passif !",
         clonesModalTitle: "Klons d'Autonomie",
-        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officiellement neutralisée par ta rente passive !",
+        clonesModalDescNone: "Chaque Klon représente une de tes charges mensuelles. Dès qu'un Klon atteint 100 %, cette facture est officially neutralisée par ta rente passive !",
         clonesModalDescSome: "Ton armée de Klons prend de l'ampleur ! Tu as déjà {0} charge(s) entièrement couverte(s) par ton capital. Ton salaire reste dans ta poche.",
         superModalTitle: "Super Klons de Puissance",
         superModalDesc: "Les Super Klons s'activent une fois que 100 % de tes charges de base sont vaincues. Ils mesurent la surpuissance de ta rente (2x, 4x, 8x... tes dépenses) pour atteindre l'abondance totale !",
         comingSoonText: "Débloqué avec de futurs Klons à 100%",
-        mbtiModalTitleHeader: "🧠 Cerveau & Profil MBTI",
+        mbtiModalTitleHeader: "🧠 Profil Mental du Klon",
         mbtiSaveBtn: "Enregistrer le cerveau",
         arcadeModalTitle: "🎁 Coffre à Jeux Klon",
         arcadeModalSubtitle: "Finance tes Klons d'autonomie pour débloquer de nouveaux mini-jeux secrets !",
@@ -2245,7 +2394,7 @@
         superModalTitle: "Power Super Klons",
         superModalDesc: "Super Klons activate once 100% of your baseline expenses are defeated. They measure your annuity overpower (2x, 4x, 8x... your expenses) to reach complete abundance!",
         comingSoonText: "Unlocked with future 100% Klons",
-        mbtiModalTitleHeader: "🧠 Brain & MBTI Profile",
+        mbtiModalTitleHeader: "🧠 Klon Mind Profile",
         mbtiSaveBtn: "Save Brain",
         arcadeModalTitle: "🎁 Klon Arcade Vault",
         arcadeModalSubtitle: "Fund your autonomy Klons to unlock new secret mini-games!",
@@ -2281,31 +2430,207 @@
       { id: "super_diamant", nameFR: "Diamant", nameEN: "Diamond", mult: 32, icon: "💎" }
     ];
 
-    const MBTI_TRAITS_CONFIG = [
-      { id: 'intelligence', labelFR: 'Intelligence', labelEN: 'Intelligence', icon: '🧠', default: 5 },
-      { id: 'nervosite', labelFR: 'Nervosité / Réflexe', labelEN: 'Speed / Reflex', icon: '⚡', default: 5 },
-      { id: 'force', labelFR: 'Force / Impact', labelEN: 'Power / Impact', icon: '💥', default: 5 },
-      { id: 'sociabilite', labelFR: 'Sociabilité', labelEN: 'Sociability', icon: '💬', default: 5 },
-      { id: 'chance', labelFR: 'Chance / Spontanéité', labelEN: 'Luck / Spontaneity', icon: '🎲', default: 5 }
+    const MBTI_AXES_CONFIG = [
+      { id: 'EI', leftLetter: 'E', rightLetter: 'I', labelFR: 'Énergie', labelEN: 'Energy', leftFR: 'Sociable 💬', rightFR: 'Réservé 👤', leftEN: 'Social 💬', rightEN: 'Reserved 👤' },
+      { id: 'SN', leftLetter: 'S', rightLetter: 'N', labelFR: 'Information', labelEN: 'Information', leftFR: 'Concret 🛠️', rightFR: 'Visionnaire 🔮', leftEN: 'Concrete 🛠️', rightEN: 'Visionary 🔮' },
+      { id: 'TF', leftLetter: 'T', rightLetter: 'F', labelFR: 'Décision', labelEN: 'Decision', leftFR: 'Logique 📐', rightFR: 'Sensible ❤️', leftEN: 'Logical 📐', rightEN: 'Sensitive ❤️' },
+      { id: 'JP', leftLetter: 'J', rightLetter: 'P', labelFR: 'Organisation', labelEN: 'Organization', leftFR: 'Carré 📋', rightFR: 'Spontané 🎲', leftEN: 'Structured 📋', rightEN: 'Spontaneous 🎲' },
+      { id: 'AT', leftLetter: 'A', rightLetter: 'T', labelFR: 'Confiance', labelEN: 'Confidence', leftFR: 'Serein 🛡️', rightFR: 'Vigilant ⚡', leftEN: 'Serene 🛡️', rightEN: 'Vigilant ⚡' }
     ];
 
     const MBTI_PROFILES = {
-      "INTJ": { titleFR: "L'Architecte", titleEN: "The Architect", descFR: "Pensée stratégique pure. Analyse tout, planifie à froid et agit de manière ultra-méthodique.", descEN: "Pure strategic thinking. Analyzes everything, plans coolly, and acts methodically." },
-      "INTP": { titleFR: "Le Penseur", titleEN: "The Logician", descFR: "Cerveau en ébullition constante. Cherche la logique derrière chaque détail et adore résoudre des énigmes.", descEN: "Constantly innovating mind. Seeks logic behind every detail and loves solving puzzles." },
-      "ENTJ": { titleFR: "Le Commandant", titleEN: "The Commander", descFR: "Leader-né ultra efficace. Ne perd jamais de temps et optimise chaque action pour gagner.", descEN: "Born effective leader. Never wastes time and optimizes every action to win." },
-      "ENTP": { titleFR: "L'Innovateur", titleEN: "The Debater", descFR: "Esprit vif et provocateur. Adore contourner les règles, improviser et tester de nouvelles idées.", descEN: "Sharp and provocative mind. Loves bypassing rules, improvising, and testing new ideas." },
-      "INFJ": { titleFR: "L'Avocat", titleEN: "The Advocate", descFR: "Intuition puissante et calme. Réfléchit en profondeur et agit selon des principes très stricts.", descEN: "Calm and powerful intuition. Thinks deeply and operates on strict principles." },
-      "INFP": { titleFR: "Le Médiateur", titleEN: "The Mediator", descFR: "Rêveur idéaliste. Fonctionne au sentiment et privilégie l'harmonie et la créativité.", descEN: "Idealistic dreamer. Driven by feelings and prioritizes harmony and creativity." },
-      "ENFJ": { titleFR: "Le Protagoniste", titleEN: "The Protagonist", descFR: "Charismatique et empathique. Motive ses alliés et pousse le groupe vers le sommet.", descEN: "Charismatic and empathetic. Motivates allies and drives the team to the top." },
-      "ENFP": { titleFR: "L'Inspirateur", titleEN: "The Campaigner", descFR: "Énergie débordante et spontanée. Passe d'une idée à l'autre avec un enthousiasme contagieux.", descEN: "Vibrant and spontaneous energy. Moves from idea to idea with infectious enthusiasm." },
-      "ISTJ": { titleFR: "Le Logisticien", titleEN: "The Logistician", descFR: "Esprit carré et ultra fiable. Suit la procédure à la lettre et ne laisse rien au hasard.", descEN: "Solid and ultra-reliable. Follows procedure to the letter and leaves nothing to chance." },
-      "ISFJ": { titleFR: "Le Défenseur", titleEN: "The Defender", descFR: "Protecteur et méticuleux. Toujours attentif aux détails et prêt à soutenir l'équipe.", descEN: "Protective and meticulous. Always attentive to details and ready to support the team." },
-      "ESTJ": { titleFR: "Le Directeur", titleEN: "The Executive", descFR: "Organisateur né. Met de l'ordre dans le chaos et s'assure que tout le monde file droit.", descEN: "Born organizer. Brings order to chaos and ensures everyone stays on track." },
-      "ESFJ": { titleFR: "Le Consul", titleEN: "The Consul", descFR: "Esprit d'équipe maximal. Sociable et bienveillant, il fait le lien entre tous les Klons.", descEN: "Ultimate team player. Sociable and caring, connects all Klons together." },
-      "ISTP": { titleFR: "Virtuose", titleEN: "The Virtuoso", descFR: "Calme sous pression. Analyse la mécanique des choses et réagit avec des réflexes fulgurants.", descEN: "Calm under pressure. Analyzes mechanics and reacts with lightning reflexes." },
-      "ISFP": { titleFR: "L'Artiste", titleEN: "The Adventurer", descFR: "Spontané et flexible. Vit l'instant présent et réagit selon ses ressentis.", descEN: "Spontaneous and flexible. Lives in the moment and reacts on feelings." },
-      "ESTP": { titleFR: "L'Entrepreneur", titleEN: "The Entrepreneur", descFR: "Fonctionne à l'adrénaline. Réagit instantanément au danger sans se poser 10 000 questions.", descEN: "Runs on adrenaline. Reacts instantly to danger without overthinking." },
-      "ESFP": { titleFR: "L'Amuseur", titleEN: "The Entertainer", descFR: "Spontanéité et spectacle. Adore attirer l'attention et improviser en pleine action.", descEN: "Spontaneous and entertaining. Loves drawing attention and improvising in action." }
+      "INTJ-A": { 
+        titleFR: "L'Architecte Serein", 
+        titleEN: "Serene Architect", 
+        descFR: "Analyse tout, planifie à froid et agit avec méthode.\n\nPensée stratégique pure, calme absolu sous pression et vision long terme imperturbable. Ce Klon ne laisse aucun détail au hasard : il cartographie l'avenir, anticipe chaque scénario financier et exécute son plan avec une précision chirurgicale sans jamais céder à l'impulsivité.", 
+        descEN: "Analyzes everything, cold-plans, and acts with method.\n\nPure strategic thinking, absolute calm under pressure, and unshakeable long-term vision. This Klon leaves nothing to chance: it maps out the future, anticipates every financial scenario, and executes its plan with surgical precision without ever giving in to impulsiveness." 
+      },
+      "INTJ-T": { 
+        titleFR: "L'Architecte Vigilant", 
+        titleEN: "Vigilant Architect", 
+        descFR: "Analyse ultra-méticuleuse, anticipe chaque faille possible pour atteindre la perfection.\n\nPerfectionniste et exigeant, ce Klon évalue continuellement la solidité de ses stratégies. Il traque les erreurs potentielles avant qu'elles ne surviennent et peaufine sans cesse son plan d'action pour garantir une efficacité sans faille.", 
+        descEN: "Ultra-meticulous analysis, anticipates every possible flaw to achieve perfection.\n\nPerfectionist and demanding, this Klon constantly assesses the strength of its strategies. It hunts down potential risks before they arise and continuously refines its action plan to ensure flawless execution." 
+      },
+      "INTP-A": { 
+        titleFR: "Le Penseur Serein", 
+        titleEN: "Serene Logician", 
+        descFR: "Cerveau logique indépendant, résout les énigmes complexes avec aisance et détachement.\n\nDoté d'une curiosité intellectuelle insatiable, il aborde les concepts financiers complexes comme des équations fascinantes. Son indépendance d'esprit lui permet d'élaborer des solutions novatrices à l'écart des bruits de marché.", 
+        descEN: "Independent logical mind, solves complex puzzles with ease and detachment.\n\nGifted with insatiable intellectual curiosity, it approaches complex financial concepts as fascinating equations. Its independent spirit allows it to craft innovative solutions away from market noise." 
+      },
+      "INTP-T": { 
+        titleFR: "Le Penseur Vigilant", 
+        titleEN: "Vigilant Logician", 
+        descFR: "Remet tout en question, perfectionniste à la recherche permanente de la vérité ultime.\n\nEsprit analytique d'une précision remarquable, il passe chaque hypothèse au crible. Il cherche constamment à affiner ses modèles mathématiques pour trouver l'optimum parfait.", 
+        descEN: "Questions everything, perfectionist in constant pursuit of ultimate truth.\n\nAn analytical mind of remarkable precision, it scrutinizes every hypothesis. It constantly seeks to refine its mathematical models to uncover the perfect optimum." 
+      },
+      "ENTJ-A": { 
+        titleFR: "Le Commandant Serein", 
+        titleEN: "Serene Commander", 
+        descFR: "Leader charismatique et sûr de lui, optimise tout sur son passage sans trembler.\n\nVisionnaire axé sur les résultats, il prend des décisions audacieuses avec une assurance naturelle. Il organise le capital et les flux avec une autorité naturelle pour franchir les paliers stratégiques les uns après les autres.", 
+        descEN: "Charismatic and confident leader, optimizes everything in its path without wavering.\n\nResults-driven visionary, it makes bold decisions with natural confidence. It structures capital and cash flows with natural authority to conquer strategic milestones one by one." 
+      },
+      "ENTJ-T": { 
+        titleFR: "Le Commandant Vigilant", 
+        titleEN: "Vigilant Commander", 
+        descFR: "Moteur hyper-exigeant, pousse ses systèmes au-delà de leurs limites.\n\nDéterminé et rigoureux, il recherche l'excellence maximale dans l'allocation de chaque ressource. Sa vigilance constante transforme les défis en opportunités de croissance accélérée.", 
+        descEN: "Hyper-demanding engine, pushes its systems beyond their limits.\n\nDetermined and rigorous, it pursues maximum excellence in resource allocation. Its constant vigilance turns challenges into opportunities for accelerated growth." 
+      },
+      "ENTP-A": { 
+        titleFR: "L'Innovateur Serein", 
+        titleEN: "Serene Debater", 
+        descFR: "Esprit vif et audacieux, adore improviser et créer des solutions hors normes.\n\nAgile et inventif, il détecte les opportunités non conventionnelles avant les autres. Il jongle avec les idées avec enthousiasme et sérénité.", 
+        descEN: "Quick-witted and bold spirit, loves improvising and creating unconventional solutions.\n\nAgile and inventive, it spots unconventional opportunities before others. It handles ideas with enthusiasm and calm confidence." 
+      },
+      "ENTP-T": { 
+        titleFR: "L'Innovateur Vigilant", 
+        titleEN: "Vigilant Debater", 
+        descFR: "Hyper-créatif et réactif, teste sans cesse de nouvelles idées pour surmonter les obstacles.\n\nToujours en quête d'optimisation, il réévalue constamment les règles du jeu pour trouver de nouveaux leviers d'efficacité financière.", 
+        descEN: "Hyper-creative and reactive, constantly tests new ideas to overcome obstacles.\n\nAlways seeking optimization, it constantly re-evaluates the rules of the game to uncover new levers of financial efficiency." 
+      },
+      "INFJ-A": { 
+        titleFR: "L'Avocat Serein", 
+        titleEN: "Serene Advocate", 
+        descFR: "Force tranquille guidée par des principes solides et une grande sagesse intérieure.\n\nIntuitif et mesuré, ce Klon aligne la gestion financière sur des convictions profondes et durables. Son calme olympien assure une trajectoire constante.", 
+        descEN: "Quiet strength guided by solid principles and deep inner wisdom.\n\nIntuitive and measured, this Klon aligns financial management with deep, lasting convictions. Its unshakable calm ensures a steady course." 
+      },
+      "INFJ-T": { 
+        titleFR: "L'Avocat Vigilant", 
+        titleEN: "Vigilant Advocate", 
+        descFR: "Hyper-empathique et perfectionniste, agit avec une profonde conviction éthique.\n\nSoucieux de l'impact global de chaque décision, il affine soigneusement sa feuille de route pour garantir une harmonie totale entre sécurité et convictions.", 
+        descEN: "Hyper-empathetic and perfectionist, acts with strong ethical conviction.\n\nMindful of the global impact of every decision, it carefully refines its roadmap to ensure complete harmony between security and convictions." 
+      },
+      "INFP-A": { 
+        titleFR: "Le Médiateur Serein", 
+        titleEN: "Serene Mediator", 
+        descFR: "Esprit poétique et optimiste, conserve une harmonie intérieure inébranlable.\n\nFlexible et idéaliste, il aborde la liberté financière comme un vecteur de création et d'autonomie personnelle paisible.", 
+        descEN: "Poetic and optimistic spirit, maintains unshakable inner harmony.\n\nFlexible and idealistic, it views financial freedom as a pathway to creativity and peaceful personal independence." 
+      },
+      "INFP-T": { 
+        titleFR: "Le Médiateur Vigilant", 
+        titleEN: "Vigilant Mediator", 
+        descFR: "Cœur d'artiste sensible, cherche constamment à perfectionner ses créations.\n\nÀ l'écoute de son environnement, ce Klon ajuste avec délicatesse ses objectifs pour rester fidèle à ses valeurs fondamentales.", 
+        descEN: "Sensitive artistic heart, constantly seeking to refine its creations.\n\nAttuned to its surroundings, this Klon delicately adjusts its goals to stay true to its core values." 
+      },
+      "ENFJ-A": { 
+        titleFR: "Le Protagoniste Serein", 
+        titleEN: "Serene Protagonist", 
+        descFR: "Inspirateur confiant, rassemble et motive sans effort autour d'objectifs nobles.\n\nUnificateur né, il impulse une dynamisme contagieux et construit des structures financières harmonieuses et pérennes.", 
+        descEN: "Confident inspirer, effortlessly rallies others around noble goals.\n\nA natural unifier, it drives contagious momentum and builds harmonious, long-lasting financial structures." 
+      },
+      "ENFJ-T": { 
+        titleFR: "Le Protagoniste Vigilant", 
+        titleEN: "Vigilant Protagonist", 
+        descFR: "Dévoué et passionné, cherche continuellement à s'améliorer pour soutenir son groupe.\n\nHyper-attentif aux besoins globaux, il adapte son plan avec réactivité pour maintenir un équilibre parfait.", 
+        descEN: "Dedicated and passionate, constantly improving to support its goals.\n\nHyper-attentive to broader needs, it responsively adapts its plan to maintain perfect equilibrium." 
+      },
+      "ENFP-A": { 
+        titleFR: "L'Inspirateur Serein", 
+        titleEN: "Serene Campaigner", 
+        descFR: "Enthousiaste et libre, transforme chaque défi en une aventure stimulante.\n\nCréatif et énergique, il aborde l'indépendance financière avec joie, explorant sans cesse de nouvelles pistes enrichissantes.", 
+        descEN: "Enthusiastic and free spirit, turns every challenge into a stimulating adventure.\n\nCreative and energetic, it approaches financial independence with joy, constantly exploring new rewarding avenues." 
+      },
+      "ENFP-T": { 
+        titleFR: "L'Inspirateur Vigilant", 
+        titleEN: "Vigilant Campaigner", 
+        descFR: "Énergie débordante et créative, sans cesse en quête de nouvelles possibilités.\n\nSensible aux opportunités émergentes, il remet régulièrement en question ses méthodes pour maximiser son épanouissement.", 
+        descEN: "Vibrant and creative energy, constantly seeking new possibilities.\n\nSensitive to emerging opportunities, it regularly re-evaluates its methods to maximize progress." 
+      },
+      "ISTJ-A": { 
+        titleFR: "Le Logisticien Serein", 
+        titleEN: "Serene Logistician", 
+        descFR: "Roc de stabilité, applique les méthodes éprouvées avec une efficacité constante.\n\nMéthodique, pragmatique et ponctuel, ce Klon garantit une régularité exemplaire dans la gestion du budget et l'exécution des règles financières.", 
+        descEN: "Rock of stability, executes proven methods with steady efficiency.\n\nMethodical, pragmatic, and punctual, this Klon ensures exemplary consistency in budget management and financial execution." 
+      },
+      "ISTJ-T": { 
+        titleFR: "Le Logisticien Vigilant", 
+        titleEN: "Vigilant Logistician", 
+        descFR: "Rigueur absolue, vérifie chaque chiffre avec une précision chirurgicale.\n\nMinutieux à l'extrême, il inspecte chaque dépense et chaque rendement pour éviter toute dérive, assurant une sécurité maximale.", 
+        descEN: "Absolute rigor, double-checks every number with surgical precision.\n\nExtremely thorough, it inspects every expense and yield to prevent drift, ensuring maximum security." 
+      },
+      "ISFJ-A": { 
+        titleFR: "Le Défenseur Serein", 
+        titleEN: "Serene Defender", 
+        descFR: "Protecteur fiable et calme, veille à la sécurité du système en arrière-plan.\n\nPrudent et attentif, il bâtit un bouclier financier protecteur solide et durable contre les aléas de la vie.", 
+        descEN: "Reliable and calm protector, safeguards system security in the background.\n\nPrudent and attentive, it builds a solid, long-lasting financial shield against life's uncertainties." 
+      },
+      "ISFJ-T": { 
+        titleFR: "Le Défenseur Vigilant", 
+        titleEN: "Vigilant Defender", 
+        descFR: "Méticuleux et attentionné, anticipe le moindre besoin pour prévenir les imprévus.\n\nToujours sur ses gardes, il consolide minutieusement les réserves et garantit une stabilité sans faille.", 
+        descEN: "Meticulous and caring, anticipates every need to prevent surprises.\n\nAlways on guard, it meticulously reinforces reserves to ensure ironclad stability." 
+      },
+      "ESTJ-A": { 
+        titleFR: "Le Directeur Serein", 
+        titleEN: "Serene Executive", 
+        descFR: "Gestionnaire pragmatique, maintient l'ordre et la structure avec une poigne ferme.\n\nOrganisateur exceptionnel, il applique des règles claires et structurées pour gérer le capital avec une rigueur absolue.", 
+        descEN: "Pragmatic manager, maintains order and structure with a firm hand.\n\nExceptional organizer, it applies clear, structured rules to manage capital with absolute discipline." 
+      },
+      "ESTJ-T": { 
+        titleFR: "Le Directeur Vigilant", 
+        titleEN: "Vigilant Executive", 
+        descFR: "Organisateur exigeant, traque l'inefficacité pour garantir des résultats parfaits.\n\nInflexible sur la performance, il ajuste immédiatement le cap dès qu'un écart est détecté dans la rentabilité.", 
+        descEN: "Demanding organizer, hunts down inefficiency for flawless execution.\n\nUncompromising on performance, it immediately corrects course as soon as a variance in yield is detected." 
+      },
+      "ESFJ-A": { 
+        titleFR: "Le Consul Serein", 
+        titleEN: "Serene Consul", 
+        descFR: "Esprit chaleureux, crée un environnement harmonieux et bien structuré.\n\nPragmatique et sociable, il gère les ressources avec bon sens et veille au maintien d'un cadre financier stable.", 
+        descEN: "Warm spirit, fosters a harmonious and well-structured environment.\n\nPragmatic and social, it manages resources with sound judgment and maintains a stable financial framework." 
+      },
+      "ESFJ-T": { 
+        titleFR: "Le Consul Vigilant", 
+        titleEN: "Vigilant Consul", 
+        descFR: "Attentif aux détails, s'assure du bon fonctionnement continu du système.\n\nSoucieux du moindre paramètre, il ajuste régulièrement l'allocation des fonds pour parer à toute éventualité.", 
+        descEN: "Attentive to details, ensures continuous smooth system operations.\n\nMindful of every parameter, it regularly fine-tunes resource allocation to cover every contingency." 
+      },
+      "ISTP-A": { 
+        titleFR: "Le Virtuose Serein", 
+        titleEN: "Serene Virtuoso", 
+        descFR: "Maître du sang-froid, maîtrise la technique et résout les problèmes sous pression.\n\nObservateur pragmatique, il comprend les rouages complexes des systèmes et intervient au moment exact pour maximiser l'efficacité.", 
+        descEN: "Master of composure, handles technical issues smoothly under pressure.\n\nPragmatic observer, it understands complex systemic mechanics and acts at the exact right moment to maximize efficiency." 
+      },
+      "ISTP-T": { 
+        titleFR: "Le Virtuose Vigilant", 
+        titleEN: "Vigilant Virtuoso", 
+        descFR: "Réflexes de pointe, ajuste continuellement ses outils pour maximiser la vitesse.\n\nTechnicien hors pair, il teste et perfectionne ses leviers d'action pour obtenir un rendement supérieur.", 
+        descEN: "Sharp reflexes, constantly fine-tuning tools to maximize speed.\n\nOutstanding technician, it tests and perfects its levers to achieve superior returns." 
+      },
+      "ISFP-A": { 
+        titleFR: "L'Artiste Serein", 
+        titleEN: "Serene Adventurer", 
+        descFR: "Spontanéité zen, s'adapte à toutes les situations avec souplesse et créativité.\n\nCalme et pragmatique, il trace sa voie financière à son propre rythme en privilégiant l'harmonie et la liberté d'action.", 
+        descEN: "Zen spontaneity, adapts to any situation with flexibility and creativity.\n\nCalm and pragmatic, it carves out its financial path at its own pace, valuing harmony and freedom of movement." 
+      },
+      "ISFP-T": { 
+        titleFR: "L'Artiste Vigilant", 
+        titleEN: "Vigilant Adventurer", 
+        descFR: "Sensibilité vive, explore de nouvelles approches tout en recherchant la perfection.\n\nEn quête permanente d'équilibre, il réajuste ses choix stratégiques avec finesse pour rester aligné sur ses priorités.", 
+        descEN: "Vibrant sensitivity, explores new approaches while aiming for perfection.\n\nIn constant pursuit of balance, it subtly readjusts strategic choices to remain aligned with its priorities." 
+      },
+      "ESTP-A": { 
+        titleFR: "L'Entrepreneur Serein", 
+        titleEN: "Serene Entrepreneur", 
+        descFR: "Fonceur intrépide, prend des risques calculés avec une assurance totale.\n\nOrienté action, il évolue sur le terrain avec réactivité et exploite l'énergie du moment pour faire bondir ses résultats.", 
+        descEN: "Fearless go-getter, takes calculated risks with complete confidence.\n\nAction-oriented, it moves swiftly on the ground and leverages current momentum to boost results." 
+      },
+      "ESTP-T": { 
+        titleFR: "L'Entrepreneur Vigilant", 
+        titleEN: "Vigilant Entrepreneur", 
+        descFR: "Hyper-réactif, exploite chaque opportunité à la vitesse de l'éclair.\n\nToujours à l'affût des fluctuations de marché, il saisit instantanément les occasions favorables avec pragmatisme.", 
+        descEN: "Hyper-reactive, seizes every opportunity at lightning speed.\n\nAlways tracking market shifts, it instantly captures favorable windows with grounded pragmatism." 
+      },
+      "ESFP-A": { 
+        titleFR: "L'Amuseur Serein", 
+        titleEN: "Serene Entertainer", 
+        descFR: "Énergie joyeuse, apporte de l'enthousiasme et de la spontanéité dans chaque tâche.\n\nOptimiste et adaptable, il aborde la gestion du capital avec légèreté tout en maintenant le cap sur l'autonomie.", 
+        descEN: "Joyful energy, brings enthusiasm and spontaneity to every task.\n\nOptimistic and adaptable, it approaches capital management with lightness while staying focused on autonomy." 
+      },
+      "ESFP-T": { 
+        titleFR: "L'Amuseur Vigilant", 
+        titleEN: "Vigilant Entertainer", 
+        descFR: "Vif et adaptable, reste constamment à l'affût du prochain élan de motivation.\n\nRéactif face au changement, il sait ajuster sa trajectoire au quotidien avec dynamisme pour préserver ses acquis.", 
+        descEN: "Lively and adaptable, constantly seeking the next burst of motivation.\n\nQuick to handle changes, it dynamically adjusts its daily trajectory to protect its progress." 
+      }
     };
 
     const ARCADE_GAMES_LIST = [
@@ -2358,57 +2683,206 @@
       return Math.max(1.0, Math.round(multiplier * 10) / 10);
     }
 
-    // ALGORITHME MBTI AMÉLIORÉ ET COHÉRENT
-    function calculateMBTIFromTraits(traits) {
-      if (!traits) return "INTJ";
+    function getUnlockedPointsForClone(cloneId) {
+      if (!cloneId) return 0;
+      const isSuper = typeof cloneId === 'string' && cloneId.startsWith('super_');
+      let percentage = 0;
 
-      const intel = traits.intelligence || 5;
-      const nerv = traits.nervosite || 5;
-      const force = traits.force || 5;
-      const soc = traits.sociabilite || 5;
-      const chance = traits.chance || 5;
+      if (!isSuper) {
+        const expense = state.expenses.find(e => e.id === cloneId || String(e.id) === String(cloneId));
+        if (expense && expense.amount > 0) {
+          const alloc = Math.round(state.allocations[expense.id] || 0);
+          percentage = Math.min(100, Math.round((alloc / expense.amount) * 100));
+        }
+      } else {
+        const totalExpenses = Math.round(state.expenses.reduce((acc, e) => acc + e.amount, 0));
+        const totalMonthlyCapacity = Math.round((state.capital * 0.04) / 12);
+        let superCapacityAvailable = Math.max(0, totalMonthlyCapacity - totalExpenses);
+        let previousTarget = totalExpenses;
 
-      // E vs I : Sociabilité vs Réflexion
-      const E_or_I = soc >= 6 ? 'E' : 'I';
+        for (let i = 0; i < TIERS.length; i++) {
+          let tier = TIERS[i];
+          let targetAmount = Math.round(totalExpenses * tier.mult);
+          let tierCapacityNeeded = targetAmount - previousTarget;
+          let tierPct = Math.min(100, Math.round((superCapacityAvailable / tierCapacityNeeded) * 100));
 
-      // N vs S : Abstraction/Intuition vs Concret/Réflexe
-      const N_or_S = (intel + chance) >= (force + nerv) ? 'N' : 'S';
+          if (tier.id === cloneId) {
+            percentage = isNaN(tierPct) ? 0 : tierPct;
+            break;
+          }
+          if (superCapacityAvailable < tierCapacityNeeded) break;
+          superCapacityAvailable -= tierCapacityNeeded;
+          previousTarget = targetAmount;
+        }
+      }
 
-      // T vs F : Logique/Impact vs Émotion/Relationnel
-      const T_or_F = (intel + force) >= (soc + chance) ? 'T' : 'F';
+      const steps = Math.floor(Math.min(100, Math.max(0, percentage)) / 20);
+      return steps * (isSuper ? 10 : 5);
+    }
 
-      // J vs P : Structuré/Méthodique vs Spontané/Réactif
-      const J_or_P = (intel > nerv) ? 'J' : 'P';
+    function getSpentPoints(axesValues) {
+      if (!axesValues) return 0;
+      return Object.values(axesValues).reduce((sum, val) => sum + (val || 0), 0);
+    }
 
-      return `${E_or_I}${N_or_S}${T_or_F}${J_or_P}`;
+    function getMBTIProfileInfo(axesValues) {
+      const isEn = state.lang === 'en';
+      const spent = getSpentPoints(axesValues);
+
+      // CAS 1 : Aucun point alloué
+      if (!axesValues || spent === 0) {
+        return {
+          status: 'empty',
+          code: isEn ? 'Unknown' : 'Inconnu',
+          title: isEn ? 'Undefined Personality' : 'Personnalité Non Définie',
+          desc: isEn 
+            ? 'No attribute points have been allocated to this Klon yet. Allocate points on the gauges below to forge its mind.' 
+            : 'Aucun point d\'attribut n\'a encore été alloué à ce Klon. Attribuez des points sur les jauges ci-dessous pour forger son esprit.',
+          badgeText: null
+        };
+      }
+
+      const calcAxis = (id) => {
+        const left = (axesValues[`${id}_L`] || 0);
+        const right = (axesValues[`${id}_R`] || 0);
+        return right - left;
+      };
+
+      const diffEI = calcAxis('EI');
+      const diffSN = calcAxis('SN');
+      const diffTF = calcAxis('TF');
+      const diffJP = calcAxis('JP');
+      const diffAT = calcAxis('AT');
+
+      // CAS 2 : Des points existent mais au moins un axe est en équilibre parfait (0 vs 0 ou égalité)
+      if (diffEI === 0 || diffSN === 0 || diffTF === 0 || diffJP === 0 || diffAT === 0) {
+        return {
+          status: 'uncertain',
+          code: isEn ? 'Unknown' : 'Inconnu',
+          title: isEn ? 'Uncertain Profile' : 'Profil Incertain',
+          desc: isEn 
+            ? 'Profile is still uncertain or balanced: some traits are in perfect equilibrium. Allocate or adjust points to establish clear dominant traits and reveal this Klon\'s personality.' 
+            : 'Profil encore incertain ou équilibré : certains traits sont en équilibre parfait. Allouez ou ajustez les points pour dégager une tendance nette et révéler la personnalité de ce Klon.',
+          badgeText: isEn ? 'Unknown' : 'Inconnu'
+        };
+      }
+
+      // CAS 3 : Les 5 axes sont tranchés
+      const e_i = diffEI > 0 ? 'I' : 'E';
+      const s_n = diffSN > 0 ? 'N' : 'S';
+      const t_f = diffTF > 0 ? 'F' : 'T';
+      const j_p = diffJP > 0 ? 'P' : 'J';
+      const a_t = diffAT > 0 ? 'T' : 'A';
+      const code = `${e_i}${s_n}${t_f}${j_p}-${a_t}`;
+
+      const profile = MBTI_PROFILES[code] || { 
+        titleFR: "Profil Sur-Mesure", titleEN: "Custom Profile", 
+        descFR: "Profil équilibré et polyvalent.", descEN: "Balanced and versatile profile." 
+      };
+
+      return {
+        status: 'complete',
+        code: code,
+        title: isEn ? profile.titleEN : profile.titleFR,
+        desc: isEn ? profile.descEN : profile.descFR,
+        badgeText: code
+      };
+    }
+
+    // Sécurité rétrocompatible : évite tout plantage si l'ancien nom est encore cherché
+    function calculateMBTICodeFromAxes(axesValues) {
+      const info = getMBTIProfileInfo(axesValues);
+      return info.badgeText;
     }
 
     function openMbtiModal(cloneId) {
-      currentEditingMBTICloneId = cloneId;
-      const saved = state.cloneTraits[cloneId];
-      tempMBTITraits = {};
+      try {
+        currentEditingMBTICloneId = cloneId;
+        if (!state.cloneTraits) state.cloneTraits = {};
+        const saved = state.cloneTraits[cloneId] || {};
+        tempMBTITraits = {};
 
-      MBTI_TRAITS_CONFIG.forEach(t => {
-        tempMBTITraits[t.id] = (saved && saved[t.id] !== undefined) ? saved[t.id] : t.default;
-      });
+        MBTI_AXES_CONFIG.forEach(axis => {
+          tempMBTITraits[`${axis.id}_L`] = (saved[`${axis.id}_L`] !== undefined) ? saved[`${axis.id}_L`] : 0;
+          tempMBTITraits[`${axis.id}_R`] = (saved[`${axis.id}_R`] !== undefined) ? saved[`${axis.id}_R`] : 0;
+        });
 
-      renderMbtiModalTraits();
-      updateMBTIModalDisplay();
-      document.getElementById('mbti-modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
+        renderMbtiModalTraits();
+        updateMBTIModalDisplay();
+        const modal = document.getElementById('mbti-modal');
+        if (modal) modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } catch (err) {
+        console.error("Erreur ouverture MBTI:", err);
+      }
     }
 
     function closeMbtiModal() {
-      document.getElementById('mbti-modal').classList.remove('active');
+      const modal = document.getElementById('mbti-modal');
+      if (modal) modal.classList.remove('active');
       document.body.style.overflow = '';
     }
 
-    function setMbtiTraitValue(traitId, val) {
-      if (tempMBTITraits[traitId] === val) {
-        tempMBTITraits[traitId] = val - 1;
+    function openAvatarDetailModal() {
+      const info = getMBTIProfileInfo(tempMBTITraits);
+      const isSuper = typeof currentEditingMBTICloneId === 'string' && currentEditingMBTICloneId.startsWith('super_');
+      let avatarObj = null;
+
+      if (!isSuper) {
+        const expense = state.expenses.find(e => e.id === currentEditingMBTICloneId || String(e.id) === String(currentEditingMBTICloneId));
+        if (expense) {
+          const alloc = Math.round(state.allocations[expense.id] || 0);
+          const percentage = Math.min(100, Math.round((alloc / expense.amount) * 100));
+          avatarObj = getAvatarForClone(expense.id, percentage);
+        }
       } else {
-        tempMBTITraits[traitId] = val;
+        const tier = TIERS.find(tr => tr.id === currentEditingMBTICloneId);
+        if (tier) avatarObj = getAvatarForClone(tier.id, 100, tier.icon);
       }
+
+      const displayEl = document.getElementById('avatarDetailDisplay');
+      if (displayEl) {
+        if (avatarObj && avatarObj.type === 'image') {
+          displayEl.style.backgroundImage = `url('${avatarObj.value}')`;
+          displayEl.innerText = '';
+        } else {
+          displayEl.style.backgroundImage = 'none';
+          displayEl.innerText = avatarObj ? avatarObj.value : '👑';
+        }
+      }
+
+      const titleEl = document.getElementById('avatarDetailCodeTitle');
+      const subEl = document.getElementById('avatarDetailSubtitle');
+      const textEl = document.getElementById('avatarDetailDescriptionText');
+
+      if (titleEl) titleEl.innerText = `${info.code} — ${info.title}`;
+      if (subEl) subEl.innerText = state.lang === 'en' ? "Klon Mental Profile" : "Profil Mental du Klon";
+      if (textEl) textEl.innerText = info.desc;
+
+      const modal = document.getElementById('avatar-detail-modal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeAvatarDetailModal() {
+      const modal = document.getElementById('avatar-detail-modal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function setMbtiSideValue(axisId, side, val) {
+      const key = `${axisId}_${side}`;
+      const oldVal = tempMBTITraits[key] || 0;
+      const newVal = oldVal === val ? val - 1 : val;
+      
+      let newTraits = { ...tempMBTITraits, [key]: Math.max(0, newVal) };
+      let totalSpent = getSpentPoints(newTraits);
+      const maxAllowed = getUnlockedPointsForClone(currentEditingMBTICloneId);
+
+      if (totalSpent > maxAllowed) {
+        showCustomDialog('⚠️', 'Budget atteint', `Ce Klon a débloqué ${maxAllowed} point(s) d'attribut pour le moment.`);
+        return;
+      }
+
+      tempMBTITraits[key] = Math.max(0, newVal);
       renderMbtiModalTraits();
       updateMBTIModalDisplay();
     }
@@ -2418,47 +2892,120 @@
       if (!container) return;
       container.innerHTML = '';
 
-      MBTI_TRAITS_CONFIG.forEach(trait => {
-        const curVal = tempMBTITraits[trait.id] || 0;
+      MBTI_AXES_CONFIG.forEach(axis => {
+        const leftVal = tempMBTITraits[`${axis.id}_L`] || 0;
+        const rightVal = tempMBTITraits[`${axis.id}_R`] || 0;
+
         const item = document.createElement('div');
         item.className = 'trait-item-modal';
 
-        const label = state.lang === 'en' ? trait.labelEN : trait.labelFR;
+        const label = state.lang === 'en' ? axis.labelEN : axis.labelFR;
+        const leftText = state.lang === 'en' ? axis.leftEN : axis.leftFR;
+        const rightText = state.lang === 'en' ? axis.rightEN : axis.rightFR;
 
         const header = document.createElement('div');
         header.className = 'trait-header-modal';
-        header.innerHTML = `
-          <span>${trait.icon} <strong>${label}</strong></span>
-          <span style="color: var(--accent-blue); font-weight: bold;">${curVal} / 10</span>
-        `;
+        header.innerHTML = `<span><strong>${label}</strong></span>`;
 
-        const barContainer = document.createElement('div');
-        barContainer.className = 'bar-container-modal';
+        const subRow = document.createElement('div');
+        subRow.style.cssText = 'display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-main); margin-top:1px;';
+        subRow.innerHTML = `<span>${leftText}</span><span>${rightText}</span>`;
 
-        for (let i = 1; i <= 10; i++) {
+        const dualBar = document.createElement('div');
+        dualBar.className = 'dual-positive-bars';
+
+        // BARRE GAUCHE (5 à 1)
+        const leftBox = document.createElement('div');
+        leftBox.className = 'side-bar-box';
+        for (let i = 5; i >= 1; i--) {
           const seg = document.createElement('div');
-          seg.className = `bar-segment-modal ${i <= curVal ? 'active' : ''}`;
-          seg.onclick = () => setMbtiTraitValue(trait.id, i);
-          barContainer.appendChild(seg);
+          seg.className = `side-seg ${leftVal >= i ? 'left-active' : ''}`;
+          seg.title = `${leftText} (+${i})`;
+          seg.onclick = () => setMbtiSideValue(axis.id, 'L', i);
+          leftBox.appendChild(seg);
         }
 
+        // SÉPARATEUR LUMINEUX
+        const sep = document.createElement('div');
+        sep.className = 'center-separator-glow';
+
+        // BARRE DROITE (1 à 5)
+        const rightBox = document.createElement('div');
+        rightBox.className = 'side-bar-box';
+        for (let i = 1; i <= 5; i++) {
+          const seg = document.createElement('div');
+          seg.className = `side-seg ${rightVal >= i ? 'right-active' : ''}`;
+          seg.title = `${rightText} (+${i})`;
+          seg.onclick = () => setMbtiSideValue(axis.id, 'R', i);
+          rightBox.appendChild(seg);
+        }
+
+        dualBar.appendChild(leftBox);
+        dualBar.appendChild(sep);
+        dualBar.appendChild(rightBox);
+
         item.appendChild(header);
-        item.appendChild(barContainer);
+        item.appendChild(subRow);
+        item.appendChild(dualBar);
         container.appendChild(item);
       });
     }
 
     function updateMBTIModalDisplay() {
-      const code = calculateMBTIFromTraits(tempMBTITraits) || "INTJ";
-      const profile = MBTI_PROFILES[code] || { titleFR: "Inconnu", titleEN: "Unknown", descFR: "Analyse du profil...", descEN: "Analyzing profile..." };
+      const info = getMBTIProfileInfo(tempMBTITraits);
+      const isSuper = typeof currentEditingMBTICloneId === 'string' && currentEditingMBTICloneId.startsWith('super_');
+      const spent = getSpentPoints(tempMBTITraits);
+      const unlocked = getUnlockedPointsForClone(currentEditingMBTICloneId);
 
-      document.getElementById('mbtiModalCode').innerText = code;
-      document.getElementById('mbtiModalTitle').innerText = state.lang === 'en' ? profile.titleEN : profile.titleFR;
-      document.getElementById('mbtiModalDesc').innerText = state.lang === 'en' ? profile.descEN : profile.descFR;
+      const vignette = document.getElementById('mbtiAvatarVignette');
+      let avatarObj = null;
+
+      if (!isSuper) {
+        const expense = state.expenses.find(e => e.id === currentEditingMBTICloneId || String(e.id) === String(currentEditingMBTICloneId));
+        if (expense) {
+          const alloc = Math.round(state.allocations[expense.id] || 0);
+          const percentage = Math.min(100, Math.round((alloc / expense.amount) * 100));
+          avatarObj = getAvatarForClone(expense.id, percentage);
+        }
+      } else {
+        const tier = TIERS.find(tr => tr.id === currentEditingMBTICloneId);
+        if (tier) avatarObj = getAvatarForClone(tier.id, 100, tier.icon);
+      }
+
+      if (vignette) {
+        if (avatarObj && avatarObj.type === 'image') {
+          vignette.style.backgroundImage = `url('${avatarObj.value}')`;
+          vignette.innerText = '';
+        } else {
+          vignette.style.backgroundImage = 'none';
+          vignette.innerText = avatarObj ? avatarObj.value : '👑';
+        }
+      }
+
+      const codeEl = document.getElementById('mbtiModalCode');
+      const titleEl = document.getElementById('mbtiModalTitle');
+      const descEl = document.getElementById('mbtiModalDesc');
+      const budgetEl = document.getElementById('mbtiBudgetCounter');
+
+      if (codeEl) codeEl.innerText = info.code;
+      if (titleEl) titleEl.innerText = info.title;
+      
+      if (descEl) {
+        const shortDesc = info.desc ? info.desc.split('\n')[0] : '';
+        descEl.innerText = shortDesc;
+      }
+
+      if (budgetEl) {
+        const budgetText = state.lang === 'en' 
+          ? `Points: ${spent} / ${unlocked} unlocked` 
+          : `Points : ${spent} / ${unlocked} débloqués`;
+        budgetEl.innerText = budgetText;
+      }
     }
 
     function saveKlonMBTITraits() {
       if (currentEditingMBTICloneId) {
+        if (!state.cloneTraits) state.cloneTraits = {};
         state.cloneTraits[currentEditingMBTICloneId] = { ...tempMBTITraits };
         saveState();
         closeMbtiModal();
@@ -4267,9 +4814,10 @@
 
           const barColor = getBarColor(c.percentage);
 
-          const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[c.id]);
-          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="MBTI">${mbtiCode}</span>` : '';
-
+          // BADGE MBTI : n'apparaît que si badgeText existe (c-à-d si des points ont été alloués)
+          const mbtiInfo = getMBTIProfileInfo(state.cloneTraits ? state.cloneTraits[c.id] : null);
+          const mbtiBadgeHTML = mbtiInfo.badgeText ? `<span class="mbti-card-badge" onclick="openMbtiModal(${c.id})" title="MBTI">${mbtiInfo.badgeText}</span>` : '';
+		  
           let actionsGroupHTML = `
             <div class="clone-action-group">
               ${isUnlocked ? `<button class="clone-action-btn" title="Arcade" onclick="openArcadeVault(${c.id})">🕹️</button>` : ''}
@@ -4329,8 +4877,9 @@
             .replace('{2}', tier.mult)
             .replace('{3}', c.percentage);
 
-          const mbtiCode = calculateMBTIFromTraits(state.cloneTraits[tier.id]);
-          const mbtiBadgeHTML = mbtiCode ? `<span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="MBTI">${mbtiCode}</span>` : '';
+          // BADGE MBTI : n'apparaît que si badgeText existe pour le super clone
+          const mbtiInfo = getMBTIProfileInfo(state.cloneTraits ? state.cloneTraits[tier.id] : null);
+          const mbtiBadgeHTML = mbtiInfo.badgeText ? `<span class="mbti-card-badge" onclick="openMbtiModal('${tier.id}')" title="MBTI">${mbtiInfo.badgeText}</span>` : '';
 
           let actionsGroupHTML = `
             <div class="clone-action-group">
@@ -4373,7 +4922,6 @@
       if (!container) return;
       const cards = container.querySelectorAll('.clone-card');
 
-      // --- 1. SOURIS (DESKTOP) ---
       cards.forEach(card => {
         card.addEventListener('dragstart', (e) => {
           card.classList.add('dragging');
@@ -4399,7 +4947,6 @@
         }
       });
 
-      // --- 2. TACTILE AVEC APPUI LONG (MOBILE) ---
       let touchCard = null;
       let longPressTimer = null;
       let isDraggingTouch = false;
@@ -4407,7 +4954,6 @@
 
       cards.forEach(card => {
         card.addEventListener('touchstart', (e) => {
-          // Annule si l'utilisateur touche un champ texte, bouton ou zone cliquable
           if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) {
             return;
           }
@@ -4415,11 +4961,10 @@
           startY = e.touches[0].clientY;
           touchCard = card;
 
-          // Déclenche le déplacement uniquement après 300 ms de pression continue
           longPressTimer = setTimeout(() => {
             isDraggingTouch = true;
             touchCard.classList.add('dragging', 'long-pressing');
-            if (navigator.vibrate) navigator.vibrate(40); // Petite vibration de confirmation si supportée
+            if (navigator.vibrate) navigator.vibrate(40);
           }, 300);
         }, { passive: true });
 
@@ -4429,7 +4974,6 @@
           const currentY = e.touches[0].clientY;
           const moveDistance = Math.abs(currentY - startY);
 
-          // Si le doigt bouge avant la fin des 300ms, c'est un scroll classique : on annule l'appui long
           if (!isDraggingTouch && moveDistance > 8) {
             clearTimeout(longPressTimer);
             longPressTimer = null;
@@ -4437,7 +4981,6 @@
             return;
           }
 
-          // Si l'appui long est validé, on gère le réordonnancement
           if (isDraggingTouch) {
             if (e.cancelable) e.preventDefault();
             const nextSibling = getDragAfterElement(container, currentY);
@@ -4592,6 +5135,8 @@
       document.getElementById('chart-pct-title').innerText = t.chartPctTitle;
       document.getElementById('chart-mult-title').innerText = t.chartMultTitle;
       document.getElementById('btn-history-toggle').innerText = t.btnHistoryToggle;
+      document.getElementById('btn-avatar-detail-close').innerText = state.lang === 'en' ? 'Back' : 'Retour aux réglages';
+      document.getElementById('avatarDetailSubtitle').innerText = state.lang === 'en' ? 'Strategy & Analyst Profile' : 'Profil Stratège & Analyticien';
       document.getElementById('lang-select').value = state.lang;
     }
 
@@ -4634,7 +5179,6 @@
             state = { ...state, ...imported };
             saveState();
 
-            // Réinjection explicite des valeurs dans les inputs de l'interface
             const fnInput = document.getElementById('user-firstname-input');
             if (fnInput) fnInput.value = state.firstname || '';
 
