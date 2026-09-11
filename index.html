@@ -4586,9 +4586,25 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
-          if (imported.expenses) {
+          if (imported.expenses !== undefined || imported.capital !== undefined) {
             state = { ...state, ...imported };
             saveState();
+
+            // Réinjection explicite des valeurs dans les inputs de l'interface
+            const fnInput = document.getElementById('user-firstname-input');
+            if (fnInput) fnInput.value = state.firstname || '';
+
+            const capInput = document.getElementById('capital-input');
+            if (capInput) capInput.value = state.capital || '';
+
+            const curSelect = document.getElementById('currency-select');
+            if (curSelect) curSelect.value = state.currency || '€';
+
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect) themeSelect.value = state.theme || 'dark';
+
+            document.documentElement.setAttribute('data-theme', state.theme || 'dark');
+            
             applyTranslations();
             renderExpenses();
             updateCalculations();
