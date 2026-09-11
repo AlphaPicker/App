@@ -1216,6 +1216,7 @@
 
     .klonboy-shell {
       background-color: #1f232a;
+      color: #c9d1d9; /* Maintient le texte clair sur la console */
       width: 100%;
       max-width: 360px;
       border-radius: 12px 12px 50px 12px;
@@ -1403,11 +1404,11 @@
     .snake-score-box {
       font-size: 0.8rem;
       font-weight: bold;
-      color: var(--text-bright);
-      background: var(--bg-color);
+      color: #f0f6fc; /* Texte toujours bien visible sur fond sombre */
+      background: #0d1117; /* Fond sombre fixe au lieu de var(--bg-color) */
       padding: 6px 10px;
       border-radius: 6px;
-      border: 1px solid var(--border-color);
+      border: 1px solid #30363d; /* Bordure sombre fixe au lieu de var(--border-color) */
       flex: 1;
       text-align: center;
       user-select: none;
@@ -1427,7 +1428,7 @@
 
     .snake-score-box.clickable-record:hover {
       transform: translateY(-1px);
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: #21262d; /* Survol sombre propre et constant */
     }
 
     .snake-klon-avatar-vignette {
