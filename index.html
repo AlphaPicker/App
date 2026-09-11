@@ -1414,7 +1414,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      min-height: 52px;
       gap: 2px;
     }
 
@@ -1426,7 +1427,7 @@
 
     .snake-score-box.clickable-record:hover {
       transform: translateY(-1px);
-      background-color: var(--border-color);
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     .snake-klon-avatar-vignette {
@@ -1443,6 +1444,17 @@
       font-size: 0.9rem;
       line-height: 1;
       overflow: hidden;
+      flex-shrink: 0;
+    }
+	
+	.snake-trophy-vignette {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      line-height: 1;
       flex-shrink: 0;
     }
 
@@ -1894,10 +1906,10 @@
         <div class="klonboy-power-led"></div>
         
         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px; padding: 0 4px;">
-          <button onclick="startSnakeGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 30px; height: 30px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
+          <button onclick="restartActiveGame()" title="Rejouer" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-bright); border-radius: 6px; width: 30px; height: 30px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
           
           <div style="text-align: center;">
-            <div class="snake-header-title" style="font-size: 1rem;">🐍 KLON Snake</div>
+            <div class="snake-header-title" style="font-size: 1rem;" id="klonboy-game-title">🐍 KLON Snake</div>
             <div class="snake-header-subtitle" id="snake-player-subtitle" style="font-size: 0.7rem;">Klon : Joueur</div>
           </div>
 
@@ -1908,11 +1920,11 @@
           <div class="snake-scores-row">
             <div class="snake-score-box">
               <div id="snake-klon-vignette-header" class="snake-klon-avatar-vignette">👑</div>
-              <div><span id="lbl-snake-score">Score</span> : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> 🪙</div>
+              <div><span id="lbl-snake-score">Score</span> : <strong id="snake-score" style="color: var(--accent-green-bright);">0</strong> <span id="lbl-score-unit">🪙</span></div>
             </div>
 
             <div class="snake-score-box clickable-record" onclick="openSnakeLeaderboard()" title="Voir le Top 10 des records">
-              <div style="font-size: 1.1rem; line-height: 1;">🏆</div>
+              <div class="snake-trophy-vignette">🏆</div>
               <div><span id="lbl-snake-record">Record</span> : <strong id="snake-highscore" style="color: var(--accent-orange);">0</strong></div>
             </div>
           </div>
@@ -1977,7 +1989,7 @@
   </div>
 
   <!-- MODAL LEADERBOARD SNAKE -->
-  <div id="snake-leaderboard-modal" class="modal-overlay">
+  <div id="snake-leaderboard-modal" class="modal-overlay" style="z-index: 250;">
     <div class="modal-card" style="max-width: 360px;">
       <div class="card-title" style="justify-content: center;" id="lbl-leaderboard-title">🏆 Top 10 Records KLON Snake</div>
       <p style="font-size: 0.8rem; opacity: 0.8; text-align: center; margin-bottom: 4px;" id="lbl-leaderboard-subtitle">Meilleures récoltes de dividendes enregistrées</p>
@@ -2641,7 +2653,7 @@
 
     const ARCADE_GAMES_LIST = [
       { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, needsActionBtns: false, descFR: 'Récolte tes dividendes passifs sans percuter ton propre corps !', descEN: 'Harvest your passive dividends without hitting your own tail!' },
-      { id: 'secret1', gameType: 'locked', name: 'Jeu Mystère I', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' },
+      { id: 'pong', gameType: 'pong', name: 'KLON Pong', icon: '🏓', reqKlons: 2, needsActionBtns: false, descFR: 'Duel contre le Salariat : marque des buts pour libérer des années de liberté !', descEN: 'Duel against wage labor: score goals to liberate years of freedom!' },
       { id: 'secret2', gameType: 'locked', name: 'Jeu Mystère II', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' },
       { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' }
     ];
@@ -2661,7 +2673,8 @@
     let isSnakePaused = false;
     let isControlsCustomizeMode = false;
     let snake = [];
-    let snakeFood = { x: 0, y: 0, icon: '🪙' };
+    let snakeFoods = [];
+    let pendingEatenIndex = -1;
     let snakeDir = 'RIGHT';
     let nextDir = 'RIGHT';
     let snakeScore = 0;
@@ -3577,10 +3590,19 @@
         let gameDesc = state.lang === 'en' ? game.descEN : game.descFR;
 
         if (isUnlocked) {
-          const leaderboards = getSnakeLeaderboard('snake2');
+          // Utilise le vrai identifiant du jeu (game.id) et non pas snake2 en dur
+          const leaderboards = getSnakeLeaderboard(game.id);
           const top1 = leaderboards.length > 0 ? leaderboards[0] : null;
+          
+          let scoreText = "0";
+          if (top1) {
+            scoreText = game.id === 'pong' 
+              ? `${top1.score} ${state.lang === 'en' ? (top1.score > 1 ? 'yrs' : 'yr') : (top1.score > 1 ? 'ans' : 'an')}`
+              : `${top1.score} 🪙`;
+          }
+
           const hsText = top1 && top1.score > 0 
-            ? `${state.lang === 'en' ? '🏆 Record:' : '🏆 Record :'} ${top1.score} ${state.lang === 'en' ? 'by' : 'par'} ${top1.klonName}` 
+            ? `${state.lang === 'en' ? '🏆 Record:' : '🏆 Record :'} ${scoreText} ${state.lang === 'en' ? 'by' : 'par'} ${top1.klonName}` 
             : (state.lang === 'en' ? 'No record yet' : 'Pas encore de record');
 
           container.innerHTML += `
@@ -3614,50 +3636,75 @@
     }
 
     function launchArcadeGame(gameId) {
-      if (gameId === 'snake2') {
-        closeArcadeModal();
-        const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === gameId);
-        const klonName = selectedKlonForGame ? selectedKlonForGame.name : (state.lang === 'en' ? 'Player' : 'Joueur');
-        document.getElementById('snake-player-subtitle').innerText = `Klon : ${klonName}`;
+      currentActiveGame = gameId;
+      closeArcadeModal();
 
-        const headerVignette = document.getElementById('snake-klon-vignette-header');
-        if (selectedKlonForGame && selectedKlonForGame.avatar) {
-          if (selectedKlonForGame.avatar.type === 'image') {
-            headerVignette.style.backgroundImage = `url('${selectedKlonForGame.avatar.value}')`;
-            headerVignette.innerText = '';
-          } else {
-            headerVignette.style.backgroundImage = 'none';
-            headerVignette.innerText = selectedKlonForGame.avatar.value;
-          }
+      const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === gameId);
+      const klonName = selectedKlonForGame ? selectedKlonForGame.name : (state.lang === 'en' ? 'Player' : 'Joueur');
+      
+      const titleEl = document.getElementById('klonboy-game-title');
+      const unitEl = document.getElementById('lbl-score-unit');
+      const playerSub = document.getElementById('snake-player-subtitle');
+
+      if (playerSub) playerSub.innerText = `Klon : ${klonName}`;
+
+      const headerVignette = document.getElementById('snake-klon-vignette-header');
+      if (selectedKlonForGame && selectedKlonForGame.avatar) {
+        if (selectedKlonForGame.avatar.type === 'image') {
+          headerVignette.style.backgroundImage = `url('${selectedKlonForGame.avatar.value}')`;
+          headerVignette.innerText = '';
         } else {
           headerVignette.style.backgroundImage = 'none';
-          headerVignette.innerText = '👑';
+          headerVignette.innerText = selectedKlonForGame.avatar.value;
         }
+      } else {
+        headerVignette.style.backgroundImage = 'none';
+        headerVignette.innerText = '👑';
+      }
 
-        const btnA = document.getElementById('btn-action-a');
-        const btnB = document.getElementById('btn-action-b');
-        if (gameConfig && !gameConfig.needsActionBtns) {
-          btnA.classList.add('hidden-action');
-          btnB.classList.add('hidden-action');
-        } else {
-          btnA.classList.remove('hidden-action');
-          btnB.classList.remove('hidden-action');
-        }
+      const btnA = document.getElementById('btn-action-a');
+      const btnB = document.getElementById('btn-action-b');
+      if (gameConfig && !gameConfig.needsActionBtns) {
+        btnA.classList.add('hidden-action');
+        btnB.classList.add('hidden-action');
+      } else {
+        btnA.classList.remove('hidden-action');
+        btnB.classList.remove('hidden-action');
+      }
 
-        updateSnakeHighScoreDisplay();
-        applyKlonBoyControlsLayout();
-        document.getElementById('snake-modal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+      updateSnakeHighScoreDisplay();
+      applyKlonBoyControlsLayout();
+      document.getElementById('snake-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      if (gameId === 'snake2') {
+        if (titleEl) titleEl.innerText = '🐍 KLON Snake';
+        if (unitEl) unitEl.innerText = '🪙';
         startSnakeGame();
+      } else if (gameId === 'pong') {
+        if (titleEl) titleEl.innerText = '🏓 KLON Pong';
+        if (unitEl) unitEl.innerText = '';
+        startPongGame();
       }
     }
 
     function getSnakeLeaderboard(gameId) {
       if (!state.gameLeaderboards) state.gameLeaderboards = {};
-      return state.gameLeaderboards[gameId] || [];
+      const list = state.gameLeaderboards[gameId] || [];
+      
+      // Purge automatique : supprime tous les scores nuls (0 an ou 0 dividende)
+      const cleanList = list.filter(r => r && r.score > 0);
+      if (cleanList.length !== list.length) {
+        state.gameLeaderboards[gameId] = cleanList;
+        saveState();
+      }
+      return cleanList;
     }
 
     function saveSnakeScoreToLeaderboard(gameId, score, klonName, avatarObj) {
+      // Ne jamais enregistrer un score nul (0) dans le Top 10 !
+      if (!score || score <= 0) return getSnakeLeaderboard(gameId);
+
       const nowStr = new Date().toLocaleDateString(state.lang === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
       const record = { 
         score, 
@@ -3679,15 +3726,40 @@
     }
 
     function updateSnakeHighScoreDisplay() {
-      const leaderboard = getSnakeLeaderboard('snake2');
+      const gameId = currentActiveGame || 'snake2';
+      const leaderboard = getSnakeLeaderboard(gameId);
       const topScore = leaderboard.length > 0 ? leaderboard[0].score : 0;
-      document.getElementById('snake-highscore').innerText = topScore;
+      const hsEl = document.getElementById('snake-highscore');
+      if (hsEl) {
+        if (gameId === 'pong') {
+          hsEl.innerText = `${topScore} an${topScore > 1 ? 's' : ''}`;
+        } else {
+          hsEl.innerText = topScore;
+        }
+      }
     }
 
     function openSnakeLeaderboard() {
+      const gameId = currentActiveGame || 'snake2';
       const container = document.getElementById('snake-leaderboard-container');
+      if (!container) return;
       container.innerHTML = '';
-      const leaderboard = getSnakeLeaderboard('snake2');
+      const leaderboard = getSnakeLeaderboard(gameId);
+      const isPong = gameId === 'pong';
+
+      // Titre et sous-titre adaptés au jeu en cours
+      const titleEl = document.getElementById('lbl-leaderboard-title');
+      const subEl = document.getElementById('lbl-leaderboard-subtitle');
+      if (titleEl) {
+        titleEl.innerText = isPong
+          ? (state.lang === 'en' ? '🏆 Top 10 KLON Pong Records' : '🏆 Top 10 Records KLON Pong')
+          : (state.lang === 'en' ? '🏆 Top 10 KLON Snake Records' : '🏆 Top 10 Records KLON Snake');
+      }
+      if (subEl) {
+        subEl.innerText = isPong
+          ? (state.lang === 'en' ? 'Years of financial freedom won vs the boss' : 'Années de liberté financière gagnées face au patron')
+          : (state.lang === 'en' ? 'Best passive dividend harvests recorded' : 'Meilleures récoltes de dividendes enregistrées');
+      }
 
       if (leaderboard.length === 0) {
         container.innerHTML = `<div style="text-align: center; font-size: 0.85rem; opacity: 0.7; padding: 16px;">${state.lang === 'en' ? 'No record logged yet.' : 'Aucun record enregistré pour le moment.'}</div>`;
@@ -3702,6 +3774,11 @@
             ? `<div class="snake-klon-avatar-vignette" style="background-image: url('${rec.avatarValue}'); width: 28px; height: 28px;"></div>`
             : `<div class="snake-klon-avatar-vignette" style="width: 28px; height: 28px; font-size: 1rem;">${rec.avatarValue || '👑'}</div>`;
 
+          // Score au bon format (ans pour Pong, dividendes 🪙 pour Snake)
+          const scoreText = isPong
+            ? `${rec.score} ${state.lang === 'en' ? (rec.score > 1 ? 'yrs' : 'yr') : (rec.score > 1 ? 'ans' : 'an')}`
+            : `${rec.score} 🪙`;
+
           container.innerHTML += `
             <div class="leaderboard-item">
               <div style="display: flex; align-items: center; gap: 8px;">
@@ -3712,13 +3789,14 @@
                   <div style="font-size: 0.72rem; opacity: 0.7;">${rec.dateStr}</div>
                 </div>
               </div>
-              <strong style="color: var(--accent-green-bright); font-size: 1rem;">${rec.score} 🪙</strong>
+              <strong style="color: var(--accent-green-bright); font-size: 1rem;">${scoreText}</strong>
             </div>
           `;
         });
       }
 
-      document.getElementById('snake-leaderboard-modal').classList.add('active');
+      const modal = document.getElementById('snake-leaderboard-modal');
+      if (modal) modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
@@ -3730,7 +3808,9 @@
     }
 
     function closeSnakeGame() {
+      if (snakeAnimFrame) cancelAnimationFrame(snakeAnimFrame);
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
+      if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
       isSnakePaused = false;
       document.getElementById('klonboy-pause-menu').classList.remove('active');
       document.getElementById('snake-modal').classList.remove('active');
@@ -3761,22 +3841,41 @@
       }
     }
 
+    let snakeAnimFrame = null;
+    let snakeLastTime = 0;
+    let snakeStepTimer = 0;
+
     function startSnakeGame() {
+      if (snakeAnimFrame) cancelAnimationFrame(snakeAnimFrame);
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
       isSnakePaused = false;
       document.getElementById('klonboy-pause-menu').classList.remove('active');
-      snake = [ { x: 5, y: 7 }, { x: 4, y: 7 }, { x: 3, y: 7 } ];
+
+      // Chaque segment mémorise sa position précédente pour glisser sans saccade
+      snake = [
+        { x: 5, y: 7, prevX: 5, prevY: 7 },
+        { x: 4, y: 7, prevX: 4, prevY: 7 },
+        { x: 3, y: 7, prevX: 3, prevY: 7 }
+      ];
       snakeDir = 'RIGHT';
       nextDir = 'RIGHT';
       snakeScore = 0;
-      currentSpeed = 180;
+      currentSpeed = 160;
+      snakeStepTimer = 0;
+      snakeLastTime = performance.now();
 
       document.getElementById('snake-score').innerText = snakeScore;
+      snakeFoods = [];
+      pendingEatenIndex = -1;
       spawnSnakeFood();
-      snakeGameLoop();
+      snakeGameLoop(performance.now());
     }
 
     function setSnakeDir(dir) {
+      if (currentActiveGame === 'pong') {
+        movePongPaddle(dir);
+        return;
+      }
       if (dir === 'UP' && snakeDir !== 'DOWN') nextDir = 'UP';
       if (dir === 'DOWN' && snakeDir !== 'UP') nextDir = 'DOWN';
       if (dir === 'LEFT' && snakeDir !== 'RIGHT') nextDir = 'LEFT';
@@ -3787,67 +3886,145 @@
       if (!document.getElementById('snake-modal').classList.contains('active')) return;
       const key = e.key.toLowerCase();
       
-      if (e.key === 'ArrowUp' || key === 'w' || key === 'z') { setSnakeDir('UP'); e.preventDefault(); }
-      if (e.key === 'ArrowDown' || key === 's') { setSnakeDir('DOWN'); e.preventDefault(); }
-      if (e.key === 'ArrowLeft' || key === 'a' || key === 'q') { setSnakeDir('LEFT'); e.preventDefault(); }
-      if (e.key === 'ArrowRight' || key === 'd') { setSnakeDir('RIGHT'); e.preventDefault(); }
-      if (e.key === 'Escape' || e.key === 'Enter') { toggleKlonBoyPauseMenu(); e.preventDefault(); }
+      if (currentActiveGame === 'pong') {
+        if (e.key === 'ArrowLeft' || key === 'a' || key === 'q') {
+          pongKeys.left = true;
+          if (pongWaitingServe) launchPongServe();
+          e.preventDefault();
+        }
+        if (e.key === 'ArrowRight' || key === 'd') {
+          pongKeys.right = true;
+          if (pongWaitingServe) launchPongServe();
+          e.preventDefault();
+        }
+        if (e.key === ' ' || e.key === 'Enter') {
+          launchPongServe();
+          e.preventDefault();
+        }
+      } else {
+        if (e.key === 'ArrowUp' || key === 'w' || key === 'z') { setSnakeDir('UP'); e.preventDefault(); }
+        if (e.key === 'ArrowDown' || key === 's') { setSnakeDir('DOWN'); e.preventDefault(); }
+        if (e.key === 'ArrowLeft' || key === 'a' || key === 'q') { setSnakeDir('LEFT'); e.preventDefault(); }
+        if (e.key === 'ArrowRight' || key === 'd') { setSnakeDir('RIGHT'); e.preventDefault(); }
+      }
+
+      if (e.key === 'Escape') { toggleKlonBoyPauseMenu(); e.preventDefault(); }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      const key = e.key.toLowerCase();
+      if (e.key === 'ArrowLeft' || key === 'a' || key === 'q') pongKeys.left = false;
+      if (e.key === 'ArrowRight' || key === 'd') pongKeys.right = false;
     });
 
     function spawnSnakeFood() {
       const icons = ['🪙', '💵', '💰', '✨'];
-      let validPos = false;
+      const targetCount = 3; // Nombre d'objets simultanés à l'écran
+
+      while (snakeFoods.length < targetCount) {
+        let newX, newY, validPos = false;
+    
       while (!validPos) {
-        snakeFood.x = Math.floor(Math.random() * GRID_SIZE);
-        snakeFood.y = Math.floor(Math.random() * GRID_SIZE);
-        validPos = !snake.some(part => part.x === snakeFood.x && part.y === snakeFood.y);
+        newX = Math.floor(Math.random() * GRID_SIZE);
+        newY = Math.floor(Math.random() * GRID_SIZE);
+      
+        // Vérifie que la position ne superpose ni le serpent ni un autre objet déjà présent
+        const hitSnake = snake.some(part => part.x === newX && part.y === newY);
+        const hitFood = snakeFoods.some(food => food.x === newX && food.y === newY);
+        validPos = !hitSnake && !hitFood;
+       }
+
+       const icon = icons[Math.floor(Math.random() * icons.length)];
+       snakeFoods.push({ x: newX, y: newY, icon: icon });
       }
-      snakeFood.icon = icons[Math.floor(Math.random() * icons.length)];
     }
 
-    function snakeGameLoop() {
-      if (!isSnakePaused) {
-        updateSnake();
-        drawSnake();
-      } else {
-        snakeGameTimeout = setTimeout(snakeGameLoop, 100);
+    // Boucle de rendu à 60 FPS fluide
+    function snakeGameLoop(currentTime) {
+      if (currentActiveGame !== 'snake2' && currentActiveGame !== undefined) return;
+      if (isSnakePaused) {
+        snakeLastTime = currentTime;
+        snakeAnimFrame = requestAnimationFrame(snakeGameLoop);
+        return;
       }
+
+      if (!snakeLastTime) snakeLastTime = currentTime;
+      const dt = Math.min(currentTime - snakeLastTime, 100);
+      snakeLastTime = currentTime;
+
+      snakeStepTimer += dt;
+      if (snakeStepTimer >= currentSpeed) {
+        updateSnake();
+        snakeStepTimer %= currentSpeed;
+      }
+
+      // Progression fluide (entre 0.0 et 1.0) pour faire glisser le serpent
+      const progress = Math.min(snakeStepTimer / currentSpeed, 1);
+      drawSnake(progress);
+
+      snakeAnimFrame = requestAnimationFrame(snakeGameLoop);
     }
 
     function updateSnake() {
       snakeDir = nextDir;
-      const head = { ...snake[0] };
+      const head = snake[0];
+      let newX = head.x;
+      let newY = head.y;
 
-      if (snakeDir === 'UP') head.y--;
-      if (snakeDir === 'DOWN') head.y++;
-      if (snakeDir === 'LEFT') head.x--;
-      if (snakeDir === 'RIGHT') head.x++;
+      if (snakeDir === 'UP') newY--;
+      if (snakeDir === 'DOWN') newY++;
+      if (snakeDir === 'LEFT') newX--;
+      if (snakeDir === 'RIGHT') newX++;
 
-      if (head.x < 0) head.x = GRID_SIZE - 1;
-      if (head.x >= GRID_SIZE) head.x = 0;
-      if (head.y < 0) head.y = GRID_SIZE - 1;
-      if (head.y >= GRID_SIZE) head.y = 0;
+      if (newX < 0) newX = GRID_SIZE - 1;
+      if (newX >= GRID_SIZE) newX = 0;
+      if (newY < 0) newY = GRID_SIZE - 1;
+      if (newY >= GRID_SIZE) newY = 0;
 
-      for (let i = 0; i < snake.length; i++) {
-        if (snake[i].x === head.x && snake[i].y === head.y) {
+      // 1. Si un objet a été complètement atteint au pas précédent, on le retire maintenant
+      if (pendingEatenIndex !== -1) {
+        snakeFoods.splice(pendingEatenIndex, 1);
+        pendingEatenIndex = -1;
+        spawnSnakeFood();
+      }
+
+      // 2. Détecte si la nouvelle case de destination contient de la nourriture
+      const eatenIndex = snakeFoods.findIndex(food => food.x === newX && food.y === newY);
+      const willEat = eatenIndex !== -1;
+
+      const checkLimit = willEat ? snake.length : snake.length - 1;
+      for (let i = 0; i < checkLimit; i++) {
+        if (snake[i].x === newX && snake[i].y === newY) {
+          if (snakeAnimFrame) cancelAnimationFrame(snakeAnimFrame);
           handleSnakeGameOver();
           return;
         }
       }
 
-      snake.unshift(head);
+      // Sauvegarde des positions précédentes pour l'interpolation fluide
+      for (let i = 0; i < snake.length; i++) {
+        snake[i].prevX = snake[i].x;
+        snake[i].prevY = snake[i].y;
+      }
 
-      if (head.x === snakeFood.x && head.y === snakeFood.y) {
+      const newHead = { x: newX, y: newY, prevX: head.x, prevY: head.y };
+      snake.unshift(newHead);
+
+      if (willEat) {
         snakeScore += 10;
         document.getElementById('snake-score').innerText = snakeScore;
         currentSpeed = Math.max(70, currentSpeed - 2.5);
-        spawnSnakeFood();
+
+        const tail = snake[snake.length - 1];
+        tail.prevX = tail.x;
+        tail.prevY = tail.y;
+
+        // On enregistre l'objet qui va être recouvert durant le déplacement fluide actuel
+        pendingEatenIndex = eatenIndex;
       } else {
         snake.pop();
       }
-
-      snakeGameTimeout = setTimeout(snakeGameLoop, currentSpeed);
-    }
+	}
 
     function handleSnakeGameOver() {
       const leaderboard = getSnakeLeaderboard('snake2');
@@ -3879,28 +4056,457 @@
 
     function closeGameOverModal() {
       document.getElementById('snake-gameover-modal').classList.remove('active');
-      if (!document.getElementById('snake-modal').classList.contains('active')) {
-        document.body.style.overflow = '';
+
+      // Pour Snake et Pong, le bouton retour relance directement une nouvelle partie
+      if (currentActiveGame === 'pong') {
+        startPongGame();
+      } else {
+        startSnakeGame();
       }
     }
 
     function restartFromGameOver() {
       closeGameOverModal();
-      startSnakeGame();
+      if (currentActiveGame === 'pong') {
+        startPongGame();
+      } else {
+        startSnakeGame();
+      }
     }
 
     function openSnakeLeaderboardFromGameOver() {
       closeGameOverModal();
-      openSnakeLeaderboard();
+      setTimeout(() => {
+        openSnakeLeaderboard();
+      }, 50);
     }
 
-    function drawSnake() {
+// ==========================================
+    // MOTEUR DU JEU : KLON PONG (DUEL VS SALARIAT)
+    // ==========================================
+    let currentActiveGame = 'snake2';
+    let pongAnimFrame = null;
+    let pongYearsWon = 0;
+    let pongLives = 3;
+    let pongWaitingServe = true;
+    let pongIsGameOver = false; // Empêche la boucle infinie de Game Over
+    let pongBannerTimer = 0;
+    let pongBannerText = "";
+    
+    // Raquette joueur ultra-réactive (vitesse 8.5 px par frame à 60fps)
+    let pongPlayer = { x: 108, y: 260, width: 64, height: 9, speed: 8.5 };
+    let pongAI = { x: 108, y: 12, width: 64, height: 9, speed: 3.2 };
+    let pongBall = { x: 140, y: 246, vx: 0, vy: 0, radius: 12, angle: 0 };
+    let pongParticles = [];
+    let pongKeys = { left: false, right: false };
+
+    function restartActiveGame() {
+      if (currentActiveGame === 'pong') {
+        startPongGame();
+      } else {
+        startSnakeGame();
+      }
+    }
+
+    function startPongGame() {
+      if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
+      if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
+
+      isSnakePaused = false;
+      pongIsGameOver = false;
+      document.getElementById('klonboy-pause-menu').classList.remove('active');
+
+      pongYearsWon = 0;
+      pongLives = 3;
+      pongAI.speed = 3.2;
+
+      pongPlayer.x = (280 - pongPlayer.width) / 2;
+      pongAI.x = (280 - pongAI.width) / 2;
+      pongKeys.left = false;
+      pongKeys.right = false;
+
+      updatePongScoresDisplay();
+      preparePongServe('player');
+      initPongCanvasControls();
+      pongGameLoop();
+    }
+
+    function preparePongServe(who) {
+      pongWaitingServe = true;
+      pongBall.angle = 0;
+      pongParticles = [];
+
+      if (who === 'player') {
+        pongBall.x = pongPlayer.x + pongPlayer.width / 2;
+        pongBall.y = pongPlayer.y - pongBall.radius - 2;
+      } else {
+        pongBall.x = pongAI.x + pongAI.width / 2;
+        pongBall.y = pongAI.y + pongAI.height + pongBall.radius + 2;
+      }
+    }
+
+    function launchPongServe() {
+      if (!pongWaitingServe || pongIsGameOver) return;
+      pongWaitingServe = false;
+
+      const angleDir = Math.random() > 0.5 ? 1 : -1;
+      pongBall.vx = angleDir * (2.6 + Math.random() * 0.8);
+      pongBall.vy = -3.8;
+    }
+
+    function updatePongScoresDisplay() {
+      const scoreEl = document.getElementById('snake-score');
+      if (scoreEl) {
+        scoreEl.innerText = `${pongYearsWon} an${pongYearsWon > 1 ? 's' : ''}`;
+      }
+    }
+
+    function initPongCanvasControls() {
       const canvas = document.getElementById('snake-canvas');
+      if (!canvas) return;
+
+      const handleMove = (clientX) => {
+        if (currentActiveGame !== 'pong' || isSnakePaused || pongIsGameOver) return;
+        const rect = canvas.getBoundingClientRect();
+        const touchX = ((clientX - rect.left) / rect.width) * 280;
+        pongPlayer.x = Math.max(0, Math.min(280 - pongPlayer.width, touchX - pongPlayer.width / 2));
+        if (pongWaitingServe) launchPongServe();
+      };
+
+      canvas.ontouchstart = (e) => {
+        if (currentActiveGame === 'pong') {
+          handleMove(e.touches[0].clientX);
+          e.preventDefault();
+        }
+      };
+
+      canvas.ontouchmove = (e) => {
+        if (currentActiveGame === 'pong') {
+          handleMove(e.touches[0].clientX);
+          e.preventDefault();
+        }
+      };
+
+      canvas.onmousemove = (e) => {
+        if (currentActiveGame === 'pong' && e.buttons === 1) {
+          handleMove(e.clientX);
+        }
+      };
+    }
+
+    function pongGameLoop() {
+      if (currentActiveGame !== 'pong' || pongIsGameOver) return;
+
+      if (!isSnakePaused) {
+        updatePong();
+        drawPong();
+      }
+      pongAnimFrame = requestAnimationFrame(pongGameLoop);
+    }
+
+    function updatePong() {
+      // Déplacement continu et instantané à 60 FPS (clavier et touches)
+      if (pongKeys.left) {
+        pongPlayer.x = Math.max(0, pongPlayer.x - pongPlayer.speed);
+      }
+      if (pongKeys.right) {
+        pongPlayer.x = Math.min(280 - pongPlayer.width, pongPlayer.x + pongPlayer.speed);
+      }
+
+      if (pongWaitingServe) {
+        pongBall.x = pongPlayer.x + pongPlayer.width / 2;
+        pongBall.y = pongPlayer.y - pongBall.radius - 2;
+        return;
+      }
+
+      // IA Le Salariat (En haut)
+      const aiCenter = pongAI.x + pongAI.width / 2;
+      const targetX = pongBall.x + (Math.sin(Date.now() * 0.005) * 8);
+      if (pongBall.vy < 0) {
+        if (aiCenter < targetX - 4) {
+          pongAI.x = Math.min(280 - pongAI.width, pongAI.x + pongAI.speed);
+        } else if (aiCenter > targetX + 4) {
+          pongAI.x = Math.max(0, pongAI.x - pongAI.speed);
+        }
+      }
+
+      // Déplacement et rotation de la balle
+      pongBall.x += pongBall.vx;
+      pongBall.y += pongBall.vy;
+      pongBall.angle += pongBall.vx * 0.05;
+
+      // Rebond mur gauche
+      if (pongBall.x - pongBall.radius <= 0) {
+        pongBall.x = pongBall.radius;
+        pongBall.vx = Math.abs(pongBall.vx);
+        createPongSparks(pongBall.x, pongBall.y, '#58a6ff');
+      }
+      // Rebond mur droite
+      if (pongBall.x + pongBall.radius >= 280) {
+        pongBall.x = 280 - pongBall.radius;
+        pongBall.vx = -Math.abs(pongBall.vx);
+        createPongSparks(pongBall.x, pongBall.y, '#58a6ff');
+      }
+
+      // Collision raquette Joueur (En bas)
+      if (
+        pongBall.y + pongBall.radius >= pongPlayer.y &&
+        pongBall.y - pongBall.radius <= pongPlayer.y + pongPlayer.height &&
+        pongBall.x >= pongPlayer.x - 4 &&
+        pongBall.x <= pongPlayer.x + pongPlayer.width + 4 &&
+        pongBall.vy > 0
+      ) {
+        pongBall.y = pongPlayer.y - pongBall.radius;
+        const hitOffset = (pongBall.x - (pongPlayer.x + pongPlayer.width / 2)) / (pongPlayer.width / 2);
+        const currentSpeed = Math.sqrt(pongBall.vx * pongBall.vx + pongBall.vy * pongBall.vy);
+        const newSpeed = Math.min(currentSpeed * 1.03, 8.2);
+
+        pongBall.vx = hitOffset * (newSpeed * 0.85);
+        pongBall.vy = -Math.sqrt(Math.max(4, newSpeed * newSpeed - pongBall.vx * pongBall.vx));
+        createPongSparks(pongBall.x, pongPlayer.y, '#7ee787');
+      }
+
+      // Collision raquette IA (En haut)
+      if (
+        pongBall.y - pongBall.radius <= pongAI.y + pongAI.height &&
+        pongBall.y + pongBall.radius >= pongAI.y &&
+        pongBall.x >= pongAI.x - 4 &&
+        pongBall.x <= pongAI.x + pongAI.width + 4 &&
+        pongBall.vy < 0
+      ) {
+        pongBall.y = pongAI.y + pongAI.height + pongBall.radius;
+        const hitOffset = (pongBall.x - (aiCenter)) / (pongAI.width / 2);
+        const currentSpeed = Math.sqrt(pongBall.vx * pongBall.vx + pongBall.vy * pongBall.vy);
+        const newSpeed = Math.min(currentSpeed * 1.025, 8.2);
+
+        pongBall.vx = hitOffset * (newSpeed * 0.85);
+        pongBall.vy = Math.sqrt(Math.max(4, newSpeed * newSpeed - pongBall.vx * pongBall.vx));
+        createPongSparks(pongBall.x, pongAI.y + pongAI.height, '#f0883e');
+      }
+
+      const isEn = state.lang === 'en';
+
+      // BUT DU JOUEUR ! (La balle passe derrière le patron en haut)
+      if (pongBall.y - pongBall.radius <= 0) {
+        pongYearsWon += 1;
+        pongAI.speed = Math.min(6.5, pongAI.speed + 0.35);
+        updatePongScoresDisplay();
+        showPongBanner(isEn ? "🎉 GOAL! +1 YEAR OF FREEDOM!" : "🎉 BUT ! +1 AN DE LIBERTÉ !");
+        preparePongServe('player');
+        if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+      }
+
+      // BUT DU PATRON (La balle passe en bas)
+      if (pongBall.y + pongBall.radius >= 280) {
+        pongLives -= 1;
+        updatePongScoresDisplay();
+        if (navigator.vibrate) navigator.vibrate(120);
+
+        if (pongLives <= 0) {
+          pongIsGameOver = true;
+          if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
+          handlePongGameOver();
+          return;
+        } else {
+          showPongBanner(isEn ? "⚠️ THE BOSS SCORES!" : "⚠️ LE PATRON MARQUE !");
+          preparePongServe('player');
+        }
+      }
+
+      // Particules
+      for (let i = pongParticles.length - 1; i >= 0; i--) {
+        const p = pongParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.04;
+        if (p.alpha <= 0) pongParticles.splice(i, 1);
+      }
+    }
+
+    function showPongBanner(text) {
+      pongBannerText = text;
+      pongBannerTimer = 75;
+    }
+
+    function createPongSparks(x, y, color) {
+      for (let i = 0; i < 7; i++) {
+        pongParticles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          alpha: 1,
+          color
+        });
+      }
+    }
+
+    function drawPong() {
+      const canvas = document.getElementById('snake-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Filet central
+      ctx.strokeStyle = '#21262d';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(0, 140);
+      ctx.lineTo(280, 140);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Particules
+      pongParticles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
+        ctx.restore();
+      });
+
+      const isColorblind = state.theme === 'colorblind';
+
+      // Couleurs adaptées au mode daltonien (Bleu / Jaune-Orange) ou classique (Rouge / Vert)
+      const aiFill = isColorblind ? '#0288d1' : '#da3633';
+      const aiStroke = isColorblind ? '#03a9f4' : '#f85149';
+      const playerFill = isColorblind ? '#f57c00' : '#238636';
+      const playerStroke = isColorblind ? '#ffb74d' : '#7ee787';
+
+      // Raquette IA (En haut : Le Salariat 💼)
+      ctx.save();
+      ctx.fillStyle = aiFill;
+      ctx.strokeStyle = aiStroke;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = aiFill;
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.roundRect(pongAI.x, pongAI.y, pongAI.width, pongAI.height, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Raquette Joueur (En bas : Rente 🛡️)
+      ctx.save();
+      ctx.fillStyle = playerFill;
+      ctx.strokeStyle = playerStroke;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = playerStroke;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.roundRect(pongPlayer.x, pongPlayer.y, pongPlayer.width, pongPlayer.height, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Balle : Tête du Klon qui tourne
+      ctx.save();
+      ctx.translate(pongBall.x, pongBall.y);
+      ctx.rotate(pongBall.angle);
+
+      if (headImageObj && headImageObj.complete) {
+        ctx.beginPath();
+        ctx.arc(0, 0, pongBall.radius, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(headImageObj, -pongBall.radius, -pongBall.radius, pongBall.radius * 2, pongBall.radius * 2);
+        ctx.strokeStyle = '#7ee787';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        ctx.font = `${pongBall.radius * 1.8}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('👑', 0, 0);
+      }
+      ctx.restore();
+
+      // Affichage des Vies en haut à droite
+      ctx.save();
+      let heartsStr = "";
+      for (let i = 0; i < 3; i++) heartsStr += (i < pongLives) ? "❤️" : "🖤";
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(heartsStr, 272, 32);
+
+      const isEn = state.lang === 'en';
+
+      // Label pour l'adversaire
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(isEn ? "💼 WAGE LABOR" : "💼 LE SALARIAT", 8, 32);
+      ctx.restore();
+
+      // Texte d'attente au service
+      if (pongWaitingServe) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(isEn ? "Tap ◄ / ► or screen to serve!" : "Touche ◄ / ► ou l'écran pour servir !", 140, 215);
+      }
+
+      // Bannière de but
+      if (pongBannerTimer > 0) {
+        pongBannerTimer--;
+        ctx.fillStyle = '#f0883e';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(pongBannerText, 140, 115);
+      }
+    }
+
+    function handlePongGameOver() {
+      pongIsGameOver = true;
+      if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
+
+      const activeKlonName = selectedKlonForGame ? selectedKlonForGame.name : 'Klon';
+      const activeAvatar = selectedKlonForGame ? selectedKlonForGame.avatar : null;
+      const leaderboard = getSnakeLeaderboard('pong');
+      const previousTop = leaderboard.length > 0 ? leaderboard[0].score : 0;
+
+      saveSnakeScoreToLeaderboard('pong', pongYearsWon, activeKlonName, activeAvatar);
+      updateSnakeHighScoreDisplay();
+
+      const isRecord = pongYearsWon > previousTop && pongYearsWon > 0;
+      document.getElementById('gameover-icon').innerText = isRecord ? '🏆' : '💼';
+      document.getElementById('gameover-title').innerText = isRecord 
+        ? (state.lang === 'en' ? 'NEW FREEDOM RECORD!' : 'NOUVEAU RECORD !')
+        : (state.lang === 'en' ? 'Game Over!' : 'Défaite face au Salariat !');
+
+      document.getElementById('gameover-msg').innerText = state.lang === 'en'
+        ? `Freedom won: ${pongYearsWon} year${pongYearsWon > 1 ? 's' : ''} liberated by ${activeKlonName}!`
+        : `Tu as libéré ${pongYearsWon} an${pongYearsWon > 1 ? 's' : ''} de liberté financière face au patron !`;
+
+      document.getElementById('snake-gameover-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function getInterpolatedSnakePos(part, progress) {
+      const px = part.prevX !== undefined ? part.prevX : part.x;
+      const py = part.prevY !== undefined ? part.prevY : part.y;
+      const cx = part.x;
+      const cy = part.y;
+
+      // Si le serpent traverse un bord de l'écran, on ne trace pas de ligne traversante
+      if (Math.abs(cx - px) > 1 || Math.abs(cy - py) > 1) {
+        return { x: cx, y: cy };
+      }
+
+      return {
+        x: px + (cx - px) * progress,
+        y: py + (cy - py) * progress
+      };
+    }
+
+    function drawSnake(progress = 1) {
+      const canvas = document.getElementById('snake-canvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const isColorblind = state.theme === 'colorblind';
 
+      // Grille d'origine reposante
       ctx.strokeStyle = '#161b22';
       ctx.lineWidth = 1;
       for (let i = 0; i <= GRID_SIZE; i++) {
@@ -3908,19 +4514,50 @@
         ctx.beginPath(); ctx.moveTo(0, i * TILE_SIZE); ctx.lineTo(canvas.width, i * TILE_SIZE); ctx.stroke();
       }
 
+      // Dividendes multiples
       ctx.font = '15px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(snakeFood.icon, snakeFood.x * TILE_SIZE + TILE_SIZE / 2, snakeFood.y * TILE_SIZE + TILE_SIZE / 2 + 1);
+      snakeFoods.forEach(food => {
+        ctx.fillText(food.icon, food.x * TILE_SIZE + TILE_SIZE / 2, food.y * TILE_SIZE + TILE_SIZE / 2 + 1);
+      });
 
+      // Couleurs douces et reposantes d'origine
       const bodyColor = isColorblind ? '#0288d1' : '#2e7d32'; 
       const strokeColor = isColorblind ? '#01579b' : '#1b5e20';
       const totalSegs = snake.length;
 
+      // Tracé des liaisons fluides entre les anneaux pendant le glissement
+      for (let i = totalSegs - 1; i > 0; i--) {
+        const curr = getInterpolatedSnakePos(snake[i], progress);
+        const prev = getInterpolatedSnakePos(snake[i - 1], progress);
+        const cx1 = curr.x * TILE_SIZE + TILE_SIZE / 2;
+        const cy1 = curr.y * TILE_SIZE + TILE_SIZE / 2;
+        const cx2 = prev.x * TILE_SIZE + TILE_SIZE / 2;
+        const cy2 = prev.y * TILE_SIZE + TILE_SIZE / 2;
+
+        if (Math.hypot(cx2 - cx1, cy2 - cy1) < TILE_SIZE * 1.5) {
+          const distFromTail = totalSegs - 1 - i;
+          let r = (TILE_SIZE / 2) - 1.5;
+          if (distFromTail === 0) r = (TILE_SIZE / 2) - 4.5;
+          else if (distFromTail === 1) r = (TILE_SIZE / 2) - 3.2;
+          else if (distFromTail === 2) r = (TILE_SIZE / 2) - 2.2;
+
+          ctx.lineWidth = r * 1.7;
+          ctx.strokeStyle = bodyColor;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(cx1, cy1);
+          ctx.lineTo(cx2, cy2);
+          ctx.stroke();
+        }
+      }
+
+      // Tracé de chaque anneau à sa position interpolée fluide
       for (let i = totalSegs - 1; i >= 0; i--) {
-        const part = snake[i];
-        const cx = part.x * TILE_SIZE + TILE_SIZE / 2;
-        const cy = part.y * TILE_SIZE + TILE_SIZE / 2;
+        const pos = getInterpolatedSnakePos(snake[i], progress);
+        const cx = pos.x * TILE_SIZE + TILE_SIZE / 2;
+        const cy = pos.y * TILE_SIZE + TILE_SIZE / 2;
 
         if (i === 0) {
           if (headImageObj && headImageObj.complete) {
@@ -3928,7 +4565,7 @@
             ctx.beginPath();
             ctx.arc(cx, cy, (TILE_SIZE / 2) - 1, 0, Math.PI * 2);
             ctx.clip();
-            ctx.drawImage(headImageObj, part.x * TILE_SIZE + 1, part.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+            ctx.drawImage(headImageObj, cx - (TILE_SIZE / 2) + 1, cy - (TILE_SIZE / 2) + 1, TILE_SIZE - 2, TILE_SIZE - 2);
             ctx.restore();
 
             ctx.strokeStyle = bodyColor;
@@ -3957,19 +4594,6 @@
           ctx.strokeStyle = strokeColor;
           ctx.lineWidth = 1;
           ctx.stroke();
-
-          const prev = snake[i - 1];
-          const prevCx = prev.x * TILE_SIZE + TILE_SIZE / 2;
-          const prevCy = prev.y * TILE_SIZE + TILE_SIZE / 2;
-
-          if (Math.abs(prev.x - part.x) <= 1 && Math.abs(prev.y - part.y) <= 1) {
-            ctx.lineWidth = radius * 1.7;
-            ctx.strokeStyle = bodyColor;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(prevCx, prevCy);
-            ctx.stroke();
-          }
         }
       }
     }
