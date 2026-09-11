@@ -1952,7 +1952,8 @@
       <div class="klonboy-controls-area" id="klonboy-controls-area">
         
         <div class="klonboy-dpad-container" id="klonboy-dpad-container">
-          <div class="snake-dpad">
+          <!-- Croix directionnelle classique pour Snake -->
+          <div class="snake-dpad" id="klonboy-snake-dpad">
             <div></div>
             <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
             <div></div>
@@ -1963,6 +1964,9 @@
             <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
             <div></div>
           </div>
+
+          <!-- Grand Touchpad Tactile invisible pour Pong (Couvre toute la console) -->
+          <div id="klonboy-pong-touchpad" style="display: none; position: absolute; top: -10px; left: -15px; width: 330px; height: 210px; touch-action: none; user-select: none; z-index: 10;"></div>
         </div>
 
         <button class="klonboy-btn-action hidden-action" id="btn-action-b" onclick="handleActionButton('B')">B</button>
@@ -3677,11 +3681,49 @@
       document.getElementById('snake-modal').classList.add('active');
       document.body.style.overflow = 'hidden';
 
+      const snakeDpad = document.getElementById('klonboy-snake-dpad');
+      const pongTouchpad = document.getElementById('klonboy-pong-touchpad');
+
       if (gameId === 'snake2') {
+        if (snakeDpad) snakeDpad.style.display = 'grid';
+        if (pongTouchpad) pongTouchpad.style.display = 'none';
         if (titleEl) titleEl.innerText = '🐍 KLON Snake';
         if (unitEl) unitEl.innerText = '🪙';
         startSnakeGame();
       } else if (gameId === 'pong') {
+        if (snakeDpad) snakeDpad.style.display = 'none';
+        if (pongTouchpad) {
+          pongTouchpad.style.display = 'flex';
+          
+          // Initialisation du contrôle du Touchpad
+          let lastTouchX = null;
+          const handleTouchpadMove = (clientX) => {
+            if (isSnakePaused || pongIsGameOver) return;
+            if (lastTouchX !== null) {
+              const deltaX = clientX - lastTouchX;
+              // Ajuste la position de la raquette selon le glissement du pouce
+              pongPlayer.x = Math.max(0, Math.min(280 - pongPlayer.width, pongPlayer.x + deltaX * 1.4));
+            }
+            lastTouchX = clientX;
+            if (pongWaitingServe) launchPongServe();
+          };
+
+          pongTouchpad.ontouchstart = (e) => {
+            lastTouchX = e.touches[0].clientX;
+            if (pongWaitingServe) launchPongServe();
+          };
+          pongTouchpad.ontouchmove = (e) => {
+            handleTouchpadMove(e.touches[0].clientX);
+            e.preventDefault();
+          };
+          pongTouchpad.ontouchend = () => { lastTouchX = null; };
+          
+          // Compatibilité souris pour ordinateur
+          pongTouchpad.onmousemove = (e) => {
+            if (e.buttons === 1) handleTouchpadMove(e.clientX);
+          };
+          pongTouchpad.onmouseup = () => { lastTouchX = null; };
+        }
         if (titleEl) titleEl.innerText = '🏓 KLON Pong';
         if (unitEl) unitEl.innerText = '';
         startPongGame();
@@ -4167,16 +4209,27 @@
 
       const handleMove = (clientX) => {
         if (currentActiveGame !== 'pong' || isSnakePaused || pongIsGameOver) return;
+        
+        // On prend le repère de l'écran pour convertir la position X
         const rect = canvas.getBoundingClientRect();
         const touchX = ((clientX - rect.left) / rect.width) * 280;
+        
+        // La raquette reste toujours bloquée entre 0 et les bords du terrain
         pongPlayer.x = Math.max(0, Math.min(280 - pongPlayer.width, touchX - pongPlayer.width / 2));
         if (pongWaitingServe) launchPongServe();
       };
 
+      // Sur PC : écoute le déplacement de la souris sur toute la fenêtre (window)
+      window.onmousemove = (e) => {
+        if (currentActiveGame === 'pong' && document.getElementById('snake-modal').classList.contains('active')) {
+          handleMove(e.clientX);
+        }
+      };
+
+      // Sur Écran Tactile (si l'utilisateur touche directement l'écran de jeu)
       canvas.ontouchstart = (e) => {
         if (currentActiveGame === 'pong') {
           handleMove(e.touches[0].clientX);
-          e.preventDefault();
         }
       };
 
@@ -4184,12 +4237,6 @@
         if (currentActiveGame === 'pong') {
           handleMove(e.touches[0].clientX);
           e.preventDefault();
-        }
-      };
-
-      canvas.onmousemove = (e) => {
-        if (currentActiveGame === 'pong' && e.buttons === 1) {
-          handleMove(e.clientX);
         }
       };
     }
@@ -4442,7 +4489,7 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(isEn ? "Tap ◄ / ► or screen to serve!" : "Touche ◄ / ► ou l'écran pour servir !", 140, 215);
+        ctx.fillText(isEn ? "Slide Touchpad to serve!" : "Glisse le Touchpad pour servir !", 140, 215);
       }
 
       // Bannière de but
