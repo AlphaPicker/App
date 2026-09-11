@@ -1471,18 +1471,20 @@
 
     .snake-dpad {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
+      grid-template-columns: repeat(3, 48px); /* Fixe des colonnes identiques */
+      grid-template-rows: repeat(3, 48px);    /* Fixe des lignes identiques */
       gap: 6px;
-      width: 160px;
-      height: 160px;
+      width: 156px;
+      height: 156px;
       margin: 0 auto;
+      justify-content: center;
+      align-content: center;
     }
 
     .dpad-btn {
-      background: var(--bg-color);
-      border: 1px solid var(--border-color);
-      color: var(--text-bright);
+      background: #0d1117; /* Toujours fond sombre style plastique de console */
+      border: 1px solid #30363d; /* Bordure sombre fixe */
+      color: #f0f6fc; /* Flèches toujours bien blanches/lumineuses */
       font-size: 1.25rem;
       border-radius: 8px;
       cursor: pointer;
@@ -1492,6 +1494,8 @@
       user-select: none;
       touch-action: manipulation;
     }
+
+    .dpad-btn:active { background: #21262d; } /* Enfoncement sombre propre au toucher */
 
     .dpad-btn:active { background: var(--border-color); }
 
