@@ -614,13 +614,19 @@
       position: relative;
     }
 
+    /* VERROUILLAGE SCROLL ARRIÈRE-PLAN SUR TOUS LES CONTENEURS INTERNES */
+    .modal-body-scroll,
+    .traits-list-modal,
+    .modal-card {
+      overscroll-behavior: contain;
+    }
+
     .modal-body-scroll {
       display: flex;
       flex-direction: column;
       gap: 10px;
       overflow-y: auto;
       padding-right: 2px;
-      overscroll-behavior: contain;
     }
 
     .mbti-box-modal {
@@ -668,6 +674,11 @@
       flex-direction: column;
       gap: 12px;
       margin-top: 4px;
+      overflow-y: auto;
+      overflow-x: hidden; /* Empêche tout déclenchement horizontal intempestif */
+      max-height: 320px;
+      padding-right: 4px;
+      padding-bottom: 8px; /* Laisse de l'espace pour l'effet de survol (scaleY) sur la dernière ligne */
     }
 
     .trait-item-modal {
@@ -1602,11 +1613,9 @@
         <div class="mbti-modal-desc" id="mbtiModalDesc">Analyse tout, planifie à froid et agit de manière ultra-méthodique.</div>
       </div>
 
-      <div class="modal-body-scroll">
-        <div class="traits-list-modal" id="modalTraitsContainer"></div>
-      </div>
+      <div class="traits-list-modal" id="modalTraitsContainer"></div>
 
-      <div style="display: flex; gap: 8px; margin-top: 4px;">
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
         <button class="btn-primary" style="flex: 1;" id="mbti-save-btn" onclick="saveKlonMBTITraits()">Enregistrer le cerveau</button>
         <button class="btn-secondary" id="mbti-close-btn" onclick="closeMbtiModal()">Fermer</button>
       </div>
@@ -2342,12 +2351,28 @@
       return Math.max(1.0, Math.round(multiplier * 10) / 10);
     }
 
+    // ALGORITHME MBTI AMÉLIORÉ ET COHÉRENT
     function calculateMBTIFromTraits(traits) {
-      if (!traits) return null;
-      const E_or_I = (traits.sociabilite || 0) > 5 ? 'E' : 'I';
-      const N_or_S = (traits.intelligence || 0) > 5 ? 'N' : 'S';
-      const T_or_F = (traits.force || 0) >= (traits.sociabilite || 0) ? 'T' : 'F';
-      const J_or_P = (traits.nervosite || 0) <= 5 ? 'J' : 'P';
+      if (!traits) return "INTJ";
+
+      const intel = traits.intelligence || 5;
+      const nerv = traits.nervosite || 5;
+      const force = traits.force || 5;
+      const soc = traits.sociabilite || 5;
+      const chance = traits.chance || 5;
+
+      // E vs I : Sociabilité vs Réflexion
+      const E_or_I = soc >= 6 ? 'E' : 'I';
+
+      // N vs S : Abstraction/Intuition vs Concret/Réflexe
+      const N_or_S = (intel + chance) >= (force + nerv) ? 'N' : 'S';
+
+      // T vs F : Logique/Impact vs Émotion/Relationnel
+      const T_or_F = (intel + force) >= (soc + chance) ? 'T' : 'F';
+
+      // J vs P : Structuré/Méthodique vs Spontané/Réactif
+      const J_or_P = (intel > nerv) ? 'J' : 'P';
+
       return `${E_or_I}${N_or_S}${T_or_F}${J_or_P}`;
     }
 
