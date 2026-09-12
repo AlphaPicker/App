@@ -1292,9 +1292,6 @@
       touch-action: none;
     }
 
-    #btn-action-b { top: 75px; right: 65px; }
-    #btn-action-a { top: 40px; right: 12px; }
-
     .klonboy-dpad-container.custom-draggable,
     .klonboy-btn-action.custom-draggable {
       cursor: grab;
@@ -1550,8 +1547,6 @@
     }
 
     .dpad-btn:active { background: #21262d; } /* Enfoncement sombre propre au toucher */
-
-    .dpad-btn:active { background: var(--border-color); }
 
     .leaderboard-list {
       display: flex;
@@ -2044,7 +2039,8 @@
             <button class="btn-primary klonboy-pause-btn" id="btn-pause-resume" onclick="toggleKlonBoyPauseMenu()">▶️ Reprendre</button>
             <button class="btn-secondary klonboy-pause-btn" id="btn-toggle-customize" onclick="toggleControlsCustomizeMode()">🖐️ Déplacer touches</button>
             <button class="btn-secondary klonboy-pause-btn" id="btn-pause-reset-controls" onclick="resetControlsLayout()">🔄 Réinitialiser touches</button>
-            <button class="btn-secondary klonboy-pause-btn" id="btn-pause-leaderboard" onclick="openSnakeLeaderboardFromPause()">🏆 Classement Top 10</button>
+            <!-- NOUVEAU BOUTON DIFFICULTÉ (remplace le top 10) -->
+            <button class="btn-secondary klonboy-pause-btn" id="btn-pause-difficulty" onclick="cycleGameDifficulty()">⚡ Niveau : 🟡 Moyen</button>
             <button class="btn-reset klonboy-pause-btn" id="btn-pause-quit" onclick="closeSnakeGame()">❌ Quitter console</button>
           </div>
         </div>
@@ -2167,7 +2163,8 @@
       everUnlockedBadges: safeParse('alpha_ever_unlocked_badges', []),
       historyRecords: safeParse('alpha_history_records', []),
       gameLeaderboards: safeParse('alpha_game_leaderboards', {}),
-      klonboyControlsLayout: safeParse('alpha_klonboy_controls_layout', null)
+      klonboyControlsLayout: safeParse('alpha_klonboy_controls_layout', null),
+      gameDifficulty: safeGet('alpha_game_difficulty', 'medium') // <-- Ajouté ici (défaut : medium)
     };
 
     let dialogConfirmCallback = null;
@@ -2776,10 +2773,10 @@
 
     const ARCADE_GAMES_LIST = [
       { id: 'snake2', gameType: 'snake', name: 'KLON Snake', icon: '🐍', reqKlons: 1, needsActionBtns: false, descFR: 'Récolte tes dividendes passifs sans percuter ton propre corps !', descEN: 'Harvest your passive dividends without hitting your own tail!' },
-      { id: 'pong', gameType: 'pong', name: 'KLON Pong', icon: '🏓', reqKlons: 2, needsActionBtns: false, descFR: 'Duel contre le Salariat : marque des buts pour libérer des années de liberté !', descEN: 'Duel against wage labor: score goals to liberate years of freedom!' },
-      { id: 'klontris', gameType: 'klontris', name: 'KLON Tris', icon: '🧩', reqKlons: 3, needsActionBtns: true, descFR: 'Empile et nettoie les lignes pour générer un capital de rente passif !', descEN: 'Stack and clear lines to build massive passive annuity capital!' },
-      { id: 'secret3', gameType: 'locked', name: 'Jeu Mystère Ultime', icon: '❓', reqKlons: 999, needsActionBtns: true, descFR: '', descEN: '' }
-    ];;
+      { id: 'pong', gameType: 'pong', name: 'KLON Pong', icon: '🏓', reqKlons: 2, needsActionBtns: false, descFR: 'Duel face au Patron : marque des buts pour libérer des années de liberté !', descEN: 'Duel against the Boss: score goals to liberate years of freedom!' },
+      { id: 'klontris', gameType: 'klontris', name: 'KLON Stack', icon: '🧩', reqKlons: 3, needsActionBtns: true, descFR: 'Empile et nettoie les lignes pour générer un capital de rente passif !', descEN: 'Stack and clear lines to build massive passive annuity capital!' },
+      { id: 'smash', gameType: 'smash', name: 'KLON Smash', icon: '🥊', reqKlons: 4, needsActionBtns: false, descFR: 'Défends tes rentes, fais sauter les cravates du Patron et vire-le !', descEN: 'Defend your passive income, pop the Boss ties and fire him!' }
+    ];
 
     let selectedKlonForGame = null;
     let headImageObj = null;
@@ -3216,6 +3213,7 @@
       safeSet('alpha_history_records', JSON.stringify(state.historyRecords));
       safeSet('alpha_game_leaderboards', JSON.stringify(state.gameLeaderboards));
       safeSet('alpha_klonboy_controls_layout', JSON.stringify(state.klonboyControlsLayout));
+	  safeSet('alpha_game_difficulty', state.gameDifficulty); // <-- Sauvegarde le niveau choisi
       safeSet('alpha_sort_mode', state.sortMode);
       safeSet('alpha_cards_order', JSON.stringify(state.cardsOrder));
     }
@@ -3723,6 +3721,8 @@
               scoreText = `${top1.score} ${state.lang === 'en' ? (top1.score > 1 ? 'yrs' : 'yr') : (top1.score > 1 ? 'ans' : 'an')} 🕊️`;
             } else if (game.id === 'klontris') {
               scoreText = `${new Intl.NumberFormat('fr-FR').format(top1.score)} 💵`;
+            } else if (game.id === 'smash') {
+              scoreText = `${top1.score} 👔`;
             } else {
               scoreText = `${top1.score} 🪙`;
             }
@@ -3819,10 +3819,40 @@
         if (klontrisLayout) klontrisLayout.style.display = 'flex';
         if (snakeDpad) snakeDpad.style.display = 'grid';
         if (pongTouchpad) pongTouchpad.style.display = 'none';
-        if (titleEl) titleEl.innerText = '🧩 KLON Tris';
+        if (titleEl) titleEl.innerText = '🧩 KLON Stack';
         if (unitEl) unitEl.innerText = '💵';
         startKlontrisGame();
-      } else if (gameId === 'snake2') {
+      } else if (gameId === 'smash') {
+        if (editBtn) editBtn.style.display = 'none';
+        if (typeof isControlsCustomizeMode !== 'undefined' && isControlsCustomizeMode) {
+          toggleControlsCustomizeMode();
+        }
+        if (standardHeader) standardHeader.style.display = 'flex';
+        if (snakeCanvas) snakeCanvas.style.display = 'block';
+        if (klontrisLayout) klontrisLayout.style.display = 'none';
+        if (snakeDpad) snakeDpad.style.display = 'none';
+        if (pongTouchpad) {
+          pongTouchpad.style.display = 'flex';
+        }
+        if (titleEl) titleEl.innerText = '🥊 KLON Smash';
+        if (unitEl) unitEl.innerText = '👔';
+        startSmashGame();
+      } else if (gameId === 'pong') {
+        if (editBtn) editBtn.style.display = 'none';
+        if (typeof isControlsCustomizeMode !== 'undefined' && isControlsCustomizeMode) {
+          toggleControlsCustomizeMode();
+        }
+        if (standardHeader) standardHeader.style.display = 'flex';
+        if (snakeCanvas) snakeCanvas.style.display = 'block';
+        if (klontrisLayout) klontrisLayout.style.display = 'none';
+        if (snakeDpad) snakeDpad.style.display = 'none';
+        if (pongTouchpad) {
+          pongTouchpad.style.display = 'flex';
+        }
+        if (titleEl) titleEl.innerText = '🏓 KLON Pong';
+        if (unitEl) unitEl.innerText = '🕊️';
+        startPongGame();
+      } else {
         if (editBtn) editBtn.style.display = 'block';
         if (standardHeader) standardHeader.style.display = 'flex';
         if (snakeCanvas) snakeCanvas.style.display = 'block';
@@ -3832,49 +3862,6 @@
         if (titleEl) titleEl.innerText = '🐍 KLON Snake';
         if (unitEl) unitEl.innerText = '🪙';
         startSnakeGame();
-      } else if (gameId === 'pong') {
-        // Masquer et désactiver le mode édition pour Pong
-        if (editBtn) editBtn.style.display = 'none';
-        if (typeof isKlonBoyEditMode !== 'undefined' && isKlonBoyEditMode) {
-          toggleControlsCustomizeMode();
-        }
-
-        if (standardHeader) standardHeader.style.display = 'flex';
-        if (snakeCanvas) snakeCanvas.style.display = 'block';
-        if (klontrisLayout) klontrisLayout.style.display = 'none';
-        if (snakeDpad) snakeDpad.style.display = 'none';
-        if (pongTouchpad) {
-          pongTouchpad.style.display = 'flex';
-          
-          let lastTouchX = null;
-          const handleTouchpadMove = (clientX) => {
-            if (isSnakePaused || pongIsGameOver) return;
-            if (lastTouchX !== null) {
-              const deltaX = clientX - lastTouchX;
-              pongPlayer.x = Math.max(0, Math.min(280 - pongPlayer.width, pongPlayer.x + deltaX * 1.4));
-            }
-            lastTouchX = clientX;
-            if (pongWaitingServe) launchPongServe();
-          };
-
-          pongTouchpad.ontouchstart = (e) => {
-            lastTouchX = e.touches[0].clientX;
-            if (pongWaitingServe) launchPongServe();
-          };
-          pongTouchpad.ontouchmove = (e) => {
-            handleTouchpadMove(e.touches[0].clientX);
-            e.preventDefault();
-          };
-          pongTouchpad.ontouchend = () => { lastTouchX = null; };
-          
-          pongTouchpad.onmousemove = (e) => {
-            if (e.buttons === 1) handleTouchpadMove(e.clientX);
-          };
-          pongTouchpad.onmouseup = () => { lastTouchX = null; };
-        }
-        if (titleEl) titleEl.innerText = '🏓 KLON Pong';
-        if (unitEl) unitEl.innerText = '🕊️';
-        startPongGame();
       }
     }
 
@@ -3924,7 +3911,9 @@
         if (gameId === 'pong') {
           hsEl.innerText = `${topScore} an${topScore > 1 ? 's' : ''}`;
         } else if (gameId === 'klontris') {
-          hsEl.innerText = formatCompactCurrency(topScore); // Compacte aussi le record (ex: 3,1k)
+          hsEl.innerText = formatCompactCurrency(topScore);
+        } else if (gameId === 'smash') {
+          hsEl.innerText = `${topScore} 👔`;
         } else {
           hsEl.innerText = topScore;
         }
@@ -3953,9 +3942,11 @@
       const subEl = document.getElementById('lbl-leaderboard-subtitle');
       if (titleEl) {
         if (isKlontris) {
-          titleEl.innerText = state.lang === 'en' ? '🏆 Top 10 KLON Klontris Records' : '🏆 Top 10 Records KLON Klontris';
+          titleEl.innerText = state.lang === 'en' ? '🏆 Top 10 KLON Stack Records' : '🏆 Top 10 Records KLON Stack';
         } else if (isPong) {
           titleEl.innerText = state.lang === 'en' ? '🏆 Top 10 KLON Pong Records' : '🏆 Top 10 Records KLON Pong';
+        } else if (gameId === 'smash') {
+          titleEl.innerText = state.lang === 'en' ? '🏆 Top 10 KLON Smash Records' : '🏆 Top 10 Records KLON Smash';
         } else {
           titleEl.innerText = state.lang === 'en' ? '🏆 Top 10 KLON Snake Records' : '🏆 Top 10 Records KLON Snake';
         }
@@ -3965,6 +3956,8 @@
           subEl.innerText = state.lang === 'en' ? 'Highest annuity capital generated' : 'Plus haut capital de rente généré';
         } else if (isPong) {
           subEl.innerText = state.lang === 'en' ? 'Years of financial freedom won vs the boss' : 'Années de liberté financière gagnées face au patron';
+        } else if (gameId === 'smash') {
+          subEl.innerText = state.lang === 'en' ? 'Rounds won and bricks defended vs the boss' : 'Manches gagnées et briques défendues face au patron';
         } else {
           subEl.innerText = state.lang === 'en' ? 'Best passive dividend harvests recorded' : 'Meilleures récoltes de dividendes enregistrées';
         }
@@ -3990,6 +3983,8 @@
           } else if (isPong) {
             const yrLabel = state.lang === 'en' ? (rec.score > 1 ? 'yrs' : 'yr') : (rec.score > 1 ? 'ans' : 'an');
             scoreText = `${rec.score} ${yrLabel} 🕊️`;
+          } else if (currentActiveGame === 'smash') {
+            scoreText = `${rec.score} 🛡️`;
           }
 
           container.innerHTML += `
@@ -4036,6 +4031,7 @@
       if (snakeGameTimeout) clearTimeout(snakeGameTimeout);
       if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
       if (klontrisAnimFrame) cancelAnimationFrame(klontrisAnimFrame);
+      if (smashAnimFrame) cancelAnimationFrame(smashAnimFrame); // <-- Évite que le jeu continue de tourner en arrière-plan
       isSnakePaused = false;
       document.getElementById('klonboy-pause-menu').classList.remove('active');
       document.getElementById('snake-modal').classList.remove('active');
@@ -4053,6 +4049,38 @@
         pauseMenu.classList.remove('active');
         if (isControlsCustomizeMode) toggleControlsCustomizeMode();
       }
+    }
+	
+	function cycleGameDifficulty() {
+      const levels = ['easy', 'medium', 'hard', 'extreme'];
+      let currIdx = levels.indexOf(state.gameDifficulty);
+      if (currIdx === -1) currIdx = 1;
+      
+      // Bascule au niveau suivant en boucle
+      const nextIdx = (currIdx + 1) % levels.length;
+      state.gameDifficulty = levels[nextIdx];
+      saveState();
+      updateDifficultyButtonText();
+    }
+
+    function updateDifficultyButtonText() {
+      const btn = document.getElementById('btn-pause-difficulty');
+      if (!btn) return;
+      
+      const isEn = state.lang === 'en';
+      const diffLabels = {
+        easy: { fr: '🟢 Facile', en: '🟢 Easy' },
+        medium: { fr: '🟡 Moyen', en: '🟡 Medium' },
+        hard: { fr: '🔴 Difficile', en: '🔴 Hard' },
+        extreme: { fr: '💀 Extrême', en: '💀 Extreme' }
+      };
+
+      const prefix = isEn ? '⚡ Level: ' : '⚡ Niveau : ';
+      const label = diffLabels[state.gameDifficulty] 
+        ? diffLabels[state.gameDifficulty][isEn ? 'en' : 'fr'] 
+        : diffLabels.medium[isEn ? 'en' : 'fr'];
+
+      btn.innerText = `${prefix}${label}`;
     }
 
     function openSnakeLeaderboardFromPause() {
@@ -4318,6 +4346,8 @@
         startKlontrisGame();
       } else if (currentActiveGame === 'pong') {
         startPongGame();
+      } else if (currentActiveGame === 'smash') {
+        startSmashGame();
       } else {
         startSnakeGame();
       }
@@ -4329,6 +4359,8 @@
         startKlontrisGame();
       } else if (currentActiveGame === 'pong') {
         startPongGame();
+      } else if (currentActiveGame === 'smash') {
+        startSmashGame();
       } else {
         startSnakeGame();
       }
@@ -4922,6 +4954,673 @@
       document.getElementById('snake-gameover-modal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
+	
+	// ==========================================
+    // MOTEUR DU JEU : KLON SMASH (PHYSIQUE PONG)
+    // ==========================================
+    let smashAnimFrame = null;
+    let smashScore = 0;
+    let smashPlayerLives = 3;
+    let smashAiLives = 3;
+    let smashBossRoundsWon = 0;
+    let smashIsGameOver = false;
+    let smashWaitingServe = true;
+    let smashBannerTimer = 0;
+    let smashBannerText = "";
+    let smashParticles = [];
+    let smashKeys = { left: false, right: false };
+
+    // Raquettes ultra-réactives (calquées sur Pong)
+    let smPlayer = { x: 112, y: 236, width: 56, height: 8, speed: 8.5 };
+    let smAi = { x: 112, y: 42, width: 56, height: 8, speed: 2.1 };
+
+    // Balles avec vitesse de base et angle de rotation
+    let smPlayerBall = { x: 140, y: 227, vx: 0, vy: 0, radius: 6, baseSpeed: 2.1, currentSpeed: 2.1, active: true };
+    let smAiBall = { x: 140, y: 59, vx: 0, vy: 0, radius: 6, baseSpeed: 1.8, currentSpeed: 1.8, active: true };
+    let smNeutralBall = { x: 140, y: 135, vx: 0, vy: 0, radius: 12, baseSpeed: 2.2, currentSpeed: 2.2, active: true, unlocked: false, angle: 0 };
+
+    const SM_BRICK_ROWS = 2;
+    const SM_BRICK_COLS = 7;
+    const SM_BRICK_WIDTH = 32;
+    const SM_BRICK_HEIGHT = 7;
+    const SM_BRICK_PADDING = 3;
+    const SM_BRICK_OFFSET_LEFT = (280 - (SM_BRICK_COLS * (SM_BRICK_WIDTH + SM_BRICK_PADDING) - SM_BRICK_PADDING)) / 2;
+
+    let smPlayerBricks = [];
+    let smAiBricks = [];
+
+    const SMASH_FLASHY_COLORS = ['#58a6ff', '#7ee787', '#a371f7', '#f0883e', '#f1e05a', '#ff7b72', '#79c0ff'];
+	
+	let smCurrentPlayerColor = '#58a6ff';
+    let smCurrentAiColor = '#f0883e';
+
+    function startSmashGame() {
+      if (smashAnimFrame) cancelAnimationFrame(smashAnimFrame);
+      if (snakeAnimFrame) cancelAnimationFrame(snakeAnimFrame);
+      if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
+
+      currentActiveGame = 'smash';
+      isSnakePaused = false;
+      smashIsGameOver = false;
+      document.getElementById('klonboy-pause-menu').classList.remove('active');
+
+      // Choix des couleurs pour toute la partie
+      smCurrentPlayerColor = SMASH_FLASHY_COLORS[Math.floor(Math.random() * SMASH_FLASHY_COLORS.length)];
+      smCurrentAiColor = SMASH_FLASHY_COLORS[Math.floor(Math.random() * SMASH_FLASHY_COLORS.length)];
+      while (smCurrentAiColor === smCurrentPlayerColor) {
+        smCurrentAiColor = SMASH_FLASHY_COLORS[Math.floor(Math.random() * SMASH_FLASHY_COLORS.length)];
+      }
+
+      smashScore = 0;
+      smashPlayerLives = 3;
+      smashBossRoundsWon = 0; // <-- Réinitialisation propre au départ
+      smAi.speed = 2.1;
+
+      smPlayer.x = (280 - smPlayer.width) / 2;
+      smAi.x = (280 - smAi.width) / 2;
+      smashKeys.left = false;
+      smashKeys.right = false;
+
+      updateSmashScoresDisplay();
+      createSmashWalls();
+      prepareSmashServe('player');
+      initSmashCanvasControls();
+      smashGameLoop();
+    }
+
+    // 1. Régénère uniquement les briques du Patron (appelé quand le patron prend un but)
+    function resetAiBricks() {
+      smAiBricks = [];
+      for (let r = 0; r < SM_BRICK_ROWS; r++) {
+        for (let c = 0; c < SM_BRICK_COLS; c++) {
+          smAiBricks.push({ 
+            x: SM_BRICK_OFFSET_LEFT + c * (SM_BRICK_WIDTH + SM_BRICK_PADDING), 
+            y: 20 + (r * (SM_BRICK_HEIGHT + 2)), 
+            active: true,
+            color: smCurrentAiColor
+          });
+        }
+      }
+    }
+
+    // 2. Régénère uniquement les briques du Joueur
+    function resetPlayerBricks() {
+      smPlayerBricks = [];
+      for (let r = 0; r < SM_BRICK_ROWS; r++) {
+        for (let c = 0; c < SM_BRICK_COLS; c++) {
+          smPlayerBricks.push({ 
+            x: SM_BRICK_OFFSET_LEFT + c * (SM_BRICK_WIDTH + SM_BRICK_PADDING), 
+            y: 252 + (r * (SM_BRICK_HEIGHT + 2)), 
+            active: true,
+            color: smCurrentPlayerColor
+          });
+        }
+      }
+    }
+
+    // 3. Régénère les deux murs (au lancement et quand vous prenez un but)
+    function createSmashWalls() {
+      resetAiBricks();
+      resetPlayerBricks();
+    }
+
+    function prepareSmashServe(who) {
+      smashWaitingServe = true;
+      smashParticles = [];
+
+      // Balle joueur collée sur la raquette basse
+      smPlayerBall.x = smPlayer.x + smPlayer.width / 2;
+      smPlayerBall.y = smPlayer.y - smPlayerBall.radius - 2;
+      smPlayerBall.vx = 0;
+      smPlayerBall.vy = 0;
+      smPlayerBall.active = true;
+
+      // Balle IA collée sous la raquette haute
+      smAiBall.x = smAi.x + smAi.width / 2;
+      smAiBall.y = smAi.y + smAi.height + smAiBall.radius + 2;
+      smAiBall.vx = 0;
+      smAiBall.vy = 0;
+      smAiBall.active = true;
+
+      // Grosse balle Klon au centre
+      smNeutralBall.x = 140;
+      smNeutralBall.y = 135;
+      smNeutralBall.vx = 0;
+      smNeutralBall.vy = 0;
+      smNeutralBall.active = true;
+      smNeutralBall.unlocked = false;
+      smNeutralBall.angle = 0;
+    }
+
+    function launchSmashServe() {
+      if (!smashWaitingServe || smashIsGameOver) return;
+      smashWaitingServe = false;
+
+      // Départ calme pour la balle joueur (vers le haut)
+      const pDir = Math.random() > 0.5 ? 1 : -1;
+      smPlayerBall.vx = pDir * (1.1 + Math.random() * 0.4);
+      smPlayerBall.vy = -2.1; // au lieu de -3.8
+      smPlayerBall.currentSpeed = Math.hypot(smPlayerBall.vx, smPlayerBall.vy);
+
+      // Départ calme pour la balle adverse (vers le bas)
+      const aiDir = Math.random() > 0.5 ? 1 : -1;
+      smAiBall.vx = aiDir * (0.9 + Math.random() * 0.3);
+      smAiBall.vy = 1.8; // au lieu de 3.2
+      smAiBall.currentSpeed = Math.hypot(smAiBall.vx, smAiBall.vy);
+
+      if (navigator.vibrate) navigator.vibrate(30);
+    }
+
+    function updateSmashScoresDisplay() {
+      const scoreEl = document.getElementById('snake-score');
+      if (scoreEl) scoreEl.innerText = `${smashScore}`;
+    }
+
+    function initSmashCanvasControls() {
+      const pad = document.getElementById('klonboy-pong-touchpad');
+      const canvas = document.getElementById('snake-canvas');
+      if (!canvas) return;
+
+      const handleMove = (clientX) => {
+        if (currentActiveGame !== 'smash' || isSnakePaused || smashIsGameOver) return;
+        const rect = canvas.getBoundingClientRect();
+        const touchX = ((clientX - rect.left) / rect.width) * 280;
+        smPlayer.x = Math.max(0, Math.min(280 - smPlayer.width, touchX - smPlayer.width / 2));
+        
+        // Démarrage instantané au contact/mouvement comme dans Pong
+        if (smashWaitingServe) launchSmashServe();
+      };
+
+      window.onmousemove = (e) => {
+        if (currentActiveGame === 'smash' && document.getElementById('snake-modal').classList.contains('active')) {
+          handleMove(e.clientX);
+        }
+      };
+
+      const bindTouch = (el) => {
+        if (!el) return;
+        el.ontouchstart = (e) => {
+          if (currentActiveGame === 'smash') {
+            handleMove(e.touches[0].clientX);
+            if (smashWaitingServe) launchSmashServe();
+          }
+        };
+        el.ontouchmove = (e) => {
+          if (currentActiveGame === 'smash') {
+            handleMove(e.touches[0].clientX);
+            e.preventDefault();
+          }
+        };
+      };
+
+      bindTouch(pad);
+      bindTouch(canvas);
+    }
+
+    function createSmashSparks(x, y, color) {
+      for (let i = 0; i < 7; i++) {
+        smashParticles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          alpha: 1,
+          color
+        });
+      }
+    }
+
+    function showSmashBanner(text) {
+      smashBannerText = text;
+      smashBannerTimer = 75;
+    }
+
+    function smashGameLoop() {
+      if (currentActiveGame !== 'smash' || smashIsGameOver) return;
+      if (!isSnakePaused) {
+        updateSmash();
+        drawSmash();
+      }
+      smashAnimFrame = requestAnimationFrame(smashGameLoop);
+    }
+
+    function updateSmash() {
+      // En attente de service : les balles restent collées
+      if (smashWaitingServe) {
+        smPlayerBall.x = smPlayer.x + smPlayer.width / 2;
+        smPlayerBall.y = smPlayer.y - smPlayerBall.radius - 2;
+        smAiBall.x = smAi.x + smAi.width / 2;
+        smAiBall.y = smAi.y + smAi.height + smAiBall.radius + 2;
+        return;
+      }
+
+      // --- NOUVELLE IA INTELLIGENTE ---
+      // 1. On ne cible que les balles actives qui MONTENT vers le patron (vy < 0)
+      const incomingBalls = [smPlayerBall, smAiBall, smNeutralBall].filter(b => b.active && (b !== smNeutralBall || b.unlocked) && b.vy < 0);
+      
+      let targetX = 140; // Par défaut, se recentre au milieu
+      if (incomingBalls.length > 0) {
+        // La balle la plus proche de la raquette adverse
+        incomingBalls.sort((a, b) => a.y - b.y);
+        const dangerousBall = incomingBalls[0];
+        
+        // Anticipation du point d'impact horizontal à la hauteur de la raquette adverse
+        const timeToHit = Math.max(0.1, (smAi.y + smAi.height - dangerousBall.y) / dangerousBall.vy);
+        let predictedX = dangerousBall.x + dangerousBall.vx * timeToHit;
+
+        // Gestion du rebond de mur dans la prédiction
+        if (predictedX < 0) predictedX = Math.abs(predictedX);
+        if (predictedX > 280) predictedX = 280 - (predictedX - 280);
+        targetX = Math.max(0, Math.min(280, predictedX));
+      }
+
+      // Déplacement fluide et calibré de l'IA vers la cible
+      const aiCenter = smAi.x + smAi.width / 2;
+      const dist = targetX - aiCenter;
+      if (Math.abs(dist) > 3) {
+        smAi.x += Math.sign(dist) * Math.min(Math.abs(dist), smAi.speed);
+        smAi.x = Math.max(0, Math.min(280 - smAi.width, smAi.x));
+      }
+
+      // Déblocage de la balle Klon neutre si percutée
+      if (!smNeutralBall.unlocked) {
+        if (Math.hypot(smPlayerBall.x - smNeutralBall.x, smPlayerBall.y - smNeutralBall.y) < (smPlayerBall.radius + smNeutralBall.radius)) {
+          smNeutralBall.unlocked = true;
+          smNeutralBall.active = true;
+          smNeutralBall.vx = smPlayerBall.vx * 1.05;
+          smNeutralBall.vy = -smNeutralBall.baseSpeed;
+          createSmashSparks(smNeutralBall.x, smNeutralBall.y, '#f1e05a');
+        } else if (Math.hypot(smAiBall.x - smNeutralBall.x, smAiBall.y - smNeutralBall.y) < (smAiBall.radius + smNeutralBall.radius)) {
+          smNeutralBall.unlocked = true;
+          smNeutralBall.active = true;
+          smNeutralBall.vx = smAiBall.vx * 1.05;
+          smNeutralBall.vy = smNeutralBall.baseSpeed;
+          createSmashSparks(smNeutralBall.x, smNeutralBall.y, '#f1e05a');
+        }
+      }
+
+      // Physique des balles
+      updateSmashBall(smPlayerBall);
+      updateSmashBall(smAiBall);
+      updateSmashBall(smNeutralBall);
+
+      const isEn = state.lang === 'en';
+      const allBalls = [smPlayerBall, smAiBall, smNeutralBall];
+
+      // 1. BUT MARQUÉ CONTRE LE PATRON (Seul le patron récupère ses briques)
+      const scoredOnAi = allBalls.some(b => b.active && (b !== smNeutralBall || b.unlocked) && (b.y - b.radius <= 0));
+      const aiWallDestroyed = smAiBricks.length > 0 && smAiBricks.every(b => !b.active);
+
+      if (scoredOnAi || aiWallDestroyed) {
+        smashBossRoundsWon += 1;
+        if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+
+        if (smashBossRoundsWon >= 3) {
+          // 3e cravate : Patron viré ! Les deux murs se remettent à neuf pour le boss suivant
+          smashScore += 1;
+          updateSmashScoresDisplay();
+
+          if (smashPlayerLives < 3) smashPlayerLives += 1;
+
+          showSmashBanner("🎉 PATRON VIRÉ ! +1 🥊");
+          smashBossRoundsWon = 0;
+          smAi.speed = Math.min(3.5, smAi.speed + 0.2);
+          createSmashWalls(); 
+        } else {
+          showSmashBanner(`💥 CRAVATE ${smashBossRoundsWon}/3 TOMBÉE !`);
+          // Le patron encaisse : IL RÉCUPÈRE SES BRIQUES (les vôtres restent comme elles sont)
+          resetAiBricks(); 
+        }
+
+        prepareSmashServe('player');
+        return;
+      }
+
+      // 2. BUT ENCAISSÉ PAR LE JOUEUR (Les deux récupèrent leurs briques)
+      const scoredOnPlayer = allBalls.some(b => b.active && (b !== smNeutralBall || b.unlocked) && (b.y + b.radius >= 280));
+      const playerWallDestroyed = smPlayerBricks.length > 0 && smPlayerBricks.every(b => !b.active);
+
+      if (scoredOnPlayer || playerWallDestroyed) {
+        smashPlayerLives -= 1;
+        if (navigator.vibrate) navigator.vibrate(120);
+
+        if (smashPlayerLives <= 0) {
+          smashIsGameOver = true;
+          if (smashAnimFrame) cancelAnimationFrame(smashAnimFrame);
+          handleSmashGameOver();
+          return;
+        } else {
+          showSmashBanner(`⚠️ AÏE ! (Reste ${smashPlayerLives}❤️)`);
+          // C'est vous qui prenez un but : LES DEUX RÉCUPÈRENT LEURS BRIQUES !
+          createSmashWalls(); 
+          prepareSmashServe('player');
+          return;
+        }
+      }
+      // Particules
+      for (let i = smashParticles.length - 1; i >= 0; i--) {
+        const p = smashParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.04;
+        if (p.alpha <= 0) smashParticles.splice(i, 1);
+      }
+    }
+
+    function updateSmashBall(b) {
+      if (!b.active || (b === smNeutralBall && !b.unlocked)) return;
+
+      b.x += b.vx;
+      b.y += b.vy;
+      b.angle = (b.angle || 0) + b.vx * 0.06;
+
+      // Rebond murs latéraux
+      if (b.x - b.radius <= 0) {
+        b.x = b.radius;
+        b.vx = Math.abs(b.vx);
+        createSmashSparks(b.x, b.y, '#58a6ff');
+      }
+      if (b.x + b.radius >= 280) {
+        b.x = 280 - b.radius;
+        b.vx = -Math.abs(b.vx);
+        createSmashSparks(b.x, b.y, '#58a6ff');
+      }
+
+      // Rebond Raquette Joueur
+      if (
+        b.y + b.radius >= smPlayer.y &&
+        b.y - b.radius <= smPlayer.y + smPlayer.height &&
+        b.x >= smPlayer.x - 4 &&
+        b.x <= smPlayer.x + smPlayer.width + 4 &&
+        b.vy > 0
+      ) {
+        b.y = smPlayer.y - b.radius;
+        const hitOffset = (b.x - (smPlayer.x + smPlayer.width / 2)) / (smPlayer.width / 2);
+        const currentSpeed = Math.hypot(b.vx, b.vy);
+        const newSpeed = Math.min(Math.max(currentSpeed * 1.015, b.baseSpeed), 4.0);
+        b.currentSpeed = newSpeed;
+
+        b.vx = hitOffset * (newSpeed * 0.85);
+        b.vy = -Math.sqrt(Math.max(2, newSpeed * newSpeed - b.vx * b.vx));
+        const isColorblind = state.theme === 'colorblind';
+        createSmashSparks(b.x, smPlayer.y, isColorblind ? '#ffcc00' : '#7ee787');
+        if (navigator.vibrate) navigator.vibrate(20);
+      }
+
+      // Rebond Raquette IA
+      if (
+        b.y - b.radius <= smAi.y + smAi.height &&
+        b.y + b.radius >= smAi.y &&
+        b.x >= smAi.x - 4 &&
+        b.x <= smAi.x + smAi.width + 4 &&
+        b.vy < 0
+      ) {
+        b.y = smAi.y + smAi.height + b.radius;
+        const hitOffset = (b.x - (smAi.x + smAi.width / 2)) / (smAi.width / 2);
+        const currentSpeed = Math.hypot(b.vx, b.vy);
+        const newSpeed = Math.min(Math.max(currentSpeed * 1.015, b.baseSpeed), 4.0);
+        b.currentSpeed = newSpeed;
+
+        b.vx = hitOffset * (newSpeed * 0.85);
+        b.vy = Math.sqrt(Math.max(2, newSpeed * newSpeed - b.vx * b.vx));
+        const isColorblind = state.theme === 'colorblind';
+        createSmashSparks(b.x, smAi.y + smAi.height, isColorblind ? '#0d6efd' : '#da3633');
+      }
+
+      // Rebond et destruction nette des briques (anti-traversée)
+      const hitBricks = (bricks) => {
+        for (let i = 0; i < bricks.length; i++) {
+          const brick = bricks[i];
+          if (!brick.active) continue;
+
+          if (
+            b.x + b.radius > brick.x &&
+            b.x - b.radius < brick.x + SM_BRICK_WIDTH &&
+            b.y + b.radius > brick.y &&
+            b.y - b.radius < brick.y + SM_BRICK_HEIGHT
+          ) {
+            const overlapLeft = (b.x + b.radius) - brick.x;
+            const overlapRight = (brick.x + SM_BRICK_WIDTH) - (b.x - b.radius);
+            const overlapTop = (b.y + b.radius) - brick.y;
+            const overlapBottom = (brick.y + SM_BRICK_HEIGHT) - (b.y - b.radius);
+
+            const minOverlapX = Math.min(overlapLeft, overlapRight);
+            const minOverlapY = Math.min(overlapTop, overlapBottom);
+
+            if (minOverlapX < minOverlapY) {
+              if (b.vx > 0) {
+                b.x = brick.x - b.radius;
+                b.vx = -Math.abs(b.vx);
+              } else {
+                b.x = brick.x + SM_BRICK_WIDTH + b.radius;
+                b.vx = Math.abs(b.vx);
+              }
+            } else {
+              if (b.vy > 0) {
+                b.y = brick.y - b.radius;
+                b.vy = -Math.abs(b.vy);
+              } else {
+                b.y = brick.y + SM_BRICK_HEIGHT + b.radius;
+                b.vy = Math.abs(b.vy);
+              }
+            }
+
+            brick.active = false;
+            createSmashSparks(brick.x + SM_BRICK_WIDTH / 2, brick.y + SM_BRICK_HEIGHT / 2, brick.color);
+            if (navigator.vibrate) navigator.vibrate(25);
+            return true;
+          }
+        }
+        return false;
+      };
+
+      if (!hitBricks(smPlayerBricks)) {
+        hitBricks(smAiBricks);
+      }
+    }
+
+    function drawSmash() {
+      const canvas = document.getElementById('snake-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Détection de la langue pour toute la fonction (déclaré UNE seule fois)
+      const isEn = state.lang === 'en';
+
+      // 1. HUD en haut : Détection de la langue pour l'adversaire et le joueur
+      ctx.save();
+      ctx.font = 'bold 10px sans-serif';
+
+      // Le Patron / The Boss à gauche avec ses 3 cravates
+      ctx.fillStyle = '#f85149';
+      ctx.textAlign = 'left';
+      let tiesStr = "";
+      for (let i = 0; i < 3; i++) tiesStr += (i >= smashBossRoundsWon) ? "👔" : "💨";
+      const bossLabel = isEn ? "💼 THE BOSS: " : "💼 LE PATRON: ";
+      ctx.fillText(`${bossLabel}${tiesStr}`, 8, 12);
+
+      // Toi / You à droite avec tes cœurs
+      ctx.fillStyle = '#7ee787';
+      ctx.textAlign = 'right';
+      let heartsStr = "";
+      for (let i = 0; i < 3; i++) heartsStr += (i < smashPlayerLives) ? "❤️" : "🖤";
+      const playerLabel = isEn ? "🛡️ YOU: " : "🛡️ TOI: ";
+      ctx.fillText(`${playerLabel}${heartsStr}`, 272, 12);
+      ctx.restore();
+
+      // Filet central discret
+      ctx.strokeStyle = '#21262d';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); 
+      ctx.moveTo(0, 140); 
+      ctx.lineTo(280, 140); 
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Particules
+      smashParticles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
+        ctx.restore();
+      });
+
+      // Briques IA
+      smAiBricks.forEach(b => {
+        if (b.active) {
+          ctx.fillStyle = b.color;
+          ctx.fillRect(b.x, b.y, SM_BRICK_WIDTH, SM_BRICK_HEIGHT);
+          ctx.strokeStyle = '#0d1117';
+          ctx.strokeRect(b.x, b.y, SM_BRICK_WIDTH, SM_BRICK_HEIGHT);
+        }
+      });
+
+      // Briques Joueur
+      smPlayerBricks.forEach(b => {
+        if (b.active) {
+          ctx.fillStyle = b.color;
+          ctx.fillRect(b.x, b.y, SM_BRICK_WIDTH, SM_BRICK_HEIGHT);
+          ctx.strokeStyle = '#0d1117';
+          ctx.strokeRect(b.x, b.y, SM_BRICK_WIDTH, SM_BRICK_HEIGHT);
+        }
+      });
+
+      // Couleurs des raquettes (Bleu et Jaune en mode Daltonien, Rouge et Vert en standard)
+      const isColorblind = state.theme === 'colorblind';
+      const aiFill = isColorblind ? '#0d6efd' : '#da3633';
+      const aiStroke = isColorblind ? '#58a6ff' : '#f85149';
+      const playerFill = isColorblind ? '#ffcc00' : '#238636';
+      const playerStroke = isColorblind ? '#ffff66' : '#7ee787';
+
+      // Raquette IA (Patron)
+      ctx.save();
+      ctx.fillStyle = aiFill;
+      ctx.strokeStyle = aiStroke;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = aiFill;
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.roundRect(smAi.x, smAi.y, smAi.width, smAi.height, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Raquette Joueur (Toi)
+      ctx.save();
+      ctx.fillStyle = playerFill;
+      ctx.strokeStyle = playerStroke;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = playerStroke;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.roundRect(smPlayer.x, smPlayer.y, smPlayer.width, smPlayer.height, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // 2. BALLE DU JOUEUR (Balle circulaire assortie à vos blocs)
+      if (smPlayerBall.active) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(smPlayerBall.x, smPlayerBall.y, smPlayerBall.radius, 0, Math.PI * 2);
+        ctx.fillStyle = smCurrentPlayerColor;
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+        // Reflet brillant style arcade
+        ctx.beginPath();
+        ctx.arc(smPlayerBall.x - 2, smPlayerBall.y - 2, smPlayerBall.radius * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 3. BALLE DE L'IA (Balle circulaire assortie à ses blocs)
+      if (smAiBall.active) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(smAiBall.x, smAiBall.y, smAiBall.radius, 0, Math.PI * 2);
+        ctx.fillStyle = smCurrentAiColor;
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+        // Reflet brillant style arcade
+        ctx.beginPath();
+        ctx.arc(smAiBall.x - 2, smAiBall.y - 2, smAiBall.radius * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 4. GROSSE BALLE KLON CENTRALE
+      if (smNeutralBall.active) {
+        ctx.save();
+        ctx.translate(smNeutralBall.x, smNeutralBall.y);
+        ctx.rotate(smNeutralBall.angle || 0);
+
+        if (headImageObj && headImageObj.complete) {
+          ctx.beginPath();
+          ctx.arc(0, 0, smNeutralBall.radius, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(headImageObj, -smNeutralBall.radius, -smNeutralBall.radius, smNeutralBall.radius * 2, smNeutralBall.radius * 2);
+          ctx.strokeStyle = '#f1e05a';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          ctx.font = `${smNeutralBall.radius * 1.8}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('👑', 0, 0);
+        }
+        ctx.restore();
+      }
+
+      // Message d'attente au service (utilise directement isEn du haut)
+      if (smashWaitingServe) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(isEn ? "Slide Touchpad to serve!" : "Glisse le Touchpad pour servir !", 140, 195);
+      }
+
+      // Bannière d'événement
+      if (smashBannerTimer > 0) {
+        smashBannerTimer--;
+        ctx.fillStyle = '#f0883e';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(smashBannerText, 140, 115);
+      }
+    }
+
+    function handleSmashGameOver() {
+      smashIsGameOver = true;
+      if (smashAnimFrame) cancelAnimationFrame(smashAnimFrame);
+
+      const activeKlonName = selectedKlonForGame ? selectedKlonForGame.name : 'Klon';
+      const activeAvatar = selectedKlonForGame ? selectedKlonForGame.avatar : null;
+      const leaderboard = getSnakeLeaderboard('smash');
+      const previousTop = leaderboard.length > 0 ? leaderboard[0].score : 0;
+
+      saveSnakeScoreToLeaderboard('smash', smashScore, activeKlonName, activeAvatar);
+      updateSnakeHighScoreDisplay();
+
+      const isRecord = smashScore > previousTop && smashScore > 0;
+      document.getElementById('gameover-icon').innerText = isRecord ? '🏆' : '💥';
+      document.getElementById('gameover-title').innerText = isRecord 
+        ? (state.lang === 'en' ? 'NEW SMASH RECORD!' : 'NOUVEAU RECORD !') 
+        : (state.lang === 'en' ? 'Game Over!' : 'Boucliers détruits !');
+      document.getElementById('gameover-msg').innerText = state.lang === 'en'
+        ? `Score: ${smashScore} round(s) won by ${activeKlonName}.`
+        : `Score : ${smashScore} manche(s) gagnée(s) face au patron !`;
+
+      document.getElementById('snake-gameover-modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
 
     // ==========================================
     // MOTEUR DU JEU : KLON PONG (DUEL VS SALARIAT)
@@ -4947,6 +5646,8 @@
         startKlontrisGame();
       } else if (currentActiveGame === 'pong') {
         startPongGame();
+      } else if (currentActiveGame === 'smash') {
+        startSmashGame();
       } else {
         startSnakeGame();
       }
@@ -5283,7 +5984,7 @@
       ctx.fillStyle = '#8b949e';
       ctx.font = '9px sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(isEn ? "💼 WAGE LABOR" : "💼 LE SALARIAT", 8, 32);
+      ctx.fillText(isEn ? "💼 THE BOSS" : "💼 LE PATRON", 8, 32);
       ctx.restore();
 
       // Texte d'attente au service
@@ -5448,8 +6149,8 @@
     }
 
     function toggleControlsCustomizeMode() {
-      // Bloque l'ouverture de l'édition si Pong est en cours
-      if (typeof currentActiveGame !== 'undefined' && currentActiveGame === 'pong') {
+      // Bloque l'ouverture de l'édition si Pong ou Smash est en cours
+      if (typeof currentActiveGame !== 'undefined' && (currentActiveGame === 'pong' || currentActiveGame === 'smash')) {
         return;
       }
 
@@ -6359,7 +7060,7 @@
           let actionsGroupHTML = `
             <div class="clone-action-group">
               ${isUnlocked ? `<button class="clone-action-btn" title="Arcade" onclick="openArcadeVault(${c.id})">🕹️</button>` : ''}
-              <button class="clone-action-btn" title="Brain / MBTI" onclick="openMbtiModal(${c.id})">🧠</button>
+              <button class="clone-action-btn" title="Profil mental" onclick="openMbtiModal(${c.id})">🧠</button>
               ${mbtiBadgeHTML}
             </div>
           `;
@@ -6692,7 +7393,7 @@
       document.getElementById('btn-pause-resume').innerText = t.pauseResume;
       document.getElementById('btn-toggle-customize').innerText = isControlsCustomizeMode ? t.pauseSaveKeys : t.pauseMoveKeys;
       document.getElementById('btn-pause-reset-controls').innerText = t.pauseResetKeys;
-      document.getElementById('btn-pause-leaderboard').innerText = t.pauseLeaderboard;
+	  updateDifficultyButtonText(); // <-- Remplace l'ancienne ligne du classement !
       document.getElementById('btn-pause-quit').innerText = t.pauseQuit;
       document.getElementById('btn-gameover-replay').innerText = t.btnReplay;
       document.getElementById('btn-gameover-leaderboard').innerText = t.btnLeaderboard;
@@ -6774,6 +7475,7 @@
         }
       };
       reader.readAsText(file);
+      event.target.value = '';
     }
 
     function confirmResetDialog() {
