@@ -1292,7 +1292,6 @@
       touch-action: none;
     }
 
-    /* POSITIONEMENT PHYSIQUE STYLE GAME BOY (B en bas/gauche, A en haut/droite) */
     #btn-action-b { top: 75px; right: 65px; }
     #btn-action-a { top: 40px; right: 12px; }
 
@@ -2000,7 +1999,7 @@
               
               <!-- 1. NIVEAU -->
               <div class="snake-score-box" style="padding: 4px; height: 58px; width: 100%; justify-content: space-between; align-items: center;">
-                <div class="klontris-hud-box" style="line-height: 1;">Niveau</div>
+                <div class="klontris-hud-box" id="klontris-lbl-level" style="line-height: 1;">Niveau</div>
                 <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
                   <div id="klontris-level-display" style="font-size: 1.3rem; color: var(--accent-blue); font-weight: 800; line-height: 1;">1</div>
                 </div>
@@ -2008,7 +2007,7 @@
 
               <!-- 2. SUIVANT -->
               <div class="snake-score-box" style="padding: 4px; height: 58px; width: 100%; justify-content: space-between; align-items: center;">
-                <div class="klontris-hud-box" style="line-height: 1;">Suivant</div>
+                <div class="klontris-hud-box" id="klontris-lbl-next" style="line-height: 1;">Suivant</div>
                 <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
                   <canvas id="klontris-next-canvas" width="60" height="34" style="display: block;"></canvas>
                 </div>
@@ -2016,7 +2015,7 @@
 
               <!-- 3. RÉSERVE -->
               <div class="snake-score-box" style="padding: 4px; height: 58px; width: 100%; justify-content: space-between; align-items: center;">
-                <div class="klontris-hud-box" style="line-height: 1;">Réserve</div>
+                <div class="klontris-hud-box" id="klontris-lbl-hold" style="line-height: 1;">Réserve</div>
                 <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
                   <canvas id="klontris-hold-canvas" width="60" height="34" style="display: block;"></canvas>
                 </div>
@@ -2069,7 +2068,9 @@
             <div></div>
             <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
             <div></div>
-            <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
+            <button class="dpad-btn" 
+              onmousedown="startDpadRepeat('DOWN')" onmouseup="stopDpadRepeat()" onmouseleave="stopDpadRepeat()"
+              ontouchstart="startDpadRepeat('DOWN'); event.preventDefault();" ontouchend="stopDpadRepeat()" ontouchcancel="stopDpadRepeat()">▼</button>
             <div></div>
           </div>
 
@@ -2409,6 +2410,9 @@
         btnReplay: "🔄 Rejouer de suite",
         btnLeaderboard: "🏆 Voir le Classement",
         btnBack: "Retour",
+        klontrisLevel: "Niveau",
+        klontrisNext: "Suivant",
+        klontrisHold: "Réserve",
         leaderboardTitle: "🏆 Top 10 Records KLON Snake",
         leaderboardSubtitle: "Meilleures récoltes de dividendes enregistrées",
         chartPctTitle: "📈 Courbe d'autonomie (%)",
@@ -2540,6 +2544,9 @@
         btnReplay: "🔄 Play Again",
         btnLeaderboard: "🏆 View Ranks",
         btnBack: "Back",
+        klontrisLevel: "Level",
+        klontrisNext: "Next",
+        klontrisHold: "Hold",
         leaderboardTitle: "🏆 Top 10 KLON Snake Records",
         leaderboardSubtitle: "Best passive dividend harvests recorded",
         chartPctTitle: "📈 Autonomy Curve (%)",
@@ -3755,6 +3762,7 @@
       currentActiveGame = gameId;
       closeArcadeModal();
 
+      const editBtn = document.getElementById('klonboy-edit-layout-btn');
       const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === gameId);
       const klonName = selectedKlonForGame ? selectedKlonForGame.name : (state.lang === 'en' ? 'Player' : 'Joueur');
       
@@ -3801,6 +3809,7 @@
       const snakeCanvas = document.getElementById('snake-canvas');
 
       if (gameId === 'klontris') {
+        if (editBtn) editBtn.style.display = 'block';
         if (standardHeader) standardHeader.style.display = 'flex';
         if (snakeCanvas) snakeCanvas.style.display = 'none';
         if (klontrisLayout) klontrisLayout.style.display = 'flex';
@@ -3810,6 +3819,7 @@
         if (unitEl) unitEl.innerText = '💵';
         startKlontrisGame();
       } else if (gameId === 'snake2') {
+        if (editBtn) editBtn.style.display = 'block';
         if (standardHeader) standardHeader.style.display = 'flex';
         if (snakeCanvas) snakeCanvas.style.display = 'block';
         if (klontrisLayout) klontrisLayout.style.display = 'none';
@@ -3819,6 +3829,12 @@
         if (unitEl) unitEl.innerText = '🪙';
         startSnakeGame();
       } else if (gameId === 'pong') {
+        // Masquer et désactiver le mode édition pour Pong
+        if (editBtn) editBtn.style.display = 'none';
+        if (typeof isKlonBoyEditMode !== 'undefined' && isKlonBoyEditMode) {
+          toggleControlsCustomizeMode();
+        }
+
         if (standardHeader) standardHeader.style.display = 'flex';
         if (snakeCanvas) snakeCanvas.style.display = 'block';
         if (klontrisLayout) klontrisLayout.style.display = 'none';
@@ -4077,6 +4093,23 @@
       pendingEatenIndex = -1;
       spawnSnakeFood();
       snakeGameLoop(performance.now());
+    }
+
+    let dpadRepeatInterval = null;
+
+    function startDpadRepeat(dir) {
+      setSnakeDir(dir);
+      stopDpadRepeat();
+      dpadRepeatInterval = setInterval(() => {
+        setSnakeDir(dir);
+      }, 70); // Répète la descente toutes les 70ms quand on reste appuyé
+    }
+
+    function stopDpadRepeat() {
+      if (dpadRepeatInterval) {
+        clearInterval(dpadRepeatInterval);
+        dpadRepeatInterval = null;
+      }
     }
 
     function setSnakeDir(dir) {
@@ -5411,6 +5444,11 @@
     }
 
     function toggleControlsCustomizeMode() {
+      // Bloque l'ouverture de l'édition si Pong est en cours
+      if (typeof currentActiveGame !== 'undefined' && currentActiveGame === 'pong') {
+        return;
+      }
+
       const t = getT();
       isControlsCustomizeMode = !isControlsCustomizeMode;
       const dpadEl = document.getElementById('klonboy-dpad-container');
@@ -5435,11 +5473,14 @@
         btnA.classList.remove('custom-draggable', 'customize-active-highlight');
         btnB.classList.remove('custom-draggable', 'customize-active-highlight');
         
-        if (selectedKlonForGame) {
-          const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === 'snake2');
+        if (currentActiveGame) {
+          const gameConfig = ARCADE_GAMES_LIST.find(g => g.id === currentActiveGame);
           if (gameConfig && !gameConfig.needsActionBtns) {
             btnA.classList.add('hidden-action');
             btnB.classList.add('hidden-action');
+          } else {
+            btnA.classList.remove('hidden-action');
+            btnB.classList.remove('hidden-action');
           }
         }
 
@@ -6655,6 +6696,9 @@
       document.getElementById('lbl-leaderboard-title').innerText = t.leaderboardTitle;
       document.getElementById('lbl-leaderboard-subtitle').innerText = t.leaderboardSubtitle;
       document.getElementById('btn-leaderboard-close').innerText = state.lang === 'en' ? 'Back' : 'Retour';
+      document.getElementById('klontris-lbl-level').innerText = t.klontrisLevel;
+      document.getElementById('klontris-lbl-next').innerText = t.klontrisNext;
+      document.getElementById('klontris-lbl-hold').innerText = t.klontrisHold;
       document.getElementById('chart-pct-title').innerText = t.chartPctTitle;
       document.getElementById('chart-mult-title').innerText = t.chartMultTitle;
       document.getElementById('btn-history-toggle').innerText = t.btnHistoryToggle;
