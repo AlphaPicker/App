@@ -7270,11 +7270,6 @@
       });
     }
 
-      document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
-      document.addEventListener('touchend', finishTouchDrag);
-      document.addEventListener('touchcancel', finishTouchDrag);
-    }
-
     function getDragAfterElement(container, y) {
       const draggableElements = [...container.querySelectorAll('.clone-card:not(.dragging)')];
 
