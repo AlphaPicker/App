@@ -2064,9 +2064,13 @@
             <div></div>
             <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
             <div></div>
-            <button class="dpad-btn" onclick="setSnakeDir('LEFT')">◄</button>
+            <button class="dpad-btn" 
+              onmousedown="startDpadRepeat('LEFT')" onmouseup="stopDpadRepeat()" onmouseleave="stopDpadRepeat()"
+              ontouchstart="startDpadRepeat('LEFT'); event.preventDefault();" ontouchend="stopDpadRepeat()" ontouchcancel="stopDpadRepeat()">◄</button>
             <div></div>
-            <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
+            <button class="dpad-btn" 
+              onmousedown="startDpadRepeat('RIGHT')" onmouseup="stopDpadRepeat()" onmouseleave="stopDpadRepeat()"
+              ontouchstart="startDpadRepeat('RIGHT'); event.preventDefault();" ontouchend="stopDpadRepeat()" ontouchcancel="stopDpadRepeat()">►</button>
             <div></div>
             <button class="dpad-btn" 
               onmousedown="startDpadRepeat('DOWN')" onmouseup="stopDpadRepeat()" onmouseleave="stopDpadRepeat()"
