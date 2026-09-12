@@ -7280,15 +7280,18 @@
         clearTimeout(touchPressTimer);
         touchPressTimer = null;
 
-        if (activeTouchCard) {
-          activeTouchCard.classList.remove('dragging', 'long-pressing');
-          activeTouchCard.style.pointerEvents = '';
-          document.body.style.userSelect = '';
-          document.body.style.overflow = '';
+        // 🟢 FIX : Nettoyage inconditionnel de TOUTES les cartes en pointillé
+        container.querySelectorAll('.clone-card').forEach(c => {
+          c.classList.remove('dragging', 'long-pressing');
+          c.style.pointerEvents = '';
+        });
 
-          if (isDraggingActive) {
-            saveNewOrder();
-          }
+        // 🟢 FIX : Restauration systématique des interactions et du scroll global
+        document.body.style.userSelect = '';
+        document.body.style.overflow = '';
+
+        if (isDraggingActive) {
+          saveNewOrder();
         }
 
         activeTouchCard = null;
