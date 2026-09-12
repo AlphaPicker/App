@@ -7205,76 +7205,12 @@
         }
       });
 
-      // --- 2. GESTION MOBILE TACTILE (SMARTPHONE) ---
+      // --- 2. GESTION MOBILE TACTILE SÉCURISÉE ---
       let activeTouchCard = null;
       let touchPressTimer = null;
       let startTouchX = 0;
       let startTouchY = 0;
       let isDraggingActive = false;
-
-      cards.forEach(card => {
-        card.addEventListener('touchstart', (e) => {
-          // Ne pas déclencher si on clique sur un bouton, avatar, champ ou badge
-          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) {
-            return;
-          }
-
-          const touch = e.touches[0];
-          startTouchX = touch.clientX;
-          startTouchY = touch.clientY;
-          activeTouchCard = card;
-
-          // Détection d'un appui maintenu (220 ms)
-          touchPressTimer = setTimeout(() => {
-            isDraggingActive = true;
-            activeTouchCard.classList.add('dragging', 'long-pressing');
-            activeTouchCard.style.pointerEvents = 'none'; // Permet de détecter les cartes situées en dessous
-            document.body.style.userSelect = 'none';
-            document.body.style.overflow = 'hidden'; // Empêche la page de scroller pendant le tri
-
-            if (navigator.vibrate) navigator.vibrate(35);
-          }, 220);
-        }, { passive: true });
-      });
-
-      // Écoute globale sur le document pour ne jamais perdre le doigt
-      document.addEventListener('touchmove', (e) => {
-        if (!activeTouchCard) return;
-
-        const touch = e.touches[0];
-        const moveX = Math.abs(touch.clientX - startTouchX);
-        const moveY = Math.abs(touch.clientY - startTouchY);
-
-        // Si l'utilisateur fait un geste de défilement avant les 220 ms, on annule pour le laisser scroller normalement
-        if (!isDraggingActive && (moveX > 10 || moveY > 10)) {
-          clearTimeout(touchPressTimer);
-          touchPressTimer = null;
-          activeTouchCard = null;
-          return;
-        }
-
-        if (isDraggingActive) {
-          e.preventDefault(); // Bloque le scroll natif
-
-          // Détecte la carte située directement sous la position du doigt
-          const elementUnderFinger = document.elementFromPoint(touch.clientX, touch.clientY);
-          if (!elementUnderFinger) return;
-
-          const targetCard = elementUnderFinger.closest('.clone-card');
-          if (targetCard && targetCard !== activeTouchCard && targetCard.parentNode === container) {
-            const targetRect = targetCard.getBoundingClientRect();
-            const targetMiddleY = targetRect.top + (targetRect.height / 2);
-
-            if (touch.clientY < targetMiddleY) {
-              // Doigt dans la moitié haute : insère au-dessus
-              container.insertBefore(activeTouchCard, targetCard);
-            } else {
-              // Doigt dans la moitié basse : insère en dessous
-              container.insertBefore(activeTouchCard, targetCard.nextSibling);
-            }
-          }
-        }
-      }, { passive: false });
 
       const finishTouchDrag = () => {
         clearTimeout(touchPressTimer);
@@ -7282,7 +7218,7 @@
 
         if (activeTouchCard) {
           activeTouchCard.classList.remove('dragging', 'long-pressing');
-          activeTouchCard.style.pointerEvents = '';
+          activeTouchCard.style.pointerEvents = ''; // Réinitialisation impérative du pointeur
           document.body.style.userSelect = '';
           document.body.style.overflow = '';
 
@@ -7295,7 +7231,64 @@
         isDraggingActive = false;
       };
 
-      // Nettoyage préalable pour éviter d'empiler les écouteurs à chaque rendu
+      const handleGlobalTouchMove = (e) => {
+        if (!activeTouchCard) return;
+
+        const touch = e.touches[0];
+        const moveX = Math.abs(touch.clientX - startTouchX);
+        const moveY = Math.abs(touch.clientY - startTouchY);
+
+        if (!isDraggingActive && (moveX > 10 || moveY > 10)) {
+          clearTimeout(touchPressTimer);
+          touchPressTimer = null;
+          activeTouchCard = null;
+          return;
+        }
+
+        if (isDraggingActive) {
+          e.preventDefault();
+
+          const elementUnderFinger = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (!elementUnderFinger) return;
+
+          const targetCard = elementUnderFinger.closest('.clone-card');
+          if (targetCard && targetCard !== activeTouchCard && targetCard.parentNode === container) {
+            const targetRect = targetCard.getBoundingClientRect();
+            const targetMiddleY = targetRect.top + (targetRect.height / 2);
+
+            if (touch.clientY < targetMiddleY) {
+              container.insertBefore(activeTouchCard, targetCard);
+            } else {
+              container.insertBefore(activeTouchCard, targetCard.nextSibling);
+            }
+          }
+        }
+      };
+
+      cards.forEach(card => {
+        card.addEventListener('touchstart', (e) => {
+          if (e.target.closest('input, button, select, .clickable-clone-name, .clone-avatar, .clone-action-btn, .mbti-card-badge')) {
+            return;
+          }
+
+          const touch = e.touches[0];
+          startTouchX = touch.clientX;
+          startTouchY = touch.clientY;
+          activeTouchCard = card;
+
+          touchPressTimer = setTimeout(() => {
+            isDraggingActive = true;
+            activeTouchCard.classList.add('dragging', 'long-pressing');
+            activeTouchCard.style.pointerEvents = 'none';
+            document.body.style.userSelect = 'none';
+            document.body.style.overflow = 'hidden';
+
+            if (navigator.vibrate) navigator.vibrate(35);
+          }, 220);
+        }, { passive: true });
+      });
+
+      // Nettoyage global sur le document
       document.removeEventListener('touchmove', handleGlobalTouchMove);
       document.removeEventListener('touchend', finishTouchDrag);
       document.removeEventListener('touchcancel', finishTouchDrag);
