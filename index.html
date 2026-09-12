@@ -2217,12 +2217,16 @@
     }
 
     function executeDialogConfirm() {
-      if (typeof dialogConfirmCallback === 'function') {
-        const textInput = document.getElementById('dialog-text-input');
-        const isInputVisible = document.getElementById('dialog-input-container').style.display !== 'none';
-        dialogConfirmCallback(isInputVisible ? textInput.value : null);
+      const cb = dialogConfirmCallback;
+      const textInput = document.getElementById('dialog-text-input');
+      const isInputVisible = document.getElementById('dialog-input-container').style.display !== 'none';
+      const val = isInputVisible ? textInput.value : null;
+
+      closeCustomDialog(); // Ferme et nettoie d'abord
+
+      if (typeof cb === 'function') {
+        cb(val); // Exécute le callback en toute sécurité
       }
-      closeCustomDialog();
     }
 
     let currentBadgeAnimType = 'confetti';
@@ -4032,6 +4036,7 @@
       if (pongAnimFrame) cancelAnimationFrame(pongAnimFrame);
       if (klontrisAnimFrame) cancelAnimationFrame(klontrisAnimFrame);
       if (smashAnimFrame) cancelAnimationFrame(smashAnimFrame); // <-- Évite que le jeu continue de tourner en arrière-plan
+	  window.onmousemove = null; 
       isSnakePaused = false;
       document.getElementById('klonboy-pause-menu').classList.remove('active');
       document.getElementById('snake-modal').classList.remove('active');
@@ -4602,13 +4607,23 @@
       if (klontrisGameOver || klontrisIsAnimatingClear || isSnakePaused) return;
       const prevMatrix = klontrisCurrentPiece.matrix;
       const prevX = klontrisCurrentPiece.x;
+      const prevY = klontrisCurrentPiece.y; // Mémorise aussi la hauteur de départ
       klontrisCurrentPiece.matrix = rotateMatrixKlontris(klontrisCurrentPiece.matrix);
 
-      const kicks = [0, -1, 1, -2, 2];
+      // Décalages testés : [dx, dy]
+      // Normal, murs latéraux (gauche/droite) ET sol (vers le haut dy = -1 ou -2)
+      const kicks = [
+        [0, 0],
+        [-1, 0], [1, 0],
+        [-2, 0], [2, 0],
+        [0, -1], [-1, -1], [1, -1],
+        [0, -2]
+      ];
       let success = false;
 
-      for (let offset of kicks) {
-        klontrisCurrentPiece.x = prevX + offset;
+      for (let [dx, dy] of kicks) {
+        klontrisCurrentPiece.x = prevX + dx;
+        klontrisCurrentPiece.y = prevY + dy;
         if (!collideKlontris(klontrisGrid, klontrisCurrentPiece)) {
           success = true;
           break;
@@ -4618,6 +4633,7 @@
       if (!success) {
         klontrisCurrentPiece.matrix = prevMatrix;
         klontrisCurrentPiece.x = prevX;
+        klontrisCurrentPiece.y = prevY; // Restaure proprement la hauteur
       } else {
         klontrisLastActionWasRotate = true;
         checkTSpinKlontris();
