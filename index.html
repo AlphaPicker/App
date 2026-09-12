@@ -5707,41 +5707,48 @@
     }
 
     function initPongCanvasControls() {
+      const pad = document.getElementById('klonboy-pong-touchpad');
       const canvas = document.getElementById('snake-canvas');
       if (!canvas) return;
 
       const handleMove = (clientX) => {
         if (currentActiveGame !== 'pong' || isSnakePaused || pongIsGameOver) return;
         
-        // On prend le repère de l'écran pour convertir la position X
+        // Conversion de la position du doigt sur la largeur du jeu (280px)
         const rect = canvas.getBoundingClientRect();
         const touchX = ((clientX - rect.left) / rect.width) * 280;
         
-        // La raquette reste toujours bloquée entre 0 et les bords du terrain
+        // Déplacement fluide de la raquette
         pongPlayer.x = Math.max(0, Math.min(280 - pongPlayer.width, touchX - pongPlayer.width / 2));
         if (pongWaitingServe) launchPongServe();
       };
 
-      // Sur PC : écoute le déplacement de la souris sur toute la fenêtre (window)
+      // Mouvement à la souris sur PC
       window.onmousemove = (e) => {
         if (currentActiveGame === 'pong' && document.getElementById('snake-modal').classList.contains('active')) {
           handleMove(e.clientX);
         }
       };
 
-      // Sur Écran Tactile (si l'utilisateur touche directement l'écran de jeu)
-      canvas.ontouchstart = (e) => {
-        if (currentActiveGame === 'pong') {
-          handleMove(e.touches[0].clientX);
-        }
+      // Branchement tactile sur le Touchpad ET sur l'écran
+      const bindTouch = (el) => {
+        if (!el) return;
+        el.ontouchstart = (e) => {
+          if (currentActiveGame === 'pong') {
+            handleMove(e.touches[0].clientX);
+            if (pongWaitingServe) launchPongServe();
+          }
+        };
+        el.ontouchmove = (e) => {
+          if (currentActiveGame === 'pong') {
+            handleMove(e.touches[0].clientX);
+            e.preventDefault();
+          }
+        };
       };
 
-      canvas.ontouchmove = (e) => {
-        if (currentActiveGame === 'pong') {
-          handleMove(e.touches[0].clientX);
-          e.preventDefault();
-        }
-      };
+      bindTouch(pad);
+      bindTouch(canvas);
     }
 
     function pongGameLoop() {
