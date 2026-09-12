@@ -2058,7 +2058,9 @@
           <!-- Croix directionnelle classique pour Snake -->
           <div class="snake-dpad" id="klonboy-snake-dpad">
             <div></div>
-            <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
+            <button class="dpad-btn" 
+              onclick="setSnakeDir('UP')" 
+              ontouchstart="setSnakeDir('UP'); event.preventDefault();">▲</button>
             <div></div>
             <button class="dpad-btn" 
               onmousedown="startDpadRepeat('LEFT')" onmouseup="stopDpadRepeat()" onmouseleave="stopDpadRepeat()"
@@ -3053,10 +3055,13 @@
       const newVal = oldVal === val ? val - 1 : val;
       
       let newTraits = { ...tempMBTITraits, [key]: Math.max(0, newVal) };
-      let totalSpent = getSpentPoints(newTraits);
+      let newSpent = getSpentPoints(newTraits);
+      let currentSpent = getSpentPoints(tempMBTITraits);
       const maxAllowed = getUnlockedPointsForClone(currentEditingMBTICloneId);
 
-      if (totalSpent > maxAllowed) {
+      // On ne bloque QUE si le joueur essaie d'AUGMENTER ses points au-delà du quota
+      // S'il clique pour BAISSER ses points, on l'autorise toujours !
+      if (newSpent > maxAllowed && newSpent > currentSpent) {
         showCustomDialog('⚠️', 'Budget atteint', `Ce Klon a débloqué ${maxAllowed} point(s) d'attribut pour le moment.`);
         return;
       }
@@ -4344,31 +4349,15 @@
       document.body.style.overflow = 'hidden';
     }
 
+    // Ferme la fenêtre et relance proprement le jeu en cours
     function closeGameOverModal() {
       document.getElementById('snake-gameover-modal').classList.remove('active');
-
-      if (currentActiveGame === 'klontris') {
-        startKlontrisGame();
-      } else if (currentActiveGame === 'pong') {
-        startPongGame();
-      } else if (currentActiveGame === 'smash') {
-        startSmashGame();
-      } else {
-        startSnakeGame();
-      }
+      restartActiveGame(); 
     }
 
+    // Le bouton "Rejouer de suite" fait la même chose, sans doublon
     function restartFromGameOver() {
       closeGameOverModal();
-      if (currentActiveGame === 'klontris') {
-        startKlontrisGame();
-      } else if (currentActiveGame === 'pong') {
-        startPongGame();
-      } else if (currentActiveGame === 'smash') {
-        startSmashGame();
-      } else {
-        startSnakeGame();
-      }
     }
 
     function openSnakeLeaderboardFromGameOver() {
