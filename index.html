@@ -3382,6 +3382,10 @@
       const expense = state.expenses.find(e => e.id === id);
       if (expense && !isNaN(val) && val >= 0) {
         expense.amount = val;
+        // Si l'allocation dépassait le nouveau montant réduit, on l'ajuste pour libérer la rente
+        if (state.allocations[id] !== undefined && state.allocations[id] > val) {
+          state.allocations[id] = val;
+        }
         saveState();
         calculateTotalExpenses();
         updateCalculations();
@@ -3918,7 +3922,9 @@
       const hsEl = document.getElementById('snake-highscore');
       if (hsEl) {
         if (gameId === 'pong') {
-          hsEl.innerText = `${topScore} an${topScore > 1 ? 's' : ''}`;
+          const isEn = state.lang === 'en';
+          const yrLabel = isEn ? (topScore > 1 ? 'yrs' : 'yr') : (topScore > 1 ? 'ans' : 'an');
+          hsEl.innerText = `${topScore} ${yrLabel}`;
         } else if (gameId === 'klontris') {
           hsEl.innerText = formatCompactCurrency(topScore);
         } else if (gameId === 'smash') {
@@ -7289,6 +7295,12 @@
         isDraggingActive = false;
       };
 
+      // Nettoyage préalable pour éviter d'empiler les écouteurs à chaque rendu
+      document.removeEventListener('touchmove', handleGlobalTouchMove);
+      document.removeEventListener('touchend', finishTouchDrag);
+      document.removeEventListener('touchcancel', finishTouchDrag);
+
+      document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
       document.addEventListener('touchend', finishTouchDrag);
       document.addEventListener('touchcancel', finishTouchDrag);
     }
@@ -7325,16 +7337,21 @@
 
     function copyFortuneoCode() {
       const code = "12874482";
-      navigator.clipboard.writeText(code).then(() => {
-        const btn = document.getElementById('fortuneo-btn');
-        if (btn) btn.innerText = state.lang === 'en' ? "✅ Code 12874482 copied!" : "✅ Code 12874482 copié !";
-        setTimeout(() => {
-          window.open("https://www.fortuneo.fr", "_blank");
-          if (btn) btn.innerText = "Fortuneo (Code Parrain : 12874482)";
-        }, 1200);
-      }).catch(() => {
-        window.open("https://www.fortuneo.fr", "_blank");
-      });
+      const btn = document.getElementById('fortuneo-btn');
+      
+      // Copie du code dans le presse-papier
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).catch(() => {});
+      }
+      
+      if (btn) btn.innerText = state.lang === 'en' ? "✅ Code copied! Opening..." : "✅ Code copié ! Redirection...";
+      
+      // Ouverture immédiate pour contourner le bloqueur de pop-up mobile
+      window.open("https://www.fortuneo.fr", "_blank");
+      
+      setTimeout(() => {
+        if (btn) btn.innerText = "Fortuneo (Code Parrain : 12874482)";
+      }, 1800);
     }
 
     function applyTranslations() {
